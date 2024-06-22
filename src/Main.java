@@ -1,5 +1,8 @@
+import models.Booking;
 import models.ConferenceHall;
 import models.Workplace;
+import services.BookingService;
+import services.CoworkingSpaceService;
 import services.UserService;
 
 import java.util.ArrayList;
@@ -11,8 +14,10 @@ public class Main {
         UserService userService = new UserService();
         ArrayList<Workplace> workplaces = new ArrayList<>();
         ArrayList<ConferenceHall> conferenceHalls = new ArrayList<>();
-        CoworkingSpace coworkingSpace = new CoworkingSpace(workplaces, conferenceHalls);
-        UserConsole userConsole = new UserConsole(userService, coworkingSpace);
+        CoworkingSpaceService coworkingSpaceService = new CoworkingSpaceService(workplaces, conferenceHalls);
+        ArrayList<Booking> bookingArrayList = new ArrayList<>();
+        BookingService bookingService = new BookingService(bookingArrayList);
+        UserConsole userConsole = new UserConsole(userService, coworkingSpaceService, bookingService);
         userConsole.runUserCommands();
     }
 }

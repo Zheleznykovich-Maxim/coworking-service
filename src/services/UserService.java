@@ -1,3 +1,7 @@
+package services;
+
+import models.User;
+
 import java.util.ArrayList;
 
 public class UserService {

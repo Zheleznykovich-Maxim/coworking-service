@@ -34,18 +34,18 @@ public class BookingService {
         this.nextBookingId = nextBookingId;
     }
 
-    public void createBooking(User user,
+    public void createBooking(
                               int resourceId,
                               String resourceName,
                               LocalDateTime startTime,
                               LocalDateTime endTime,
                               ResourceType resourceType) {
-            Booking booking = new Booking(nextBookingId++, user, resourceId, resourceName, startTime, endTime, resourceType);
+            Booking booking = new Booking(nextBookingId++, resourceId, resourceName, startTime, endTime, resourceType);
             bookingArrayList.add(booking);
     }
 
     // Метод для отмены бронирования
-    public void cancelBooking(int bookingId) {
+    public void deleteBooking(int bookingId) {
         bookingArrayList.removeIf(booking -> booking.getId() == bookingId);
     }
 

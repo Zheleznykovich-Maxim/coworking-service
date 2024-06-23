@@ -13,14 +13,13 @@ public class Booking {
     private ResourceType resourceType;
     private boolean isAvailable;
 
-    public Booking(int id, User user,
+    public Booking(int id,
                    int resourceId,
                    String resourceName,
                    LocalDateTime startTime,
                    LocalDateTime endTime,
                    ResourceType resourceType) {
         this.id = id;
-        this.user = user;
         this.resourceId = resourceId;
         this.resourceName = resourceName;
         this.startTime = startTime;
@@ -105,5 +104,9 @@ public class Booking {
                 ", resourceType=" + resourceType +
                 ", isAvailable=" + isAvailable +
                 '}';
+    }
+
+    public boolean isUserNull() {
+        return this.user == null;
     }
 }

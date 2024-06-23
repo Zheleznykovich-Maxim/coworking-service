@@ -113,7 +113,7 @@ public class UserConsole {
             in.nextLine();
 
             if (command == 1) {
-                printArrayList(coworkingSpaceService.getAvailableConferenceHalls());
+                printArrayList(coworkingSpaceService.getWorkplaces());
 
             } else if (command == 2) {
                 printArrayList(coworkingSpaceService.getAvailableConferenceHalls());
@@ -215,18 +215,16 @@ public class UserConsole {
                 if (workplace != null && dateTimes != null) {
                     LocalDateTime startDateTime = dateTimes[0];
                     LocalDateTime endDateTime = dateTimes[1];
-                    // Создание бронирования
-                    bookingService.createBooking(currentUser, id, workplace.getName(), startDateTime, endDateTime, ResourceType.WORKSPACE);
+
+                    bookingService.createBooking(id, workplace.getName(), startDateTime, endDateTime, ResourceType.WORKSPACE);
                 }
 
             } else if (command == 7) {
-                //отмена брони
-                System.out.println("Отмена брони");
+                System.out.println("Удаление брони");
                 System.out.print("Введите идентификатор: ");
                 int id = in.nextInt();
-                bookingService.cancelBooking(id);
+                bookingService.deleteBooking(id);
             } else if (command == 8) {
-                //показать брони
                 bookingService.viewAllBookings();
             } else if (command == 9) {
                 return;
@@ -295,14 +293,14 @@ public class UserConsole {
                     LocalDateTime startDateTime = dateTimes[0];
                     LocalDateTime endDateTime = dateTimes[1];
                     // Создание бронирования
-                    bookingService.createBooking(currentUser, id, conferenceHall.getName(), startDateTime, endDateTime, ResourceType.CONFERENCEHALL);
+                    bookingService.createBooking(id, conferenceHall.getName(), startDateTime, endDateTime, ResourceType.CONFERENCEHALL);
                 }
 
             } else if (command == 7) {
-                System.out.println("Отмена брони");
+                System.out.println("Удаление брони");
                 System.out.print("Введите идентификатор: ");
                 int id = in.nextInt();
-                bookingService.cancelBooking(id);
+                bookingService.deleteBooking(id);
 
             } else if (command == 8) {
                 bookingService.viewAllBookings();
@@ -399,19 +397,38 @@ public class UserConsole {
                 int id = in.nextInt();
                 Booking foundBooking = bookingService.findBookingById(id);
                 if (foundBooking != null) {
-                    foundBooking.setAvailable(false);
+
+                    if (foundBooking.getUser() != null && !foundBooking.getUser().equals(currentUser)) {
+                        System.out.println("Данная бронь уже занята другим пользователем!");
+                    } else {
+                        foundBooking.setAvailable(false);
+                        foundBooking.setUser(currentUser);
+                    }
+
                 } else {
                     System.out.println("Бронирования с таким id не существует!");
                 }
             } else if (command == 6) {
-                System.out.println("Отмена бронирования");
-                System.out.print("Введите идентификатор брони: ");
+                System.out.println("Отмена брони");
+                System.out.print("Введите идентификатор: ");
                 int id = in.nextInt();
                 Booking foundBooking = bookingService.findBookingById(id);
+
                 if (foundBooking != null) {
-                    foundBooking.setAvailable(true);
-                } else {
-                    System.out.println("Бронирования с таким id не существует!");
+
+                    if (foundBooking.getUser() == null) {
+                        System.out.println("Свободная бронь не может быть отменена");
+
+                    } else if (!foundBooking.getUser().equals(currentUser)) {
+                        System.out.println("Вы не можете отменить бронь другого пользователя");
+
+                    } else {
+                        foundBooking.setAvailable(true);
+                        foundBooking.setUser(null);
+                    }
+
+                } else  {
+                    System.out.println("Бронь с таким id не существует!");
                 }
 
             } else if (command == 7) {

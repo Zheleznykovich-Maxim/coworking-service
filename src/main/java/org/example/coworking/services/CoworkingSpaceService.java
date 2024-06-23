@@ -1,7 +1,7 @@
-package services;
+package org.example.coworking.services;
 
-import models.ConferenceHall;
-import models.Workplace;
+import org.example.coworking.models.ConferenceHall;
+import org.example.coworking.models.Workplace;
 
 import java.util.ArrayList;
 

@@ -1,20 +1,22 @@
-package console;
+package org.example.coworking.console;
 
-import enums.ResourceType;
-import enums.UserRole;
-import models.Booking;
-import models.ConferenceHall;
-import models.User;
-import models.Workplace;
-import services.BookingService;
-import services.CoworkingSpaceService;
-import services.UserService;
+import org.example.coworking.enums.ResourceType;
+import org.example.coworking.enums.UserRole;
+import org.example.coworking.models.Booking;
+import org.example.coworking.models.ConferenceHall;
+import org.example.coworking.models.User;
+import org.example.coworking.models.Workplace;
+import org.example.coworking.services.BookingService;
+import org.example.coworking.services.CoworkingSpaceService;
+import org.example.coworking.services.UserService;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class UserConsole {
@@ -34,33 +36,42 @@ public class UserConsole {
     public void runStartCommands() {
 
         while (true) {
+            try {
 
-            if (isAuthorized) {
-                switch (currentUser.getRole()) {
-                    case ADMIN:
-                        runCoworkingSpaceCommands();
-                        break;
-                    case USER:
-                        runUserCommands();
-                        break;
+                if (isAuthorized) {
+                    switch (currentUser.getRole()) {
+                        case ADMIN:
+                            runCoworkingSpaceCommands();
+                            break;
+                        case USER:
+                            runUserCommands();
+                            break;
+                    }
                 }
+
+                ConsoleUI.printStartCommands();
+
+                int command = in.nextInt();
+                in.nextLine();
+
+                if (command == 1) {
+                    registration();
+                } else if (command == 2) {
+                    authorization();
+                } else if (command == 3) {
+                    in.close();
+                    return;
+                } else {
+                    System.out.println("Неверная команда");
+                }
+
+            } catch (InputMismatchException inputMismatchException) {
+                System.out.println("Неверный формат ввода команды. Введите корректные данные");
+                in.next();
+            } catch (DateTimeParseException dateTimeParseException) {
+                System.out.println("Некорректный формат ввода данных бронирования. Введите корректные данные");
             }
 
-            ConsoleUI.printStartCommands();
-
-            int command = in.nextInt();
-            in.nextLine();
-
-            if (command == 1) {
-                registration();
-            } else if (command == 2) {
-                authorization();
-            } else if (command == 3) {
-                in.close();
-                return;
-            } else {
-                System.out.println("Неверная команда");
-            }
         }
     }
 
@@ -207,16 +218,19 @@ public class UserConsole {
                 coworkingSpaceService.deleteWorkplace(id);
             } else if (command == 6) {
                 LocalDateTime[] dateTimes = BookingDateTimeInput();
+                if (dateTimes == null) { continue; }
                 System.out.println("Создание брони рабочего места");
                 System.out.print("Введите идентификатор: ");
                 int id = in.nextInt();
                 in.nextLine();
                 Workplace workplace = coworkingSpaceService.findWorkplaceById(id);
-                if (workplace != null && dateTimes != null) {
+                if (workplace != null) {
                     LocalDateTime startDateTime = dateTimes[0];
                     LocalDateTime endDateTime = dateTimes[1];
 
                     bookingService.createBooking(id, workplace.getName(), startDateTime, endDateTime, ResourceType.WORKSPACE);
+                } else {
+                    System.out.println("Рабочего места с таким id не существует!");
                 }
 
             } else if (command == 7) {
@@ -284,16 +298,19 @@ public class UserConsole {
 
             } else if (command == 6) {
                 LocalDateTime[] dateTimes = BookingDateTimeInput();
+                if (dateTimes == null) { continue; }
                 System.out.println("Создание брони конференц хола");
                 System.out.print("Введите идентификатор: ");
                 int id = in.nextInt();
                 in.nextLine();
                 ConferenceHall conferenceHall = coworkingSpaceService.findConferenceHallById(id);
-                if (conferenceHall != null && dateTimes !=null) {
+                if (conferenceHall != null) {
                     LocalDateTime startDateTime = dateTimes[0];
                     LocalDateTime endDateTime = dateTimes[1];
                     // Создание бронирования
                     bookingService.createBooking(id, conferenceHall.getName(), startDateTime, endDateTime, ResourceType.CONFERENCEHALL);
+                } else {
+                    System.out.println("Конференц-зала с таким id не существует!");
                 }
 
             } else if (command == 7) {

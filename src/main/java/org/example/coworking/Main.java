@@ -1,10 +1,12 @@
-import console.UserConsole;
-import models.Booking;
-import models.ConferenceHall;
-import models.Workplace;
-import services.BookingService;
-import services.CoworkingSpaceService;
-import services.UserService;
+package org.example.coworking;
+
+import org.example.coworking.console.UserConsole;
+import org.example.coworking.models.Booking;
+import org.example.coworking.models.ConferenceHall;
+import org.example.coworking.models.Workplace;
+import org.example.coworking.services.BookingService;
+import org.example.coworking.services.CoworkingSpaceService;
+import org.example.coworking.services.UserService;
 
 import java.util.ArrayList;
 

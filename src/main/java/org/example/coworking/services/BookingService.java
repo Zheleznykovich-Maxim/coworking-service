@@ -1,8 +1,8 @@
-package services;
+package org.example.coworking.services;
 
-import enums.ResourceType;
-import models.Booking;
-import models.User;
+import org.example.coworking.enums.ResourceType;
+import org.example.coworking.models.Booking;
+import org.example.coworking.models.User;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;

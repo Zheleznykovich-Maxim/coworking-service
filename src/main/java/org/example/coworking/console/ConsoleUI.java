@@ -1,4 +1,4 @@
-package console;
+package org.example.coworking.console;
 
 public class ConsoleUI {
 

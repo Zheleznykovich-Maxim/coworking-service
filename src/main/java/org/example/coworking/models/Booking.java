@@ -1,6 +1,6 @@
-package models;
+package org.example.coworking.models;
 
-import enums.ResourceType;
+import org.example.coworking.enums.ResourceType;
 import java.time.LocalDateTime;
 
 public class Booking {

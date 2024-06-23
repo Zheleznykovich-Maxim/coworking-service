@@ -1,6 +1,6 @@
-package models;
+package org.example.coworking.models;
 
-import enums.UserRole;
+import org.example.coworking.enums.UserRole;
 
 public class User {
     private String username;

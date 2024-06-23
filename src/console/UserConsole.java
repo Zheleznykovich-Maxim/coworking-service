@@ -1,3 +1,7 @@
+package console;
+
+import enums.ResourceType;
+import models.Booking;
 import models.ConferenceHall;
 import models.User;
 import models.Workplace;
@@ -97,6 +101,9 @@ public class UserConsole {
                 runConferenceHallCommands();
 
             } else if (command == 3) {
+                runBookingCommands();
+
+            } else if (command == 4) {
                 isAuthorized = false;
                 currentUser = null;
                 return;
@@ -153,17 +160,17 @@ public class UserConsole {
                 int id = in.nextInt();
                 coworkingSpaceService.deleteWorkplace(id);
             } else if (command == 6) {
-                LocalDateTime[] dateTimes = BookingInput();
-                LocalDateTime startDateTime = dateTimes[0];
-                LocalDateTime endDateTime = dateTimes[1];
+                LocalDateTime[] dateTimes = BookingDateTimeInput();
                 System.out.println("Создание брони рабочего места");
                 System.out.print("Введите идентификатор: ");
                 int id = in.nextInt();
                 in.nextLine();
                 Workplace workplace = coworkingSpaceService.findWorkplaceById(id);
-                if (workplace != null) {
+                if (workplace != null && dateTimes != null) {
+                    LocalDateTime startDateTime = dateTimes[0];
+                    LocalDateTime endDateTime = dateTimes[1];
                     // Создание бронирования
-                    bookingService.createBooking(currentUser, id, workplace.getName(), startDateTime, endDateTime);
+                    bookingService.createBooking(currentUser, id, workplace.getName(), startDateTime, endDateTime, ResourceType.WORKSPACE);
                 }
 
             } else if (command == 7) {
@@ -232,17 +239,17 @@ public class UserConsole {
                 coworkingSpaceService.deleteConferenceHall(id);
 
             } else if (command == 6) {
-                LocalDateTime[] dateTimes = BookingInput();
-                LocalDateTime startDateTime = dateTimes[0];
-                LocalDateTime endDateTime = dateTimes[1];
+                LocalDateTime[] dateTimes = BookingDateTimeInput();
                 System.out.println("Создание брони конференц хола");
                 System.out.print("Введите идентификатор: ");
                 int id = in.nextInt();
                 in.nextLine();
                 ConferenceHall conferenceHall = coworkingSpaceService.findConferenceHallById(id);
-                if (conferenceHall != null) {
+                if (conferenceHall != null && dateTimes !=null) {
+                    LocalDateTime startDateTime = dateTimes[0];
+                    LocalDateTime endDateTime = dateTimes[1];
                     // Создание бронирования
-                    bookingService.createBooking(currentUser, id, conferenceHall.getName(), startDateTime, endDateTime);
+                    bookingService.createBooking(currentUser, id, conferenceHall.getName(), startDateTime, endDateTime, ResourceType.CONFERENCEHALL);
                 }
 
             } else if (command == 7) {
@@ -269,7 +276,7 @@ public class UserConsole {
         }
     }
 
-    public LocalDateTime[] BookingInput() {
+    public LocalDateTime[] BookingDateTimeInput() {
         //бронь
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
@@ -292,6 +299,83 @@ public class UserConsole {
         LocalTime endLocalTime = LocalTime.parse(endTime, timeFormatter);
 
         LocalDateTime endDateTime = LocalDateTime.of(endLocalDate, endLocalTime);
+
+        if (startDateTime.isAfter(endDateTime)) {
+            System.out.println("Дата конца бронирования не может идти раньше начала!");
+            return null;
+        }
         return new LocalDateTime[]{startDateTime, endDateTime};
+    }
+    public void runBookingCommands() {
+        while (true) {
+            ConsoleUI.printBookingCommands();
+
+            int command = in.nextInt();
+            in.nextLine();
+
+            if (command == 1) {
+                bookingService.viewAllBookings();
+
+            } else if (command == 2) {
+                //фильттр по дате
+                DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                System.out.println("Введите дату для фильтрации бронирования (в формате YYYY-MM-DD):");
+                String startDate = in.nextLine();
+                LocalDate startLocalDate = LocalDate.parse(startDate, dateFormatter);
+                printArrayList(bookingService.filterBookingsByDate(startLocalDate));
+            } else if (command == 3) {
+                //фильттр по пользователю
+                System.out.print("Введите имя пользователя для фильтрации бронирования: ");
+                String username = in.nextLine();
+                User filterUser = userService.findUserByName(username);
+                if (filterUser != null) {
+                    printArrayList(bookingService.filterBookingsByUser(filterUser));
+                } else {
+                    System.out.println("Пользователь с таким username не найден!");
+                }
+            } else if (command == 4) {
+                //фильтрация по ресурсу
+                ConsoleUI.printResourceTypes();
+                int resourceType = in.nextInt();
+                if (resourceType == 1) {
+                    printArrayList(bookingService.filterBookingsByResource(ResourceType.WORKSPACE));
+
+                } else if (resourceType == 2) {
+                    printArrayList(bookingService.filterBookingsByResource(ResourceType.CONFERENCEHALL));
+
+                } else {
+                    System.out.println("Введена несуществующая команда!");
+                }
+
+            } else if (command == 5) {
+                System.out.println("Бронирование");
+                System.out.print("Введите идентификатор брони: ");
+                int id = in.nextInt();
+                Booking foundBooking = bookingService.findBookingById(id);
+                if (foundBooking != null) {
+                    foundBooking.setAvailable(false);
+                } else {
+                    System.out.println("Бронирования с таким id не существует!");
+                }
+            } else if (command == 6) {
+                System.out.println("Отмена бронирования");
+                System.out.print("Введите идентификатор брони: ");
+                int id = in.nextInt();
+                Booking foundBooking = bookingService.findBookingById(id);
+                if (foundBooking != null) {
+                    foundBooking.setAvailable(true);
+                } else {
+                    System.out.println("Бронирования с таким id не существует!");
+                }
+
+            } else if (command == 7) {
+                isAuthorized = false;
+                currentUser = null;
+                return;
+
+            } else {
+                System.out.println("Неверная команда");
+            }
+        }
     }
 }

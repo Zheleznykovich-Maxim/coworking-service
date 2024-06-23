@@ -1,6 +1,6 @@
 package models;
 
-
+import enums.ResourceType;
 import java.time.LocalDateTime;
 
 public class Booking {
@@ -10,19 +10,23 @@ public class Booking {
     private String resourceName;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
+    private ResourceType resourceType;
+    private boolean isAvailable;
 
-    public Booking(int id,
-                   User user,
+    public Booking(int id, User user,
                    int resourceId,
                    String resourceName,
                    LocalDateTime startTime,
-                   LocalDateTime endTime) {
+                   LocalDateTime endTime,
+                   ResourceType resourceType) {
         this.id = id;
         this.user = user;
         this.resourceId = resourceId;
         this.resourceName = resourceName;
         this.startTime = startTime;
         this.endTime = endTime;
+        this.resourceType = resourceType;
+        isAvailable = true;
     }
 
     public int getId() {
@@ -49,6 +53,14 @@ public class Booking {
         this.resourceId = resourceId;
     }
 
+    public String getResourceName() {
+        return resourceName;
+    }
+
+    public void setResourceName(String resourceName) {
+        this.resourceName = resourceName;
+    }
+
     public LocalDateTime getStartTime() {
         return startTime;
     }
@@ -65,12 +77,20 @@ public class Booking {
         this.endTime = endTime;
     }
 
-    public String getResourceName() {
-        return resourceName;
+    public ResourceType getResourceType() {
+        return resourceType;
     }
 
-    public void setResourceName(String resourceName) {
-        this.resourceName = resourceName;
+    public void setResourceType(ResourceType resourceType) {
+        this.resourceType = resourceType;
+    }
+
+    public boolean isAvailable() {
+        return isAvailable;
+    }
+
+    public void setAvailable(boolean available) {
+        isAvailable = available;
     }
 
     @Override
@@ -82,6 +102,8 @@ public class Booking {
                 ", resourceName='" + resourceName + '\'' +
                 ", startTime=" + startTime +
                 ", endTime=" + endTime +
+                ", resourceType=" + resourceType +
+                ", isAvailable=" + isAvailable +
                 '}';
     }
 }

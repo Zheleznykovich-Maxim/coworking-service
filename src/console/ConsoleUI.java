@@ -1,3 +1,5 @@
+package console;
+
 public class ConsoleUI {
 
     public static void printUserCommands() {
@@ -14,7 +16,8 @@ public class ConsoleUI {
                     Выберите команду:
                     1 - Рабочее место
                     2 - Конференц-зал
-                    3 - Выход из пользователя
+                    3 - Бронь
+                    4 - Выход из пользователя
                     """);
     }
 
@@ -53,6 +56,27 @@ public class ConsoleUI {
                     Вы освобождаете помещение?
                     1 - Да
                     2 - Нет
+                    """);
+    }
+
+    public static void printBookingCommands() {
+        System.out.print("""
+                    Выберите команду для отображения брони:
+                    1 - Показать всю бронь
+                    2 - Фильтр по дате
+                    3 - Фильтр по пользователю
+                    4 - Фильтр по ресурсу
+                    5 - Забронировать
+                    6 - Отменить бронь
+                    7 - Вернуться назад
+                    """);
+    }
+
+    public static void printResourceTypes() {
+        System.out.print("""
+                    Выберите тип ресурса
+                    1 - Workspace
+                    2 - Conference Hall
                     """);
     }
 }

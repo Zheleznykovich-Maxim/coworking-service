@@ -1,9 +1,12 @@
 package services;
 
+import enums.ResourceType;
 import models.Booking;
 import models.User;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class BookingService {
     private ArrayList<Booking> bookingArrayList;
@@ -35,8 +38,9 @@ public class BookingService {
                               int resourceId,
                               String resourceName,
                               LocalDateTime startTime,
-                              LocalDateTime endTime) {
-            Booking booking = new Booking(nextBookingId++, user, resourceId, resourceName, startTime, endTime);
+                              LocalDateTime endTime,
+                              ResourceType resourceType) {
+            Booking booking = new Booking(nextBookingId++, user, resourceId, resourceName, startTime, endTime, resourceType);
             bookingArrayList.add(booking);
     }
 
@@ -50,25 +54,35 @@ public class BookingService {
         bookingArrayList.forEach(System.out::println);
     }
 
-//    // Метод для фильтрации бронирований по дате
-//    public ArrayList<Booking> filterBookingsByDate(LocalDateTime date) {
-//        return (ArrayList<Booking>) bookingArrayList.stream()
-//                .filter(booking -> booking.getStartTime().toLocalDate().equals(date.toLocalDate()))
-//                .collect(Collectors.toList());
-//    }
+    // Метод для фильтрации бронирований по дате
+    public ArrayList<Booking> filterBookingsByDate(LocalDate date) {
+        return (ArrayList<Booking>) bookingArrayList.stream()
+                .filter(booking -> booking.getStartTime().toLocalDate().equals(date) ||
+                        booking.getEndTime().toLocalDate().equals(date))
+                .collect(Collectors.toList());
+    }
 
     // Метод для фильтрации бронирований по пользователю
-//    public ArrayList<Booking> filterBookingsByUser(String user) {
-//        return (ArrayList<Booking>) bookingArrayList.stream()
-//                .filter(booking -> booking.getUser().equalsIgnoreCase(user))
-//                .collect(Collectors.toList());
-//    }
+    public ArrayList<Booking> filterBookingsByUser(User user) {
+        return (ArrayList<Booking>) bookingArrayList.stream()
+                .filter(booking -> booking.getUser().equals(user))
+                .collect(Collectors.toList());
+    }
 
-//    // Метод для фильтрации бронирований по ресурсу
-//    public ArrayList<Booking> filterBookingsByResource(int resourceId) {
-//        return (ArrayList<Booking>) bookingArrayList.stream()
-//                .filter(booking -> booking.getResourceId() == resourceId)
-//                .collect(Collectors.toList());
-//    }
+    // Метод для фильтрации бронирований по ресурсу
+    public ArrayList<Booking> filterBookingsByResource(ResourceType resourceType) {
+        return (ArrayList<Booking>) bookingArrayList.stream()
+                .filter(booking -> booking.getResourceType().equals(resourceType))
+                .collect(Collectors.toList());
+    }
+
+    public Booking findBookingById(int id) {
+        for (Booking booking : bookingArrayList) {
+            if (booking.getId() == id) {
+                return booking;
+            }
+        }
+        return null;
+    }
 
 }

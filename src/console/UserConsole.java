@@ -1,6 +1,7 @@
 package console;
 
 import enums.ResourceType;
+import enums.UserRole;
 import models.Booking;
 import models.ConferenceHall;
 import models.User;
@@ -30,15 +31,22 @@ public class UserConsole {
         this.bookingService = bookingService;
     }
 
-    public void runUserCommands() {
+    public void runStartCommands() {
 
         while (true) {
 
             if (isAuthorized) {
-                runCoworkingSpaceCommands();
+                switch (currentUser.getRole()) {
+                    case ADMIN:
+                        runCoworkingSpaceCommands();
+                        break;
+                    case USER:
+                        runUserCommands();
+                        break;
+                }
             }
 
-            ConsoleUI.printUserCommands();
+            ConsoleUI.printStartCommands();
 
             int command = in.nextInt();
             in.nextLine();
@@ -61,8 +69,18 @@ public class UserConsole {
         String username = in.nextLine();
         System.out.print("Введите пароль: ");
         String password = in.nextLine();
+        ConsoleUI.printUserRoles();
+        int userRole = in.nextInt();
+        boolean success;
+        if (userRole == 1) {
+            success = userService.register(username, password, UserRole.USER);
+        } else if (userRole == 2) {
+            success = userService.register(username, password, UserRole.ADMIN);
+        } else {
+            System.out.println("Введена неверная комманда!");
+            return;
+        }
 
-        boolean success = userService.register(username, password);
         if (success) {
             System.out.println("Регистрация прошла успешно.");
         } else {
@@ -84,6 +102,34 @@ public class UserConsole {
         } else {
             System.out.println("Неверное имя пользователя или пароль.");
         }
+    }
+
+    public void runUserCommands() {
+        while (isAuthorized) {
+
+            ConsoleUI.printUserCommands();
+
+            int command = in.nextInt();
+            in.nextLine();
+
+            if (command == 1) {
+                printArrayList(coworkingSpaceService.getAvailableConferenceHalls());
+
+            } else if (command == 2) {
+                printArrayList(coworkingSpaceService.getAvailableConferenceHalls());
+
+            } else if (command == 3) {
+                runBookingCommands();
+
+            } else if (command == 4) {
+                isAuthorized = false;
+                currentUser = null;
+
+            } else {
+                System.out.println("Неверная команда");
+            }
+        }
+
     }
 
     public void runCoworkingSpaceCommands() {

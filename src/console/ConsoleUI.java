@@ -2,12 +2,22 @@ package console;
 
 public class ConsoleUI {
 
-    public static void printUserCommands() {
+    public static void printStartCommands() {
         System.out.print("""
                     Выберите команду:
                     1 - Регистрация
                     2 - Авторизация
                     3 - Выход
+                    """);
+    }
+
+    public static void printUserCommands() {
+        System.out.print("""
+                    Выберите команду:
+                    1 - Показать рабочие места
+                    2 - Показать конференц залы
+                    3 - Бронирование
+                    4 - Выход из пользователя
                     """);
     }
 
@@ -61,7 +71,7 @@ public class ConsoleUI {
 
     public static void printBookingCommands() {
         System.out.print("""
-                    Выберите команду для отображения брони:
+                    Выберите команду для бронирования:
                     1 - Показать всю бронь
                     2 - Фильтр по дате
                     3 - Фильтр по пользователю
@@ -77,6 +87,14 @@ public class ConsoleUI {
                     Выберите тип ресурса
                     1 - Workspace
                     2 - Conference Hall
+                    """);
+    }
+
+    public static void printUserRoles() {
+        System.out.print("""
+                    Выберите вашу роль
+                    1 - Пользователь
+                    2 - Администратор
                     """);
     }
 }

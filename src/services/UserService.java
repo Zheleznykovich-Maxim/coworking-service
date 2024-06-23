@@ -1,5 +1,6 @@
 package services;
 
+import enums.UserRole;
 import models.User;
 
 import java.util.ArrayList;
@@ -8,13 +9,13 @@ import java.util.Objects;
 public class UserService {
     private ArrayList<User> users = new ArrayList<>();
 
-    public boolean register(String username, String password) {
+    public boolean register(String username, String password, UserRole userRole) {
         for (User user : users) {
             if (username.equals(user.getUsername())) {
                 return false;
             }
         }
-        users.add(new User(username, password));
+        users.add(new User(username, password, userRole));
         return true;
     }
 

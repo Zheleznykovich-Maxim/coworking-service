@@ -19,6 +19,6 @@ public class Main {
         ArrayList<Booking> bookingArrayList = new ArrayList<>();
         BookingService bookingService = new BookingService(bookingArrayList);
         UserConsole userConsole = new UserConsole(userService, coworkingSpaceService, bookingService);
-        userConsole.runUserCommands();
+        userConsole.runStartCommands();
     }
 }

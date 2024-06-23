@@ -25,7 +25,7 @@ public class UserConsole {
     private BookingService bookingService;
     private Scanner in = new Scanner(System.in);
     private User currentUser;
-    boolean isAuthorized = false;
+    private boolean isAuthorized = false;
 
     public UserConsole(UserService userService, CoworkingSpaceService coworkingSpaceService, BookingService bookingService) {
         this.userService = userService;
@@ -228,7 +228,7 @@ public class UserConsole {
                     LocalDateTime startDateTime = dateTimes[0];
                     LocalDateTime endDateTime = dateTimes[1];
 
-                    bookingService.createBooking(id, workplace.getName(), startDateTime, endDateTime, ResourceType.WORKSPACE);
+                    bookingService.createBooking(id, workplace.getName(), startDateTime, endDateTime, ResourceType.WORKPLACE);
                 } else {
                     System.out.println("Рабочего места с таким id не существует!");
                 }
@@ -399,7 +399,7 @@ public class UserConsole {
                 ConsoleUI.printResourceTypes();
                 int resourceType = in.nextInt();
                 if (resourceType == 1) {
-                    printArrayList(bookingService.filterBookingsByResource(ResourceType.WORKSPACE));
+                    printArrayList(bookingService.filterBookingsByResource(ResourceType.WORKPLACE));
 
                 } else if (resourceType == 2) {
                     printArrayList(bookingService.filterBookingsByResource(ResourceType.CONFERENCEHALL));
@@ -458,4 +458,5 @@ public class UserConsole {
             }
         }
     }
+
 }

@@ -1,6 +1,6 @@
-import org.example.coworking.enums.UserRole;
-import org.example.coworking.models.User;
-import org.example.coworking.services.UserService;
+import org.example.coworking.model.enums.UserRole;
+import org.example.coworking.model.User;
+import org.example.coworking.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;

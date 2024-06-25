@@ -1,11 +1,11 @@
-package org.example.coworking.models;
+package org.example.coworking.model;
 
-public class ConferenceHall {
+public class Workplace {
     private int id;
     private String name;
     private boolean isAvailable;
 
-    public ConferenceHall(int id, String name, boolean isAvailable) {
+    public Workplace(int id, String name, boolean isAvailable) {
         this.id = id;
         this.name = name;
         this.isAvailable = isAvailable;
@@ -37,7 +37,7 @@ public class ConferenceHall {
 
     @Override
     public String toString() {
-        return "ConferenceHall{" +
+        return "Workplace{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", isAvailable=" + isAvailable +

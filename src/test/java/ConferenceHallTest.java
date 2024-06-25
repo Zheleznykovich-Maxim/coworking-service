@@ -1,4 +1,4 @@
-import org.example.coworking.models.ConferenceHall;
+import org.example.coworking.model.ConferenceHall;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;

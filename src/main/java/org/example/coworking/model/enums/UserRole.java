@@ -1,4 +1,4 @@
-package org.example.coworking.enums;
+package org.example.coworking.model.enums;
 
 public enum UserRole {
     USER,

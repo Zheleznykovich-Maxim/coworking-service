@@ -1,10 +1,9 @@
-import org.example.coworking.enums.UserRole;
-import org.example.coworking.models.User;
+import org.example.coworking.model.enums.UserRole;
+import org.example.coworking.model.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.MockitoAnnotations;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
 
 public class UserTest {
 

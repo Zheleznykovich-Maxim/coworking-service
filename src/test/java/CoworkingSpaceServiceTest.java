@@ -1,6 +1,6 @@
-import org.example.coworking.models.ConferenceHall;
-import org.example.coworking.models.Workplace;
-import org.example.coworking.services.CoworkingSpaceService;
+import org.example.coworking.model.ConferenceHall;
+import org.example.coworking.model.Workplace;
+import org.example.coworking.service.CoworkingSpaceService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.util.ArrayList;

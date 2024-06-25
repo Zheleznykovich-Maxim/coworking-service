@@ -1,6 +1,6 @@
-import org.example.coworking.enums.ResourceType;
-import org.example.coworking.models.Booking;
-import org.example.coworking.models.User;
+import org.example.coworking.model.enums.ResourceType;
+import org.example.coworking.model.Booking;
+import org.example.coworking.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;

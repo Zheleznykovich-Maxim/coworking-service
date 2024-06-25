@@ -1,7 +1,7 @@
-package org.example.coworking.services;
+package org.example.coworking.service;
 
-import org.example.coworking.enums.UserRole;
-import org.example.coworking.models.User;
+import org.example.coworking.model.enums.UserRole;
+import org.example.coworking.model.User;
 
 import java.util.ArrayList;
 import java.util.Objects;

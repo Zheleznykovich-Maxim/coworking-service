@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -146,8 +146,8 @@ public class UserConsole {
             in.nextLine();
 
             switch (command) {
-                case 1 -> printArrayList(coworkingSpaceService.getWorkplaces());
-                case 2 -> printArrayList(coworkingSpaceService.getAvailableConferenceHalls());
+                case 1 -> printCollection(coworkingSpaceService.getWorkplaces());
+                case 2 -> printCollection(coworkingSpaceService.getAvailableConferenceHalls());
                 case 3 -> runBookingCommands();
                 case 4 -> {
                     isAuthorized = false;
@@ -228,8 +228,8 @@ public class UserConsole {
 
                     coworkingSpaceService.updateWorkplace(id, name, isAvailable);
                 }
-                case 3 -> printArrayList(coworkingSpaceService.getWorkplaces());
-                case 4 -> printArrayList(coworkingSpaceService.getAvailableWorkplaces());
+                case 3 -> printCollection(coworkingSpaceService.getWorkplaces());
+                case 4 -> printCollection(coworkingSpaceService.getAvailableWorkplaces());
                 case 5 -> {
                     System.out.println("Удаление рабочего места");
                     System.out.print("Введите идентификатор: ");
@@ -247,8 +247,8 @@ public class UserConsole {
                     if (workplace != null) {
                         LocalDateTime startDateTime = dateTimes[0];
                         LocalDateTime endDateTime = dateTimes[1];
-
-                        bookingService.createBooking(id, workplace.getName(), startDateTime, endDateTime, ResourceType.WORKPLACE);
+                        Booking booking = new Booking(null, workplace.getId(), workplace.getName(), startDateTime, endDateTime, ResourceType.WORKPLACE, true);
+                        bookingService.addBooking(booking);
                     } else {
                         System.out.println("Рабочего места с таким id не существует!");
                     }
@@ -259,7 +259,7 @@ public class UserConsole {
                     int id = in.nextInt();
                     bookingService.deleteBooking(id);
                 }
-                case 8 -> bookingService.viewAllBookings();
+                case 8 -> printCollection(bookingService.getAllBookings());
                 case 9 -> {
                     return;
                 }
@@ -313,8 +313,8 @@ public class UserConsole {
 
                     coworkingSpaceService.updateConferenceHall(id, name, isAvailable);
                 }
-                case 3 -> printArrayList(coworkingSpaceService.getConferenceHalls());
-                case 4 ->  printArrayList(coworkingSpaceService.getAvailableConferenceHalls());
+                case 3 -> printCollection(coworkingSpaceService.getConferenceHalls());
+                case 4 ->  printCollection(coworkingSpaceService.getAvailableConferenceHalls());
                 case 5 -> {
                     System.out.println("Удаление конференц-зала");
                     System.out.print("Введите идентификатор: ");
@@ -333,8 +333,8 @@ public class UserConsole {
                     if (conferenceHall != null) {
                         LocalDateTime startDateTime = dateTimes[0];
                         LocalDateTime endDateTime = dateTimes[1];
-
-                        bookingService.createBooking(id, conferenceHall.getName(), startDateTime, endDateTime, ResourceType.CONFERENCEHALL);
+                        Booking booking = new Booking(null, conferenceHall.getId(), conferenceHall.getName(), startDateTime, endDateTime, ResourceType.CONFERENCEHALL, true);
+                        bookingService.addBooking(booking);
                     } else {
                         System.out.println("Конференц-зала с таким id не существует!");
                     }
@@ -345,23 +345,12 @@ public class UserConsole {
                     int id = in.nextInt();
                     bookingService.deleteBooking(id);
                 }
-                case 8 -> bookingService.viewAllBookings();
+                case 8 -> printCollection(bookingService.getAllBookings());
                 case 9 -> {
                     return;
                 }
                 default -> System.out.println("Неверная команда");
             }
-        }
-    }
-
-    /**
-     * Prints the elements of an ArrayList to the console.
-     *
-     * @param arrayList The ArrayList containing elements to print.
-     */
-    public void printArrayList(ArrayList<?> arrayList) {
-        for (Object item : arrayList) {
-            System.out.println(item);
         }
     }
 
@@ -413,20 +402,20 @@ public class UserConsole {
             in.nextLine();
 
             switch (command) {
-                case 1 -> bookingService.viewAllBookings();
+                case 1 -> printCollection(bookingService.getAllBookings());
                 case 2 -> {
                     DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                     System.out.println("Введите дату для фильтрации бронирования (в формате YYYY-MM-DD):");
                     String startDate = in.nextLine();
                     LocalDate startLocalDate = LocalDate.parse(startDate, dateFormatter);
-                    printArrayList(bookingService.filterBookingsByDate(startLocalDate));
+                    printCollection(bookingService.filterBookingsByDate(startLocalDate));
                 }
                 case 3 -> {
                     System.out.print("Введите имя пользователя для фильтрации бронирования: ");
                     String username = in.nextLine();
                     User filterUser = userService.findUserByName(username);
                     if (filterUser != null) {
-                        printArrayList(bookingService.filterBookingsByUser(filterUser));
+                        printCollection(bookingService.filterBookingsByUser(filterUser));
                     } else {
                         System.out.println("Пользователь с таким username не найден!");
                     }
@@ -436,8 +425,8 @@ public class UserConsole {
                     int resourceType = in.nextInt();
 
                     switch (resourceType) {
-                        case 1 -> printArrayList(bookingService.filterBookingsByResource(ResourceType.WORKPLACE));
-                        case 2 -> printArrayList(bookingService.filterBookingsByResource(ResourceType.CONFERENCEHALL));
+                        case 1 -> printCollection(bookingService.filterBookingsByResource(ResourceType.WORKPLACE));
+                        case 2 -> printCollection(bookingService.filterBookingsByResource(ResourceType.CONFERENCEHALL));
                         default -> System.out.println("Введена несуществующая команда!");
                     }
                 }
@@ -489,6 +478,17 @@ public class UserConsole {
                 }
                 default -> System.out.println("Неверная команда");
             }
+        }
+    }
+
+    /**
+     * Prints the elements of an ArrayList to the console.
+     *
+     * @param collection The Collection containing elements to print.
+     */
+    public void printCollection(Collection<?> collection) {
+        for (Object object : collection) {
+            System.out.println(object);
         }
     }
 }

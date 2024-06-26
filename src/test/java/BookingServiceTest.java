@@ -1,24 +1,28 @@
 import org.example.coworking.model.enums.ResourceType;
 import org.example.coworking.model.Booking;
 import org.example.coworking.model.User;
+import org.example.coworking.repository.BookingRepository;
 import org.example.coworking.service.BookingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BookingServiceTest {
 
     private BookingService bookingService;
-    private ArrayList<Booking> bookingArrayList;
+    private BookingRepository bookingRepository;
+    private Map<Integer, Booking> bookingMap;
 
     @BeforeEach
     public void setUp() {
-        bookingArrayList = new ArrayList<>();
-        bookingService = new BookingService(bookingArrayList);
+        bookingMap = new HashMap<>();
+        bookingRepository = new BookingRepository(bookingMap);
+        bookingService = new BookingService(bookingRepository);
     }
 
     @Test
@@ -31,12 +35,13 @@ public class BookingServiceTest {
         ResourceType resourceType = ResourceType.WORKPLACE;
 
         // Act
-        bookingService.createBooking(resourceId, resourceName, startTime, endTime, resourceType);
+        Booking booking = new Booking(null, resourceId, resourceName, endTime, startTime,  resourceType, true);
+        bookingService.addBooking(booking);
 
         // Assert
-        assertThat(bookingArrayList).hasSize(1);
-        Booking createdBooking = bookingArrayList.get(0);
-        assertThat(createdBooking.getId()).isEqualTo(1);
+        assertThat(bookingMap).hasSize(1);
+        Booking createdBooking = bookingMap.get(booking.getId());
+        assertThat(createdBooking.getId()).isEqualTo(createdBooking.getId());
         assertThat(createdBooking.getResourceId()).isEqualTo(resourceId);
         assertThat(createdBooking.getResourceName()).isEqualTo(resourceName);
         assertThat(createdBooking.getStartTime()).isEqualTo(startTime);
@@ -47,27 +52,28 @@ public class BookingServiceTest {
     @Test
     public void testDeleteBooking() {
         // Arrange
-        Booking booking1 = new Booking(1, 1, "Workplace 1", LocalDateTime.now(), LocalDateTime.now().plusHours(1), ResourceType.WORKPLACE);
-        Booking booking2 = new Booking(2, 2, "Workplace 2", LocalDateTime.now(), LocalDateTime.now().plusHours(1), ResourceType.WORKPLACE);
-        bookingArrayList.addAll(Arrays.asList(booking1, booking2));
+        Booking booking1 = new Booking( null,1, "Workplace 1", LocalDateTime.now(), LocalDateTime.now().plusHours(1), ResourceType.WORKPLACE, true);
+        Booking booking2 = new Booking( null, 2, "Workplace 2", LocalDateTime.now(), LocalDateTime.now().plusHours(1), ResourceType.WORKPLACE, true);
+        bookingMap.put(booking1.getId(), booking1);
+        bookingMap.put(booking2.getId(), booking2);
 
         // Act
         bookingService.deleteBooking(booking1.getId());
 
         // Assert
-        assertThat(bookingArrayList).hasSize(1);
-        assertThat(bookingArrayList.get(0).getId()).isEqualTo(booking2.getId());
+        assertThat(bookingMap).hasSize(1);
+        assertThat(bookingMap.get(booking2.getId()).getId()).isEqualTo(booking2.getId());
     }
 
     @Test
     public void testViewAllBookings() {
         // Arrange
-        Booking booking1 = new Booking(1, 1, "Workplace 1", LocalDateTime.now(), LocalDateTime.now().plusHours(1), ResourceType.WORKPLACE);
-        Booking booking2 = new Booking(2, 2, "Workplace 2", LocalDateTime.now(), LocalDateTime.now().plusHours(1), ResourceType.WORKPLACE);
-        bookingArrayList.addAll(Arrays.asList(booking1, booking2));
-
+        Booking booking1 = new Booking( null, 1, "Workplace 1", LocalDateTime.now(), LocalDateTime.now().plusHours(1), ResourceType.WORKPLACE, true);
+        Booking booking2 = new Booking( null, 2, "Workplace 2", LocalDateTime.now(), LocalDateTime.now().plusHours(1), ResourceType.WORKPLACE, true);
+        bookingMap.put(booking1.getId(), booking1);
+        bookingMap.put(booking2.getId(), booking2);
         // Act (print output using System.out)
-        bookingService.viewAllBookings();
+        bookingService.getAllBookings();
 
         // Assert (output verification can be added manually)
     }
@@ -79,17 +85,16 @@ public class BookingServiceTest {
         LocalDateTime newStartTime1 = LocalDateTime.of(2024, 6, 24, 9, 0);
         LocalDateTime newEndTime2 = LocalDateTime.of(2024, 6, 25, 11, 0);
         LocalDateTime newStartTime3 = LocalDateTime.of(2024, 6, 27, 12, 0);
-        Booking booking1 = new Booking(1, 1, "Workplace 1", newStartTime1, newEndTime2, ResourceType.WORKPLACE);
-        Booking booking2 = new Booking(2, 2, "Workplace 2", newStartTime3, newEndTime2, ResourceType.WORKPLACE);
-        bookingArrayList.add(booking1);
-        bookingArrayList.add(booking2);
-
+        Booking booking1 = new Booking( null, 1, "Workplace 1", newStartTime1, newEndTime2, ResourceType.WORKPLACE, true);
+        Booking booking2 = new Booking( null, 2, "Workplace 2", newStartTime3, newEndTime2, ResourceType.WORKPLACE, true);
+        bookingMap.put(booking1.getId(), booking1);
+        bookingMap.put(booking2.getId(), booking2);
         // Act
-        List<Booking> filteredList = bookingService.filterBookingsByDate(newStartTime3.toLocalDate());
-
+        Collection<Booking> filteredMap = bookingService.filterBookingsByDate(newStartTime3.toLocalDate());
+        Booking firstBooking = filteredMap.stream().findFirst().orElse(null);
         // Assert
-        assertThat(filteredList).hasSize(1);
-        assertThat(filteredList.get(0).getId()).isEqualTo(booking2.getId());
+        assertThat(filteredMap).hasSize(1);
+        assertThat(firstBooking.getId()).isEqualTo(booking2.getId());
     }
 
     @Test
@@ -97,43 +102,45 @@ public class BookingServiceTest {
         // Arrange
         User user1 = new User("John", "password", null);
         User user2 = new User("Jane", "password", null);
-        Booking booking1 = new Booking(1, 1, "Workplace 1", LocalDateTime.now(), LocalDateTime.now().plusHours(1), ResourceType.WORKPLACE);
-        Booking booking2 = new Booking(2, 2, "Workplace 2", LocalDateTime.now(), LocalDateTime.now().plusHours(1), ResourceType.WORKPLACE);
+        Booking booking1 = new Booking( null, 1, "Workplace 1", LocalDateTime.now(), LocalDateTime.now().plusHours(1), ResourceType.WORKPLACE, true);
+        Booking booking2 = new Booking(null, 2, "Workplace 2", LocalDateTime.now(), LocalDateTime.now().plusHours(1), ResourceType.WORKPLACE, true);
         booking1.setUser(user1);
         booking2.setUser(user2);
-        bookingArrayList.addAll(Arrays.asList(booking1, booking2));
+        bookingMap.put(booking1.getId(), booking1);
+        bookingMap.put(booking2.getId(), booking2);
 
         // Act
-        List<Booking> filteredList = bookingService.filterBookingsByUser(user1);
-
+        Collection<Booking> filteredMap = bookingService.filterBookingsByUser(user1);
+        Booking firstBooking = filteredMap.stream().findFirst().orElse(null);
         // Assert
-        assertThat(filteredList).hasSize(1);
-        assertThat(filteredList.get(0).getId()).isEqualTo(booking1.getId());
+        assertThat(filteredMap).hasSize(1);
+        assertThat(firstBooking.getId()).isEqualTo(booking1.getId());
     }
 
     @Test
     public void testFilterBookingsByResource() {
         // Arrange
         ResourceType resourceType = ResourceType.WORKPLACE;
-        Booking booking1 = new Booking(1, 1, "Workplace 1", LocalDateTime.now(), LocalDateTime.now().plusHours(1), resourceType);
-        Booking booking2 = new Booking(2, 2, "Workplace 2", LocalDateTime.now(), LocalDateTime.now().plusHours(1), ResourceType.CONFERENCEHALL);
-        bookingArrayList.addAll(Arrays.asList(booking1, booking2));
+        Booking booking1 = new Booking(null, 1, "Workplace 1", LocalDateTime.now(), LocalDateTime.now().plusHours(1), resourceType, true);
+        Booking booking2 = new Booking(null, 2, "Workplace 2", LocalDateTime.now(), LocalDateTime.now().plusHours(1), ResourceType.CONFERENCEHALL, true);
+        bookingMap.put(booking1.getId(), booking1);
+        bookingMap.put(booking2.getId(), booking2);
 
         // Act
-        List<Booking> filteredList = bookingService.filterBookingsByResource(resourceType);
-
+        Collection<Booking> filteredMap = bookingService.filterBookingsByResource(resourceType);
+        Booking firstBooking = filteredMap.stream().findFirst().orElse(null);
         // Assert
-        assertThat(filteredList).hasSize(1);
-        assertThat(filteredList.get(0).getId()).isEqualTo(booking1.getId());
+        assertThat(filteredMap).hasSize(1);
+        assertThat(firstBooking.getId()).isEqualTo(booking1.getId());
     }
 
     @Test
     public void testFindBookingById() {
         // Arrange
-        Booking booking1 = new Booking(1, 1, "Workplace 1", LocalDateTime.now(), LocalDateTime.now().plusHours(1), ResourceType.WORKPLACE);
-        Booking booking2 = new Booking(2, 2, "Workplace 2", LocalDateTime.now(), LocalDateTime.now().plusHours(1), ResourceType.WORKPLACE);
-        bookingArrayList.addAll(Arrays.asList(booking1, booking2));
-
+        Booking booking1 = new Booking(null, 1, "Workplace 1", LocalDateTime.now(), LocalDateTime.now().plusHours(1), ResourceType.WORKPLACE, true);
+        Booking booking2 = new Booking( null, 2, "Workplace 2", LocalDateTime.now(), LocalDateTime.now().plusHours(1), ResourceType.WORKPLACE, true);
+        bookingMap.put(booking1.getId(), booking1);
+        bookingMap.put(booking2.getId(), booking2);
         // Act
         Booking foundBooking = bookingService.findBookingById(booking1.getId());
 

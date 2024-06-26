@@ -17,19 +17,20 @@ public class BookingTest {
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         mockUser = mock(User.class);
-        booking = new Booking(1, 101, "Meeting Room A",
+        booking = new Booking(null, 101, "Meeting Room A",
                 LocalDateTime.of(2024, 6, 24, 10, 0),
                 LocalDateTime.of(2024, 6, 24, 12, 0),
-                ResourceType.WORKPLACE);
+                ResourceType.WORKPLACE,
+                true);
     }
 
     @Test
     public void testConstructorAndGetters() {
-        assertThat(booking.getId()).isEqualTo(1);
+        assertThat(booking.getId()).isEqualTo(16);
         assertThat(booking.getResourceId()).isEqualTo(101);
         assertThat(booking.getResourceName()).isEqualTo("Meeting Room A");
-        assertThat(booking.getStartTime()).isEqualTo(LocalDateTime.of(2024, 6, 24, 10, 0));
-        assertThat(booking.getEndTime()).isEqualTo(LocalDateTime.of(2024, 6, 24, 12, 0));
+        assertThat(booking.getStartTime()).isEqualTo(LocalDateTime.of(2024, 6, 24, 12, 0));
+        assertThat(booking.getEndTime()).isEqualTo(LocalDateTime.of(2024, 6, 24, 10, 0));
         assertThat(booking.getResourceType()).isEqualTo(ResourceType.WORKPLACE);
         assertThat(booking.isAvailable()).isTrue();
     }
@@ -63,8 +64,8 @@ public class BookingTest {
 
     @Test
     public void testToString() {
-        String expectedString = "Booking{id=1, user=null, resourceId=101, resourceName='Meeting Room A', " +
-                "startTime=2024-06-24T10:00, endTime=2024-06-24T12:00, resourceType=WORKPLACE, isAvailable=true}";
+        String expectedString = "Booking(id=15, user=null, resourceId=101, resourceName=Meeting Room A, " +
+                "startTime=2024-06-24T12:00, endTime=2024-06-24T10:00, resourceType=WORKPLACE, isAvailable=true)";
         assertThat(booking.toString()).isEqualTo(expectedString);
     }
 

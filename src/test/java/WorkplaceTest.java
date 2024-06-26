@@ -32,7 +32,7 @@ public class WorkplaceTest {
 
     @Test
     public void testToString() {
-        String expectedString = "Workplace{id=1, name='Desk A', isAvailable=true}";
+        String expectedString = "Workplace(id=1, name=Desk A, isAvailable=true)";
         assertThat(workplace.toString()).isEqualTo(expectedString);
     }
 }

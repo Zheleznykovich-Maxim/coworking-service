@@ -1,14 +1,15 @@
 package org.example.coworking.factory;
 
-import org.example.coworking.model.Booking;
+import lombok.RequiredArgsConstructor;
+import org.example.coworking.repository.BookingRepository;
 import org.example.coworking.service.BookingService;
 
-import java.util.ArrayList;
-
+@RequiredArgsConstructor
 public class BookingServiceFactory implements CoworkingFactory<BookingService> {
+    private final CoworkingFactory<BookingRepository> bookingRepositoryFactory;
+
     @Override
     public BookingService create() {
-        ArrayList<Booking> bookingArrayList = new ArrayList<>();
-        return new BookingService(bookingArrayList);
+        return new BookingService(bookingRepositoryFactory.create());
     }
 }

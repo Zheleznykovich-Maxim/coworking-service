@@ -16,6 +16,7 @@
         <assertj.version>3.24.2</assertj.version>
         <mokito.version>4.8.1</mokito.version>
         <jacoco.version>0.8.7</jacoco.version>
+        <lombock.version>1.18.30</lombock.version>
     </properties>
     <dependencies>
         <dependency>
@@ -41,6 +42,12 @@
             <artifactId>mockito-core</artifactId>
             <version>${mokito.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombock.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

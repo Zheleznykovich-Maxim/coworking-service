@@ -91,26 +91,27 @@ public class UserConsole {
     private void registration() {
         System.out.print("Введите имя пользователя: ");
         String username = in.nextLine();
+        User user = userService.findUserByName(username);
+
+        if (user != null) {
+            System.out.println("Пользователь с таким именем уже существует!");
+            return;
+        }
+
         System.out.print("Введите пароль: ");
         String password = in.nextLine();
         ConsoleUI.printUserRoles();
         int userRole = in.nextInt();
-        boolean success;
 
         switch (userRole) {
-            case 1 -> success = userService.register(username, password, UserRole.USER);
-            case 2 -> success = userService.register(username, password, UserRole.ADMIN);
+            case 1 -> userService.register(new User(username, password, UserRole.USER));
+            case 2 -> userService.register(new User(username, password, UserRole.ADMIN));
             default -> {
                 System.out.println("Введена неверная комманда!");
                 return;
             }
         }
-
-        if (success) {
-            System.out.println("Регистрация прошла успешно.");
-        } else {
-            System.out.println("Пользователь с таким именем уже существует.");
-        }
+        System.out.println("Регистрация прошла успешна!");
     }
 
     /**
@@ -122,8 +123,14 @@ public class UserConsole {
         String username = in.nextLine();
         System.out.print("Введите пароль: ");
         String password = in.nextLine();
+        User user = userService.findUserByName(username);
 
-        boolean success = userService.login(username, password);
+        if (user == null) {
+            System.out.println("Пользователя с таким именем не существует!");
+            return;
+        }
+
+        boolean success = userService.login(user);
         if (success) {
             System.out.println("Авторизация прошла успешно.");
             currentUser = userService.findUserByName(username);
@@ -202,6 +209,13 @@ public class UserConsole {
                     System.out.print("Введите идентификатор: ");
                     int id = in.nextInt();
                     in.nextLine();
+                    Workplace workplace = coworkingSpaceService.findWorkplaceById(id);
+
+                    if (workplace != null) {
+                        System.out.println("Рабочее место с таким id уже существует!");
+                        continue;
+                    }
+
                     System.out.print("Введите название: ");
                     String name = in.nextLine();
                     coworkingSpaceService.addWorkplace(new Workplace(id, name, true));
@@ -211,6 +225,13 @@ public class UserConsole {
                     System.out.print("Введите идентификатор: ");
                     int id = in.nextInt();
                     in.nextLine();
+                    Workplace workplace = coworkingSpaceService.findWorkplaceById(id);
+
+                    if (workplace == null) {
+                        System.out.println("Рабочее место с таким id не существует!");
+                        continue;
+                    }
+
                     System.out.print("Введите название: ");
                     String name = in.nextLine();
                     ConsoleUI.printAvailableCommands();
@@ -226,7 +247,8 @@ public class UserConsole {
                         }
                     }
 
-                    coworkingSpaceService.updateWorkplace(id, name, isAvailable);
+                    Workplace updatedWorkplace = new Workplace(id, name, isAvailable);
+                    coworkingSpaceService.updateWorkplace(updatedWorkplace);
                 }
                 case 3 -> printCollection(coworkingSpaceService.getWorkplaces());
                 case 4 -> printCollection(coworkingSpaceService.getAvailableWorkplaces());
@@ -234,6 +256,13 @@ public class UserConsole {
                     System.out.println("Удаление рабочего места");
                     System.out.print("Введите идентификатор: ");
                     int id = in.nextInt();
+                    Workplace workplace = coworkingSpaceService.findWorkplaceById(id);
+
+                    if (workplace != null) {
+                        System.out.println("Рабочго места с таким id не существует!");
+                        continue;
+                    }
+
                     coworkingSpaceService.deleteWorkplace(id);
                 }
                 case 6 -> {
@@ -287,6 +316,13 @@ public class UserConsole {
                     System.out.print("Введите идентификатор: ");
                     int id = in.nextInt();
                     in.nextLine();
+                    ConferenceHall conferenceHall = coworkingSpaceService.findConferenceHallById(id);
+
+                    if (conferenceHall != null) {
+                        System.out.println("Конференц-зал с таким id уже существует!");
+                        continue;
+                    }
+
                     System.out.print("Введите название: ");
                     String name = in.nextLine();
                     coworkingSpaceService.addConferenceHall(new ConferenceHall(id, name, true));
@@ -296,6 +332,13 @@ public class UserConsole {
                     System.out.print("Введите идентификатор: ");
                     int id = in.nextInt();
                     in.nextLine();
+                    ConferenceHall conferenceHall = coworkingSpaceService.findConferenceHallById(id);
+
+                    if (conferenceHall != null) {
+                        System.out.println("Конференц-зал с таким id не существует!");
+                        continue;
+                    }
+
                     System.out.print("Введите название: ");
                     String name = in.nextLine();
                     ConsoleUI.printAvailableCommands();
@@ -311,7 +354,8 @@ public class UserConsole {
                         }
                     }
 
-                    coworkingSpaceService.updateConferenceHall(id, name, isAvailable);
+                    ConferenceHall updatedConferenceHall = new ConferenceHall(id, name, isAvailable);
+                    coworkingSpaceService.updateConferenceHall(updatedConferenceHall);
                 }
                 case 3 -> printCollection(coworkingSpaceService.getConferenceHalls());
                 case 4 ->  printCollection(coworkingSpaceService.getAvailableConferenceHalls());
@@ -319,6 +363,14 @@ public class UserConsole {
                     System.out.println("Удаление конференц-зала");
                     System.out.print("Введите идентификатор: ");
                     int id = in.nextInt();
+
+                    ConferenceHall conferenceHall = coworkingSpaceService.findConferenceHallById(id);
+
+                    if (conferenceHall != null) {
+                        System.out.println("Конференц-зал с таким id не существует!");
+                        continue;
+                    }
+
                     coworkingSpaceService.deleteConferenceHall(id);
                 }
                 case 6 -> {

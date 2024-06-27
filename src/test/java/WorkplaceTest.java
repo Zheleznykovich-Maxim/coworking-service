@@ -1,8 +1,10 @@
 import org.example.coworking.model.Workplace;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("Workplace Class Tests")
 public class WorkplaceTest {
 
     private Workplace workplace;
@@ -13,6 +15,7 @@ public class WorkplaceTest {
     }
 
     @Test
+    @DisplayName("Test Constructor and Getters")
     public void testConstructorAndGetters() {
         assertThat(workplace.getId()).isEqualTo(1);
         assertThat(workplace.getName()).isEqualTo("Desk A");
@@ -20,6 +23,7 @@ public class WorkplaceTest {
     }
 
     @Test
+    @DisplayName("Test Setters")
     public void testSetters() {
         workplace.setId(2);
         workplace.setName("Desk B");
@@ -31,6 +35,7 @@ public class WorkplaceTest {
     }
 
     @Test
+    @DisplayName("Test toString() Method")
     public void testToString() {
         String expectedString = "Workplace(id=1, name=Desk A, isAvailable=true)";
         assertThat(workplace.toString()).isEqualTo(expectedString);

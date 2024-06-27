@@ -1,39 +1,43 @@
 package org.example.coworking.service;
 
-import org.example.coworking.model.enums.UserRole;
+import lombok.AllArgsConstructor;
 import org.example.coworking.model.User;
+import org.example.coworking.repository.UserRepository;
 
-import java.util.ArrayList;
-import java.util.Objects;
-
+/**
+ * Service class for managing User operations.
+ */
+@AllArgsConstructor
 public class UserService {
-    private ArrayList<User> users = new ArrayList<>();
+    private final UserRepository userRepository;
 
-    public boolean register(String username, String password, UserRole userRole) {
-        for (User user : users) {
-            if (username.equals(user.getUsername())) {
-                return false;
-            }
-        }
-        users.add(new User(username, password, userRole));
-        return true;
+    /**
+     * Registers a new user.
+     *
+     * @param user the user to register.
+     */
+    public void register(User user) {
+        userRepository.registerUser(user);
     }
 
-    public boolean login(String username, String password) {
-        for (User user : users) {
-            if (username.equals(user.getUsername()) && password.equals(user.getPassword())) {
-                return true;
-            }
-        }
-        return false;
+    /**
+     * Logs in a user by checking if the credentials match.
+     *
+     * @param user the user attempting to log in.
+     * @return true if the credentials match, otherwise false.
+     */
+    public boolean login(User user) {
+        return userRepository.findUserByUsername(user.getUsername()).getPassword()
+                .equals(user.getPassword());
     }
 
+    /**
+     * Finds a user by their username.
+     *
+     * @param username the username to search for.
+     * @return the user with the specified username, or null if not found.
+     */
     public User findUserByName(String username) {
-        for (User user : users) {
-            if (Objects.equals(user.getUsername(), username)) {
-                return user;
-            }
-        }
-        return null;
+        return userRepository.findUserByUsername(username);
     }
 }

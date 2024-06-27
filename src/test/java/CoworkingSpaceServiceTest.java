@@ -1,25 +1,36 @@
 import org.example.coworking.model.ConferenceHall;
 import org.example.coworking.model.Workplace;
+import org.example.coworking.repository.ConferenceHallRepository;
+import org.example.coworking.repository.WorkplaceRepository;
 import org.example.coworking.service.CoworkingSpaceService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import java.util.ArrayList;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("Tests for CoworkingSpaceService class")
 public class CoworkingSpaceServiceTest {
 
     private CoworkingSpaceService coworkingSpaceService;
-    private ArrayList<Workplace> workplaces;
-    private ArrayList<ConferenceHall> conferenceHalls;
+    private Map<Integer, Workplace> workplaceMap;
+    private Map<Integer, ConferenceHall> conferenceHallMap;
 
     @BeforeEach
     public void setUp() {
-        workplaces = new ArrayList<>();
-        conferenceHalls = new ArrayList<>();
-        coworkingSpaceService = new CoworkingSpaceService(workplaces, conferenceHalls);
+        workplaceMap = new HashMap<>();
+        conferenceHallMap = new HashMap<>();
+        WorkplaceRepository workplaceRepository = new WorkplaceRepository(workplaceMap);
+        ConferenceHallRepository conferenceHallRepository = new ConferenceHallRepository(conferenceHallMap);
+        coworkingSpaceService = new CoworkingSpaceService(conferenceHallRepository, workplaceRepository);
     }
 
     @Test
+    @DisplayName("Test adding a Workplace")
     public void testAddWorkplace() {
         // Arrange
         Workplace workplace = new Workplace(1, "Workplace 1", true);
@@ -28,11 +39,12 @@ public class CoworkingSpaceServiceTest {
         coworkingSpaceService.addWorkplace(workplace);
 
         // Assert
-        assertThat(workplaces).hasSize(1);
-        assertThat(workplaces.get(0)).isEqualTo(workplace);
+        assertThat(workplaceMap).hasSize(1);
+        assertThat(workplaceMap.get(1)).isEqualTo(workplace);
     }
 
     @Test
+    @DisplayName("Test adding a ConferenceHall")
     public void testAddConferenceHall() {
         // Arrange
         ConferenceHall conferenceHall = new ConferenceHall(1, "Conference Hall 1", true);
@@ -41,101 +53,110 @@ public class CoworkingSpaceServiceTest {
         coworkingSpaceService.addConferenceHall(conferenceHall);
 
         // Assert
-        assertThat(conferenceHalls).hasSize(1);
-        assertThat(conferenceHalls.get(0)).isEqualTo(conferenceHall);
+        assertThat(conferenceHallMap).hasSize(1);
+        assertThat(conferenceHallMap.get(1)).isEqualTo(conferenceHall);
     }
 
     @Test
+    @DisplayName("Test retrieving available Workplaces")
     public void testGetAvailableWorkplaces() {
         // Arrange
         Workplace availableWorkplace = new Workplace(1, "Workplace 1", true);
         Workplace bookedWorkplace = new Workplace(2, "Workplace 2", false);
-        workplaces.add(availableWorkplace);
-        workplaces.add(bookedWorkplace);
+        workplaceMap.put(availableWorkplace.getId(), availableWorkplace);
+        workplaceMap.put(bookedWorkplace.getId(), bookedWorkplace);
 
         // Act
-        ArrayList<Workplace> availableWorkplaces = coworkingSpaceService.getAvailableWorkplaces();
+        Collection<Workplace> availableWorkplaces = coworkingSpaceService.getAvailableWorkplaces();
 
         // Assert
         assertThat(availableWorkplaces).hasSize(1);
-        assertThat(availableWorkplaces.get(0)).isEqualTo(availableWorkplace);
+        assertThat(availableWorkplaces.iterator().next()).isEqualTo(availableWorkplace);
     }
 
     @Test
+    @DisplayName("Test retrieving available ConferenceHalls")
     public void testGetAvailableConferenceHalls() {
         // Arrange
         ConferenceHall availableConferenceHall = new ConferenceHall(1, "Conference Hall 1", true);
         ConferenceHall bookedConferenceHall = new ConferenceHall(2, "Conference Hall 2", false);
-        conferenceHalls.add(availableConferenceHall);
-        conferenceHalls.add(bookedConferenceHall);
+        conferenceHallMap.put(availableConferenceHall.getId(), availableConferenceHall);
+        conferenceHallMap.put(bookedConferenceHall.getId(), bookedConferenceHall);
 
         // Act
-        ArrayList<ConferenceHall> availableConferenceHalls = coworkingSpaceService.getAvailableConferenceHalls();
+        Collection<ConferenceHall> availableConferenceHalls = coworkingSpaceService.getAvailableConferenceHalls();
 
         // Assert
         assertThat(availableConferenceHalls).hasSize(1);
-        assertThat(availableConferenceHalls.get(0)).isEqualTo(availableConferenceHall);
+        assertThat(availableConferenceHalls.iterator().next()).isEqualTo(availableConferenceHall);
     }
 
     @Test
+    @DisplayName("Test updating a ConferenceHall")
     public void testUpdateConferenceHall() {
         // Arrange
         ConferenceHall conferenceHall = new ConferenceHall(1, "Conference Hall 1", true);
-        conferenceHalls.add(conferenceHall);
+        conferenceHallMap.put(conferenceHall.getId(), conferenceHall);
 
         // Act
-        coworkingSpaceService.updateConferenceHall(1, "Updated Conference Hall", false);
+        ConferenceHall updatedConferenceHall = new ConferenceHall(1, "Updated Conference Hall", false);
+        coworkingSpaceService.updateConferenceHall(updatedConferenceHall);
 
         // Assert
-        assertThat(conferenceHall.getName()).isEqualTo("Updated Conference Hall");
-        assertThat(conferenceHall.isAvailable()).isFalse();
+        assertThat(conferenceHallMap.get(conferenceHall.getId())).isEqualTo(updatedConferenceHall);
+        assertThat(conferenceHallMap.get(conferenceHall.getId()).isAvailable()).isFalse();
     }
 
     @Test
+    @DisplayName("Test updating a Workplace")
     public void testUpdateWorkplace() {
         // Arrange
         Workplace workplace = new Workplace(1, "Workplace 1", true);
-        workplaces.add(workplace);
+        workplaceMap.put(workplace.getId(), workplace);
 
         // Act
-        coworkingSpaceService.updateWorkplace(1, "Updated Workplace", false);
+        Workplace updatedWorkplace = new Workplace(1, "Updated Workplace", false);
+        coworkingSpaceService.updateWorkplace(updatedWorkplace);
 
         // Assert
-        assertThat(workplace.getName()).isEqualTo("Updated Workplace");
-        assertThat(workplace.isAvailable()).isFalse();
+        assertThat(workplaceMap.get(workplace.getId())).isEqualTo(updatedWorkplace);
+        assertThat(workplaceMap.get(workplace.getId()).isAvailable()).isFalse();
     }
 
     @Test
+    @DisplayName("Test deleting a ConferenceHall")
     public void testDeleteConferenceHall() {
         // Arrange
         ConferenceHall conferenceHall = new ConferenceHall(1, "Conference Hall 1", true);
-        conferenceHalls.add(conferenceHall);
+        conferenceHallMap.put(conferenceHall.getId(), conferenceHall);
 
         // Act
         coworkingSpaceService.deleteConferenceHall(1);
 
         // Assert
-        assertThat(conferenceHalls).isEmpty();
+        assertThat(conferenceHallMap).isEmpty();
     }
 
     @Test
+    @DisplayName("Test deleting a Workplace")
     public void testDeleteWorkplace() {
         // Arrange
         Workplace workplace = new Workplace(1, "Workplace 1", true);
-        workplaces.add(workplace);
+        workplaceMap.put(workplace.getId(), workplace);
 
         // Act
         coworkingSpaceService.deleteWorkplace(1);
 
         // Assert
-        assertThat(workplaces).isEmpty();
+        assertThat(workplaceMap).isEmpty();
     }
 
     @Test
+    @DisplayName("Test finding a Workplace by ID")
     public void testFindWorkplaceById() {
         // Arrange
         Workplace workplace = new Workplace(1, "Workplace 1", true);
-        workplaces.add(workplace);
+        workplaceMap.put(workplace.getId(), workplace);
 
         // Act
         Workplace foundWorkplace = coworkingSpaceService.findWorkplaceById(1);
@@ -145,10 +166,11 @@ public class CoworkingSpaceServiceTest {
     }
 
     @Test
+    @DisplayName("Test finding a ConferenceHall by ID")
     public void testFindConferenceHallById() {
         // Arrange
         ConferenceHall conferenceHall = new ConferenceHall(1, "Conference Hall 1", true);
-        conferenceHalls.add(conferenceHall);
+        conferenceHallMap.put(conferenceHall.getId(), conferenceHall);
 
         // Act
         ConferenceHall foundConferenceHall = coworkingSpaceService.findConferenceHallById(1);

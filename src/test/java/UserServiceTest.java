@@ -1,121 +1,88 @@
-import org.example.coworking.model.enums.UserRole;
 import org.example.coworking.model.User;
+import org.example.coworking.model.enums.UserRole;
+import org.example.coworking.repository.UserRepository;
 import org.example.coworking.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-public class UserServiceTest {
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
+@DisplayName("UserService Tests")
+class UserServiceTest {
+
+    @Mock
+    private UserRepository userRepository;
+
+    @InjectMocks
     private UserService userService;
 
     @BeforeEach
-    public void setUp() {
-        userService = new UserService();
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    public void testRegisterUser() {
+    @DisplayName("Register User Test")
+    void register() {
         // Arrange
-        String username = "testuser";
-        String password = "password";
-        UserRole userRole = UserRole.USER;
+        User user = new User("user1", "password1", UserRole.USER);
 
         // Act
-        boolean registered = userService.register(username, password, userRole);
+        userService.register(user);
 
         // Assert
-        assertTrue(registered);
+        verify(userRepository, times(1)).registerUser(any(User.class));
     }
 
     @Test
-    public void testRegisterDuplicateUser() {
+    @DisplayName("Login Successful Test")
+    void loginSuccessful() {
         // Arrange
-        String username = "testuser";
-        String password = "password";
-        UserRole userRole = UserRole.USER;
-        userService.register(username, password, userRole);
+        User user = new User("user1", "password1", UserRole.USER);
+        when(userRepository.findUserByUsername("user1")).thenReturn(user);
 
         // Act
-        boolean registeredAgain = userService.register(username, "anotherPassword", UserRole.ADMIN);
+        boolean result = userService.login(user);
 
         // Assert
-        assertFalse(registeredAgain);
+        assertThat(result).isTrue();
+        verify(userRepository, times(1)).findUserByUsername("user1");
     }
 
     @Test
-    public void testLoginValidUser() {
+    @DisplayName("Login Failed Test")
+    void loginFailed() {
         // Arrange
-        String username = "testuser";
-        String password = "password";
-        UserRole userRole = UserRole.USER;
-        userService.register(username, password, userRole);
+        User user = new User("user1", "wrongpassword", UserRole.USER);
+        User storedUser = new User("user1", "password1", UserRole.USER);
+        when(userRepository.findUserByUsername("user1")).thenReturn(storedUser);
 
         // Act
-        boolean loggedIn = userService.login(username, password);
+        boolean result = userService.login(user);
 
         // Assert
-        assertTrue(loggedIn);
+        assertThat(result).isFalse();
+        verify(userRepository, times(1)).findUserByUsername("user1");
     }
 
     @Test
-    public void testLoginInvalidPassword() {
+    @DisplayName("Find User By Name Test")
+    void findUserByName() {
         // Arrange
-        String username = "testuser";
-        String password = "password";
-        UserRole userRole = UserRole.USER;
-        userService.register(username, password, userRole);
+        User user = new User("user1", "password1", UserRole.USER);
+        when(userRepository.findUserByUsername("user1")).thenReturn(user);
 
         // Act
-        boolean loggedIn = userService.login(username, "wrongPassword");
+        User foundUser = userService.findUserByName("user1");
 
         // Assert
-        assertFalse(loggedIn);
-    }
-
-    @Test
-    public void testLoginInvalidUsername() {
-        // Arrange
-        String username = "testuser";
-        String password = "password";
-        UserRole userRole = UserRole.USER;
-        userService.register(username, password, userRole);
-
-        // Act
-        boolean loggedIn = userService.login("unknownUser", password);
-
-        // Assert
-        assertFalse(loggedIn);
-    }
-
-    @Test
-    public void testFindUserByName() {
-        // Arrange
-        String username = "testuser";
-        String password = "password";
-        UserRole userRole = UserRole.USER;
-        userService.register(username, password, userRole);
-
-        // Act
-        User foundUser = userService.findUserByName(username);
-
-        // Assert
-        assertNotNull(foundUser);
-        assertEquals(username, foundUser.getUsername());
-    }
-
-    @Test
-    public void testFindUserByNameNotFound() {
-        // Arrange
-        String username = "testuser";
-        String password = "password";
-        UserRole userRole = UserRole.USER;
-        userService.register(username, password, userRole);
-
-        // Act
-        User foundUser = userService.findUserByName("unknownUser");
-
-        // Assert
-        assertNull(foundUser);
+        assertThat(foundUser).isEqualTo(user);
+        verify(userRepository, times(1)).findUserByUsername("user1");
     }
 }

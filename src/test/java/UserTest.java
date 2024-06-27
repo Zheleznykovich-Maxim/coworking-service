@@ -1,10 +1,12 @@
-import org.example.coworking.model.enums.UserRole;
 import org.example.coworking.model.User;
-import org.junit.jupiter.api.Test;
+import org.example.coworking.model.enums.UserRole;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("User Class Tests")
 public class UserTest {
 
     private User user;
@@ -16,6 +18,7 @@ public class UserTest {
     }
 
     @Test
+    @DisplayName("Test Constructor and Getters")
     public void testConstructorAndGetters() {
         assertThat(user.getUsername()).isEqualTo("testUser");
         assertThat(user.getPassword()).isEqualTo("password123");
@@ -23,6 +26,7 @@ public class UserTest {
     }
 
     @Test
+    @DisplayName("Test Setters")
     public void testSetters() {
         user.setUsername("newUsername");
         user.setPassword("newPassword456");
@@ -34,6 +38,7 @@ public class UserTest {
     }
 
     @Test
+    @DisplayName("Test toString() Method")
     public void testToString() {
         String expectedString = "User{username='testUser', role=ADMIN}";
         assertThat(user.toString()).isEqualTo(expectedString);

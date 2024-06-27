@@ -2,12 +2,16 @@ import org.example.coworking.model.enums.ResourceType;
 import org.example.coworking.model.Booking;
 import org.example.coworking.model.User;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
+
 import java.time.LocalDateTime;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
+@DisplayName("Tests for Booking class")
 public class BookingTest {
 
     private Booking booking;
@@ -25,17 +29,19 @@ public class BookingTest {
     }
 
     @Test
+    @DisplayName("Test constructor and getters")
     public void testConstructorAndGetters() {
-        assertThat(booking.getId()).isEqualTo(16);
+        assertThat(booking.getId()).isEqualTo(3);
         assertThat(booking.getResourceId()).isEqualTo(101);
         assertThat(booking.getResourceName()).isEqualTo("Meeting Room A");
-        assertThat(booking.getStartTime()).isEqualTo(LocalDateTime.of(2024, 6, 24, 12, 0));
-        assertThat(booking.getEndTime()).isEqualTo(LocalDateTime.of(2024, 6, 24, 10, 0));
+        assertThat(booking.getStartTime()).isEqualTo(LocalDateTime.of(2024, 6, 24, 10, 0));
+        assertThat(booking.getEndTime()).isEqualTo(LocalDateTime.of(2024, 6, 24, 12, 0));
         assertThat(booking.getResourceType()).isEqualTo(ResourceType.WORKPLACE);
         assertThat(booking.isAvailable()).isTrue();
     }
 
     @Test
+    @DisplayName("Test setters")
     public void testSetters() {
         booking.setId(2);
         booking.setResourceId(102);
@@ -57,19 +63,22 @@ public class BookingTest {
     }
 
     @Test
+    @DisplayName("Test setUser method")
     public void testSetUser() {
         booking.setUser(mockUser);
         assertThat(booking.getUser()).isEqualTo(mockUser);
     }
 
     @Test
+    @DisplayName("Test toString method")
     public void testToString() {
-        String expectedString = "Booking(id=15, user=null, resourceId=101, resourceName=Meeting Room A, " +
-                "startTime=2024-06-24T12:00, endTime=2024-06-24T10:00, resourceType=WORKPLACE, isAvailable=true)";
+        String expectedString = "Booking(id=2, user=null, resourceId=101, resourceName=Meeting Room A, " +
+                "startTime=2024-06-24T10:00, endTime=2024-06-24T12:00, resourceType=WORKPLACE, isAvailable=true)";
         assertThat(booking.toString()).isEqualTo(expectedString);
     }
 
     @Test
+    @DisplayName("Test isUserNull method")
     public void testIsUserNull() {
         assertThat(booking.isUserNull()).isTrue();
         booking.setUser(mockUser);

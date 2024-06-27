@@ -1,121 +1,128 @@
 package org.example.coworking.service;
 
+import lombok.AllArgsConstructor;
 import org.example.coworking.model.ConferenceHall;
 import org.example.coworking.model.Workplace;
+import org.example.coworking.repository.ConferenceHallRepository;
+import org.example.coworking.repository.WorkplaceRepository;
 
-import java.util.ArrayList;
+import java.util.Collection;
 
+/**
+ * Service class for managing coworking space operations.
+ */
+@AllArgsConstructor
 public class CoworkingSpaceService {
-    private ArrayList<Workplace> workplaces;
-    private ArrayList<ConferenceHall> conferenceHalls;
+    private final ConferenceHallRepository conferenceHallRepository;
+    private final WorkplaceRepository workplaceRepository;
 
-    public CoworkingSpaceService(ArrayList<Workplace> workplaces,
-                                 ArrayList<ConferenceHall> conferenceHalls) {
-        this.workplaces = workplaces;
-        this.conferenceHalls = conferenceHalls;
+    /**
+     * Retrieves all workplaces.
+     *
+     * @return a collection of all workplaces.
+     */
+    public Collection<Workplace> getWorkplaces() {
+        return workplaceRepository.getAllWorkplaces();
     }
 
-    public ArrayList<Workplace> getWorkplaces() {
-        return workplaces;
+    /**
+     * Retrieves all conference halls.
+     *
+     * @return a collection of all conference halls.
+     */
+    public Collection<ConferenceHall> getConferenceHalls() {
+        return conferenceHallRepository.getAllConferenceHalls();
     }
 
-    public void setWorkplaces(ArrayList<Workplace> workplaces) {
-        this.workplaces = workplaces;
-    }
-
-    public ArrayList<ConferenceHall> getConferenceHalls() {
-        return conferenceHalls;
-    }
-
-    public void setConferenceHalls(ArrayList<ConferenceHall> conferenceHalls) {
-        this.conferenceHalls = conferenceHalls;
-    }
-
+    /**
+     * Adds a new workplace.
+     *
+     * @param workplace the workplace to add.
+     */
     public void addWorkplace(Workplace workplace) {
-        workplaces.add(workplace);
+        workplaceRepository.addWorkplace(workplace);
     }
 
+    /**
+     * Adds a new conference hall.
+     *
+     * @param conferenceHall the conference hall to add.
+     */
     public void addConferenceHall(ConferenceHall conferenceHall) {
-        conferenceHalls.add(conferenceHall);
+        conferenceHallRepository.addConferenceHall(conferenceHall);
     }
 
-    public ArrayList<Workplace> getAvailableWorkplaces() {
-        ArrayList<Workplace> availableWorkplaces = new ArrayList<>();
-        for (Workplace workplace : workplaces) {
-            if (workplace.isAvailable()) {
-                availableWorkplaces.add(workplace);
-            }
-        }
-        return availableWorkplaces;
+    /**
+     * Retrieves all available workplaces.
+     *
+     * @return a collection of all available workplaces.
+     */
+    public Collection<Workplace> getAvailableWorkplaces() {
+        return workplaceRepository.getAvailableWorkplaces();
     }
 
-    public ArrayList<ConferenceHall> getAvailableConferenceHalls() {
-        ArrayList<ConferenceHall> availableConferenceHalls = new ArrayList<>();
-        for (ConferenceHall conferenceHall : conferenceHalls) {
-            if (conferenceHall.isAvailable()) {
-                availableConferenceHalls.add(conferenceHall);
-            }
-        }
-        return availableConferenceHalls;
+    /**
+     * Retrieves all available conference halls.
+     *
+     * @return a collection of all available conference halls.
+     */
+    public Collection<ConferenceHall> getAvailableConferenceHalls() {
+        return conferenceHallRepository.getAvailableConferenceHalls();
     }
 
-    public void updateConferenceHall(int id, String name, boolean isAvailable) {
-        ConferenceHall conferenceHall = findConferenceHallById(id);
-        if (conferenceHall != null) {
-            conferenceHall.setAvailable(isAvailable);
-            conferenceHall.setName(name);
-            System.out.println("Обновление прошло успешно");
-        } else {
-            System.out.println("Ошибка: не найдено помещение с таким id");
-        }
+    /**
+     * Updates an existing conference hall.
+     *
+     * @param conferenceHall the updated conference hall.
+     */
+    public void updateConferenceHall(ConferenceHall conferenceHall) {
+        conferenceHallRepository.updateConferenceHall(conferenceHall);
     }
 
-    public void updateWorkplace(int id, String name, boolean isAvailable) {
-        Workplace workplace = findWorkplaceById(id);
-        if (workplace != null) {
-            workplace.setAvailable(isAvailable);
-            workplace.setName(name);
-            System.out.println("Обновление прошло успешно");
-        } else {
-            System.out.println("Ошибка: не найдено помещение с таким id");
-        }
+    /**
+     * Updates an existing workplace.
+     *
+     * @param workplace the updated workplace.
+     */
+    public void updateWorkplace(Workplace workplace) {
+        workplaceRepository.updateWorkplace(workplace);
     }
 
+    /**
+     * Deletes a conference hall by its ID.
+     *
+     * @param id the ID of the conference hall to delete.
+     */
     public void deleteConferenceHall(int id) {
-        ConferenceHall conferenceHall = findConferenceHallById(id);
-        if (conferenceHall != null) {
-            conferenceHalls.remove(conferenceHall);
-            System.out.println("Удаление прошло успешно");
-        } else {
-            System.out.println("Ошибка: не найдено помещение с таким id");
-        }
+        conferenceHallRepository.removeConferenceHallById(id);
     }
 
+    /**
+     * Deletes a workplace by its ID.
+     *
+     * @param id the ID of the workplace to delete.
+     */
     public void deleteWorkplace(int id) {
-        Workplace workplace = findWorkplaceById(id);
-        if (workplace != null) {
-            workplaces.remove(workplace);
-            System.out.println("Удаление прошло успешно");
-        } else {
-            System.out.println("Ошибка: не найдено помещение с таким id");
-        }
+        workplaceRepository.removeWorkplaceById(id);
     }
 
+    /**
+     * Finds a workplace by its ID.
+     *
+     * @param id the ID of the workplace to find.
+     * @return the workplace with the specified ID, or null if not found.
+     */
     public Workplace findWorkplaceById(int id) {
-        for (Workplace workplace : workplaces) {
-            if (workplace.getId() == id) {
-                return workplace;
-            }
-        }
-        return null;
+        return workplaceRepository.findWorkplaceById(id);
     }
 
+    /**
+     * Finds a conference hall by its ID.
+     *
+     * @param id the ID of the conference hall to find.
+     * @return the conference hall with the specified ID, or null if not found.
+     */
     public ConferenceHall findConferenceHallById(int id) {
-        for (ConferenceHall conferenceHall : conferenceHalls) {
-            if (conferenceHall.getId() == id) {
-                return conferenceHall;
-            }
-        }
-        return null;
+        return conferenceHallRepository.findConferenceById(id);
     }
 }

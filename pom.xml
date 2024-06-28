@@ -17,6 +17,8 @@
         <mokito.version>4.8.1</mokito.version>
         <jacoco.version>0.8.7</jacoco.version>
         <lombock.version>1.18.30</lombock.version>
+        <postgresql.version>42.6.2</postgresql.version>
+        <liquibase.version>4.24.0</liquibase.version>
     </properties>
     <dependencies>
         <dependency>
@@ -48,6 +50,16 @@
             <artifactId>lombok</artifactId>
             <version>${lombock.version}</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgresql.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+            <version>${liquibase.version}</version>
         </dependency>
     </dependencies>
 

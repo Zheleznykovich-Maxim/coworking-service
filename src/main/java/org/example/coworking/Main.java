@@ -1,5 +1,6 @@
 package org.example.coworking;
 
+import org.example.coworking.config.LiquibaseConfig;
 import org.example.coworking.factory.BookingRepositoryFactory;
 import org.example.coworking.factory.ConferenceHallRepositoryFactory;
 import org.example.coworking.factory.UserRepositoryFactory;
@@ -19,7 +20,10 @@ import org.example.coworking.service.CoworkingSpaceService;
 import org.example.coworking.service.UserService;
 
 public class Main {
+
     public static void main(String[] args) {
+        LiquibaseConfig.runMigrations();
+
         CoworkingFactory<UserRepository> userRepositoryFactory = new UserRepositoryFactory();
         CoworkingFactory<BookingRepository> bookingRepositoryFactory = new BookingRepositoryFactory();
         CoworkingFactory<WorkplaceRepository> workplaceRepositoryFactory = new WorkplaceRepositoryFactory();

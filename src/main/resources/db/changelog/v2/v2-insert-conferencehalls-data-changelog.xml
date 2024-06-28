@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd"
+        logicalFilePath="db/changelog/main-changelog.xml">
+
+    <changeSet id="v2-2" author="Maxim Zheleznykovich">
+        <insert tableName="conference_hall">
+            <column name="id" valueSequenceNext="conference_hall_seq"/>
+            <column name="name" value="Main Hall"/>
+            <column name="is_available" value="true"/>
+        </insert>
+
+        <insert tableName="conference_hall">
+            <column name="id" valueSequenceNext="conference_hall_seq"/>
+            <column name="name" value="Small Hall"/>
+            <column name="is_available" value="true"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

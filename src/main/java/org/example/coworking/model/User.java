@@ -12,7 +12,7 @@ import org.example.coworking.model.enums.UserRole;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
-    private static int nextUserId = 1;
+
     /**
      * The id of the user.
      */
@@ -33,7 +33,6 @@ public class User {
     private UserRole role;
 
     public User(String username, String password, UserRole role) {
-        this.id = nextUserId++;
         this.username = username;
         this.password = password;
         this.role = role;

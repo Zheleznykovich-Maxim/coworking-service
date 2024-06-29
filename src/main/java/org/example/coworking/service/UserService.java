@@ -23,12 +23,13 @@ public class UserService {
     /**
      * Logs in a user by checking if the credentials match.
      *
-     * @param user the user attempting to log in.
+     * @param username the user attempting to log in.
+     * @param password the user attempting to log in
      * @return true if the credentials match, otherwise false.
      */
-    public boolean login(User user) {
-        return userRepository.findUserByUsername(user.getUsername()).getPassword()
-                .equals(user.getPassword());
+    public boolean login(String username, String password) {
+        return userRepository.findUserByUsername(username).getPassword()
+                .equals(password);
     }
 
     /**

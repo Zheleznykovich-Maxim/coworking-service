@@ -131,7 +131,7 @@ public class UserConsole {
             return;
         }
 
-        boolean success = userService.login(user);
+        boolean success = userService.login(username, password);
         if (success) {
             System.out.println("Авторизация прошла успешно.");
             currentUser = userService.findUserByName(username);

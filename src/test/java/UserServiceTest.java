@@ -45,10 +45,10 @@ class UserServiceTest {
     void loginSuccessful() {
         // Arrange
         User user = new User("user1", "password1", UserRole.USER);
-        when(userRepository.findUserByUsername("user1")).thenReturn(user);
 
+        when(userRepository.findUserByUsername("user1")).thenReturn(user);
         // Act
-        boolean result = userService.login(user);
+        boolean result = userService.login(user.getUsername(), user.getPassword());
 
         // Assert
         assertThat(result).isTrue();
@@ -59,12 +59,13 @@ class UserServiceTest {
     @DisplayName("Login Failed Test")
     void loginFailed() {
         // Arrange
-        User user = new User("user1", "wrongpassword", UserRole.USER);
+        String username = "user1";
+        String password = "wrongpassword";
         User storedUser = new User("user1", "password1", UserRole.USER);
         when(userRepository.findUserByUsername("user1")).thenReturn(storedUser);
 
         // Act
-        boolean result = userService.login(user);
+        boolean result = userService.login(username, password);
 
         // Assert
         assertThat(result).isFalse();

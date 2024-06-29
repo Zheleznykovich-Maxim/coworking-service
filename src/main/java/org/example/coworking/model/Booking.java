@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Booking {
-    private static int nextBookingId = 3;
 
     /**
      * Unique identifier for the booking.
@@ -60,7 +59,7 @@ public class Booking {
      * Constructs a new Booking with the given parameters.
      * The id is auto-generated and incremented.
      *
-     * @param user the user who made the booking
+     * @param userId the id of the user who made the booking
      * @param resourceId the id of the resource being booked
      * @param resourceName the name of the resource being booked
      * @param startTime the start time of the booking
@@ -69,7 +68,6 @@ public class Booking {
      * @param isAvailable whether the booking is currently available
      */
     public Booking(int userId, int resourceId, String resourceName, LocalDateTime startTime, LocalDateTime endTime, ResourceType resourceType, boolean isAvailable) {
-        this.id = nextBookingId++;
         this.userId = userId;
         this.resourceId = resourceId;
         this.resourceName = resourceName;
@@ -78,14 +76,5 @@ public class Booking {
         this.resourceType = resourceType;
         this.isAvailable = isAvailable;
     }
-
-//    /**
-//     * Checks if the user who made the booking is null.
-//     *
-//     * @return true if the user is null, false otherwise
-//     */
-//    public boolean isUserNull() {
-//        return this.userId == null;
-//    }
 }
 

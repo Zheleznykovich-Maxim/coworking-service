@@ -45,6 +45,15 @@ public class BookingService {
     }
 
     /**
+     * Updates a booking based on its ID to the repository.
+     *
+     * @param booking The booking to update.
+     */
+    public void updateBooking(Booking booking) throws IOException, SQLException {
+        bookingRepository.updateBooking(booking);
+    }
+
+    /**
      * Filters bookings based on a specified date.
      *
      * @param date The date to filter bookings by.

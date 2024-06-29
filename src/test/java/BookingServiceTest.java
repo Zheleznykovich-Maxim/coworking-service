@@ -1,169 +1,128 @@
-import org.example.coworking.model.enums.ResourceType;
+import org.assertj.core.api.Assertions;
 import org.example.coworking.model.Booking;
 import org.example.coworking.model.User;
+import org.example.coworking.model.enums.ResourceType;
 import org.example.coworking.repository.BookingRepository;
 import org.example.coworking.service.BookingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collections;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
 
-@DisplayName("BookingService Tests")
+@DisplayName("Tests for BookingService")
 public class BookingServiceTest {
 
-    private BookingService bookingService;
+    @Mock
     private BookingRepository bookingRepository;
-    private Map<Integer, Booking> bookingMap;
+
+    @InjectMocks
+    private BookingService bookingService;
 
     @BeforeEach
-    public void setUp() {
-        bookingMap = new HashMap<>();
-        bookingRepository = new BookingRepository(bookingMap);
-        bookingService = new BookingService(bookingRepository);
+    public void setup() {
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    @DisplayName("Test creating a booking")
-    public void testCreateBooking() throws SQLException, IOException {
-        // Arrange
-        LocalDateTime startTime = LocalDateTime.of(2024, 6, 24, 10, 0);
-        LocalDateTime endTime = LocalDateTime.of(2024, 6, 24, 12, 0);
-        int resourceId = 1;
-        String resourceName = "Workplace 1";
-        ResourceType resourceType = ResourceType.WORKPLACE;
+    @DisplayName("Test adding a booking")
+    public void testAddBooking() throws SQLException, IOException {
+        Booking booking = new Booking();
+        doNothing().when(bookingRepository).addBooking(ArgumentMatchers.any(Booking.class));
 
-        // Act
-        Booking booking = new Booking(null, resourceId, resourceName, startTime, endTime, resourceType, true);
         bookingService.addBooking(booking);
 
-        // Assert
-        assertThat(bookingMap).hasSize(1);
-        Booking createdBooking = bookingMap.get(booking.getId());
-        assertThat(createdBooking.getId()).isEqualTo(booking.getId());
-        assertThat(createdBooking.getResourceId()).isEqualTo(resourceId);
-        assertThat(createdBooking.getResourceName()).isEqualTo(resourceName);
-        assertThat(createdBooking.getStartTime()).isEqualTo(startTime);
-        assertThat(createdBooking.getEndTime()).isEqualTo(endTime);
-        assertThat(createdBooking.getResourceType()).isEqualTo(resourceType);
+        verify(bookingRepository, times(1)).addBooking(booking);
     }
 
     @Test
     @DisplayName("Test deleting a booking")
     public void testDeleteBooking() {
-        // Arrange
-        Booking booking1 = new Booking(null, 1, "Workplace 1", LocalDateTime.now(), LocalDateTime.now().plusHours(1), ResourceType.WORKPLACE, true);
-        Booking booking2 = new Booking(null, 2, "Workplace 2", LocalDateTime.now(), LocalDateTime.now().plusHours(1), ResourceType.WORKPLACE, true);
-        bookingMap.put(booking1.getId(), booking1);
-        bookingMap.put(booking2.getId(), booking2);
+        int bookingId = 1;
+        doNothing().when(bookingRepository).removeBookingById(bookingId);
 
-        // Act
-        bookingService.deleteBooking(booking1.getId());
+        bookingService.deleteBooking(bookingId);
 
-        // Assert
-        assertThat(bookingMap).hasSize(1);
-        assertThat(bookingMap.get(booking2.getId()).getId()).isEqualTo(booking2.getId());
+        verify(bookingRepository, times(1)).removeBookingById(bookingId);
     }
 
     @Test
-    @DisplayName("Test viewing all bookings")
-    public void testViewAllBookings() throws IOException {
-        // Arrange
-        Booking booking1 = new Booking(null, 1, "Workplace 1", LocalDateTime.now(), LocalDateTime.now().plusHours(1), ResourceType.WORKPLACE, true);
-        Booking booking2 = new Booking(null, 2, "Workplace 2", LocalDateTime.now(), LocalDateTime.now().plusHours(1), ResourceType.WORKPLACE, true);
-        bookingMap.put(booking1.getId(), booking1);
-        bookingMap.put(booking2.getId(), booking2);
+    @DisplayName("Test getting all bookings")
+    public void testGetAllBookings() throws IOException {
+        Booking booking1 = new Booking();
+        Booking booking2 = new Booking();
+        Collection<Booking> bookings = Arrays.asList(booking1, booking2);
+        when(bookingRepository.getAllBookings()).thenReturn(bookings);
 
-        // Act (print output using System.out)
-        bookingService.getAllBookings();
+        Collection<Booking> result = bookingService.getAllBookings();
 
-        // Assert (output verification can be added manually)
+        Assertions.assertThat(result).containsExactlyElementsOf(bookings);
+    }
+
+    @Test
+    @DisplayName("Test updating a booking")
+    public void testUpdateBooking() throws IOException, SQLException {
+        Booking booking = new Booking();
+        doNothing().when(bookingRepository).updateBooking(ArgumentMatchers.any(Booking.class));
+
+        bookingService.updateBooking(booking);
+
+        verify(bookingRepository, times(1)).updateBooking(booking);
     }
 
     @Test
     @DisplayName("Test filtering bookings by date")
     public void testFilterBookingsByDate() {
-        // Arrange
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime newStartTime1 = LocalDateTime.of(2024, 6, 24, 9, 0);
-        LocalDateTime newEndTime2 = LocalDateTime.of(2024, 6, 25, 11, 0);
-        LocalDateTime newStartTime3 = LocalDateTime.of(2024, 6, 27, 12, 0);
-        Booking booking1 = new Booking(null, 1, "Workplace 1", newStartTime1, newEndTime2, ResourceType.WORKPLACE, true);
-        Booking booking2 = new Booking(null, 2, "Workplace 2", newStartTime3, newEndTime2, ResourceType.WORKPLACE, true);
-        bookingMap.put(booking1.getId(), booking1);
-        bookingMap.put(booking2.getId(), booking2);
+        LocalDate date = LocalDate.now();
+        when(bookingRepository.filterBookingsByDate(date)).thenReturn(Collections.emptyList());
 
-        // Act
-        Collection<Booking> filteredMap = bookingService.filterBookingsByDate(newStartTime3.toLocalDate());
-        Booking firstBooking = filteredMap.stream().findFirst().orElse(null);
+        Collection<Booking> result = bookingService.filterBookingsByDate(date);
 
-        // Assert
-        assertThat(filteredMap).hasSize(1);
-        assertThat(firstBooking.getId()).isEqualTo(booking2.getId());
+        Assertions.assertThat(result).isEmpty();
     }
 
     @Test
     @DisplayName("Test filtering bookings by user")
     public void testFilterBookingsByUser() {
-        // Arrange
-        User user1 = new User("John", "password", null);
-        User user2 = new User("Jane", "password", null);
-        Booking booking1 = new Booking(null, 1, "Workplace 1", LocalDateTime.now(), LocalDateTime.now().plusHours(1), ResourceType.WORKPLACE, true);
-        Booking booking2 = new Booking(null, 2, "Workplace 2", LocalDateTime.now(), LocalDateTime.now().plusHours(1), ResourceType.WORKPLACE, true);
-        booking1.setUserId(user1.getId());
-        booking2.setUserId(user2.getId());
-        bookingMap.put(booking1.getId(), booking1);
-        bookingMap.put(booking2.getId(), booking2);
+        User user = new User();
+        when(bookingRepository.filterBookingsByUser(user)).thenReturn(Collections.emptyList());
 
-        // Act
-        Collection<Booking> filteredMap = bookingService.filterBookingsByUser(user1);
-        Booking firstBooking = filteredMap.stream().findFirst().orElse(null);
+        Collection<Booking> result = bookingService.filterBookingsByUser(user);
 
-        // Assert
-        assertThat(filteredMap).hasSize(1);
-        assertThat(firstBooking.getId()).isEqualTo(booking1.getId());
+        Assertions.assertThat(result).isEmpty();
     }
 
     @Test
     @DisplayName("Test filtering bookings by resource")
     public void testFilterBookingsByResource() {
-        // Arrange
-        ResourceType resourceType = ResourceType.WORKPLACE;
-        Booking booking1 = new Booking(null, 1, "Workplace 1", LocalDateTime.now(), LocalDateTime.now().plusHours(1), resourceType, true);
-        Booking booking2 = new Booking(null, 2, "Workplace 2", LocalDateTime.now(), LocalDateTime.now().plusHours(1), ResourceType.CONFERENCEHALL, true);
-        bookingMap.put(booking1.getId(), booking1);
-        bookingMap.put(booking2.getId(), booking2);
+        ResourceType resourceType = ResourceType.CONFERENCEHALL;
+        when(bookingRepository.filterBookingsByResource(resourceType)).thenReturn(Collections.emptyList());
 
-        // Act
-        Collection<Booking> filteredMap = bookingService.filterBookingsByResource(resourceType);
-        Booking firstBooking = filteredMap.stream().findFirst().orElse(null);
+        Collection<Booking> result = bookingService.filterBookingsByResource(resourceType);
 
-        // Assert
-        assertThat(filteredMap).hasSize(1);
-        assertThat(firstBooking.getId()).isEqualTo(booking1.getId());
+        Assertions.assertThat(result).isEmpty();
     }
 
     @Test
     @DisplayName("Test finding a booking by ID")
     public void testFindBookingById() {
-        // Arrange
-        Booking booking1 = new Booking(null, 1, "Workplace 1", LocalDateTime.now(), LocalDateTime.now().plusHours(1), ResourceType.WORKPLACE, true);
-        Booking booking2 = new Booking(null, 2, "Workplace 2", LocalDateTime.now(), LocalDateTime.now().plusHours(1), ResourceType.WORKPLACE, true);
-        bookingMap.put(booking1.getId(), booking1);
-        bookingMap.put(booking2.getId(), booking2);
+        int id = 1;
+        Booking booking = new Booking();
+        when(bookingRepository.findBookingById(id)).thenReturn(booking);
 
-        // Act
-        Booking foundBooking = bookingService.findBookingById(booking1.getId());
+        Booking result = bookingService.findBookingById(id);
 
-        // Assert
-        assertThat(foundBooking).isNotNull();
-        assertThat(foundBooking.getId()).isEqualTo(booking1.getId());
+        Assertions.assertThat(result).isEqualTo(booking);
     }
 }

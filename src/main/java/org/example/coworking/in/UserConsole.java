@@ -79,8 +79,8 @@ public class UserConsole {
             } catch (InputMismatchException inputMismatchException) {
                 System.out.println("Неверный формат ввода команды. Введите корректные данные");
                 in.next();
-            } catch (DateTimeParseException | IOException | SQLException dateTimeParseException) {
-                System.out.println("Некорректный формат ввода данных бронирования. Введите корректные данные");
+            } catch (DateTimeParseException | IOException | SQLException e) {
+                System.out.println("Некорректный формат ввода данных бронирования. Введите корректные данные " + e.getMessage());
             }
         }
     }
@@ -145,7 +145,7 @@ public class UserConsole {
      * Runs the commands loop for regular user operations.
      * Provides options for viewing workplaces, conference halls, and managing bookings.
      */
-    public void runUserCommands() throws IOException {
+    public void runUserCommands() throws IOException, SQLException {
         while (isAuthorized) {
 
             ConsoleUI.printUserCommands();
@@ -270,7 +270,7 @@ public class UserConsole {
                     LocalDateTime[] dateTimes = BookingDateTimeInput();
                     if (dateTimes == null) { continue; }
                     System.out.println("Создание брони рабочего места");
-                    System.out.print("Введите идентификатор: ");
+                    System.out.print("Введите идентификатор рабочего места: ");
                     int id = in.nextInt();
                     in.nextLine();
                     Workplace workplace = coworkingSpaceService.findWorkplaceById(id);
@@ -378,7 +378,7 @@ public class UserConsole {
                     LocalDateTime[] dateTimes = BookingDateTimeInput();
                     if (dateTimes == null) { continue; }
                     System.out.println("Создание брони конференц хола");
-                    System.out.print("Введите идентификатор: ");
+                    System.out.print("Введите идентификатор конференц-хола: ");
                     int id = in.nextInt();
                     in.nextLine();
                     ConferenceHall conferenceHall = coworkingSpaceService.findConferenceHallById(id);
@@ -386,7 +386,7 @@ public class UserConsole {
                     if (conferenceHall != null) {
                         LocalDateTime startDateTime = dateTimes[0];
                         LocalDateTime endDateTime = dateTimes[1];
-                        Booking booking = new Booking(01, conferenceHall.getId(), conferenceHall.getName(), startDateTime, endDateTime, ResourceType.CONFERENCEHALL, true);
+                        Booking booking = new Booking(0, conferenceHall.getId(), conferenceHall.getName(), startDateTime, endDateTime, ResourceType.CONFERENCEHALL, true);
                         bookingService.addBooking(booking);
                     } else {
                         System.out.println("Конференц-зала с таким id не существует!");
@@ -447,7 +447,7 @@ public class UserConsole {
      * Runs the commands loop for managing bookings.
      * Provides options for viewing, filtering, creating, and canceling bookings.
      */
-    public void runBookingCommands() throws IOException {
+    public void runBookingCommands() throws IOException, SQLException {
         while (true) {
             ConsoleUI.printBookingCommands();
 
@@ -464,7 +464,7 @@ public class UserConsole {
                     printCollection(bookingService.filterBookingsByDate(startLocalDate));
                 }
                 case 3 -> {
-                    System.out.print("Введите имя пользователя для фильтрации бронирования: ");
+                    System.out.print("Введите id пользователя для фильтрации бронирования: ");
                     String username = in.nextLine();
                     User filterUser = userService.findUserByName(username);
                     if (filterUser != null) {
@@ -495,6 +495,7 @@ public class UserConsole {
                         } else {
                             foundBooking.setAvailable(false);
                             foundBooking.setUserId(currentUser.getId());
+                            bookingService.updateBooking(foundBooking);
                         }
 
                     } else {
@@ -509,7 +510,7 @@ public class UserConsole {
 
                     if (foundBooking != null) {
 
-                        if (foundBooking.getUserId() > 0) {
+                        if (foundBooking.getUserId() == 0) {
                             System.out.println("Свободная бронь не может быть отменена");
 
                         } else if (foundBooking.getUserId() != currentUser.getId()) {
@@ -518,6 +519,7 @@ public class UserConsole {
                         } else {
                             foundBooking.setAvailable(true);
                             foundBooking.setUserId(0);
+                            bookingService.updateBooking(foundBooking);
                         }
 
                     } else  {
@@ -525,8 +527,6 @@ public class UserConsole {
                     }
                 }
                 case 7 -> {
-                    isAuthorized = false;
-                    currentUser = null;
                     return;
                 }
                 default -> System.out.println("Неверная команда");

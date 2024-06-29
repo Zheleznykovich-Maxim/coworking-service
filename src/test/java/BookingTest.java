@@ -21,7 +21,7 @@ public class BookingTest {
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         mockUser = mock(User.class);
-        booking = new Booking(null, 101, "Meeting Room A",
+        booking = new Booking(0, 101, "Meeting Room A",
                 LocalDateTime.of(2024, 6, 24, 10, 0),
                 LocalDateTime.of(2024, 6, 24, 12, 0),
                 ResourceType.WORKPLACE,
@@ -31,7 +31,7 @@ public class BookingTest {
     @Test
     @DisplayName("Test constructor and getters")
     public void testConstructorAndGetters() {
-        assertThat(booking.getId()).isEqualTo(3);
+        assertThat(booking.getUserId()).isEqualTo(0);
         assertThat(booking.getResourceId()).isEqualTo(101);
         assertThat(booking.getResourceName()).isEqualTo("Meeting Room A");
         assertThat(booking.getStartTime()).isEqualTo(LocalDateTime.of(2024, 6, 24, 10, 0));
@@ -65,23 +65,16 @@ public class BookingTest {
     @Test
     @DisplayName("Test setUser method")
     public void testSetUser() {
-        booking.setUser(mockUser);
-        assertThat(booking.getUser()).isEqualTo(mockUser);
+        booking.setUserId(mockUser.getId());
+        assertThat(booking.getUserId() == mockUser.getId());
     }
 
     @Test
     @DisplayName("Test toString method")
     public void testToString() {
-        String expectedString = "Booking(id=2, user=null, resourceId=101, resourceName=Meeting Room A, " +
+        String expectedString = "Booking(id=0, userId=0, resourceId=101, resourceName=Meeting Room A, " +
                 "startTime=2024-06-24T10:00, endTime=2024-06-24T12:00, resourceType=WORKPLACE, isAvailable=true)";
         assertThat(booking.toString()).isEqualTo(expectedString);
     }
 
-    @Test
-    @DisplayName("Test isUserNull method")
-    public void testIsUserNull() {
-        assertThat(booking.isUserNull()).isTrue();
-        booking.setUser(mockUser);
-        assertThat(booking.isUserNull()).isFalse();
-    }
 }

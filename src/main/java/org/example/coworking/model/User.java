@@ -2,6 +2,7 @@ package org.example.coworking.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.example.coworking.model.enums.UserRole;
 
 /**
@@ -9,6 +10,7 @@ import org.example.coworking.model.enums.UserRole;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class User {
     private static int nextUserId = 1;
     /**

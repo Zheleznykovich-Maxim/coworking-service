@@ -7,6 +7,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashMap;
@@ -30,7 +32,7 @@ public class BookingServiceTest {
 
     @Test
     @DisplayName("Test creating a booking")
-    public void testCreateBooking() {
+    public void testCreateBooking() throws SQLException, IOException {
         // Arrange
         LocalDateTime startTime = LocalDateTime.of(2024, 6, 24, 10, 0);
         LocalDateTime endTime = LocalDateTime.of(2024, 6, 24, 12, 0);
@@ -72,7 +74,7 @@ public class BookingServiceTest {
 
     @Test
     @DisplayName("Test viewing all bookings")
-    public void testViewAllBookings() {
+    public void testViewAllBookings() throws IOException {
         // Arrange
         Booking booking1 = new Booking(null, 1, "Workplace 1", LocalDateTime.now(), LocalDateTime.now().plusHours(1), ResourceType.WORKPLACE, true);
         Booking booking2 = new Booking(null, 2, "Workplace 2", LocalDateTime.now(), LocalDateTime.now().plusHours(1), ResourceType.WORKPLACE, true);
@@ -115,8 +117,8 @@ public class BookingServiceTest {
         User user2 = new User("Jane", "password", null);
         Booking booking1 = new Booking(null, 1, "Workplace 1", LocalDateTime.now(), LocalDateTime.now().plusHours(1), ResourceType.WORKPLACE, true);
         Booking booking2 = new Booking(null, 2, "Workplace 2", LocalDateTime.now(), LocalDateTime.now().plusHours(1), ResourceType.WORKPLACE, true);
-        booking1.setUser(user1);
-        booking2.setUser(user2);
+        booking1.setUserId(user1.getId());
+        booking2.setUserId(user2.getId());
         bookingMap.put(booking1.getId(), booking1);
         bookingMap.put(booking2.getId(), booking2);
 

@@ -10,7 +10,8 @@ import org.example.coworking.out.ConsoleUI;
 import org.example.coworking.service.BookingService;
 import org.example.coworking.service.CoworkingSpaceService;
 import org.example.coworking.service.UserService;
-
+import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -78,7 +79,7 @@ public class UserConsole {
             } catch (InputMismatchException inputMismatchException) {
                 System.out.println("Неверный формат ввода команды. Введите корректные данные");
                 in.next();
-            } catch (DateTimeParseException dateTimeParseException) {
+            } catch (DateTimeParseException | IOException | SQLException dateTimeParseException) {
                 System.out.println("Некорректный формат ввода данных бронирования. Введите корректные данные");
             }
         }
@@ -144,7 +145,7 @@ public class UserConsole {
      * Runs the commands loop for regular user operations.
      * Provides options for viewing workplaces, conference halls, and managing bookings.
      */
-    public void runUserCommands() {
+    public void runUserCommands() throws IOException {
         while (isAuthorized) {
 
             ConsoleUI.printUserCommands();
@@ -170,7 +171,7 @@ public class UserConsole {
      * Runs the commands loop for administrative operations in the coworking space.
      * Provides options for managing workplaces, conference halls, and bookings.
      */
-    public void runCoworkingSpaceCommands() {
+    public void runCoworkingSpaceCommands() throws IOException, SQLException {
         while (isAuthorized) {
 
             ConsoleUI.printCoworkingSpaceCommands();
@@ -195,7 +196,7 @@ public class UserConsole {
      * Runs the commands loop for managing workplace operations.
      * Includes options for adding, updating, deleting workplaces, and managing bookings.
      */
-    public void runWorkplaceCommands() {
+    public void runWorkplaceCommands() throws IOException, SQLException {
         while (true) {
 
             ConsoleUI.printWorkplaceCommands();
@@ -276,7 +277,7 @@ public class UserConsole {
                     if (workplace != null) {
                         LocalDateTime startDateTime = dateTimes[0];
                         LocalDateTime endDateTime = dateTimes[1];
-                        Booking booking = new Booking(null, workplace.getId(), workplace.getName(), startDateTime, endDateTime, ResourceType.WORKPLACE, true);
+                        Booking booking = new Booking(0, workplace.getId(), workplace.getName(), startDateTime, endDateTime, ResourceType.WORKPLACE, true);
                         bookingService.addBooking(booking);
                     } else {
                         System.out.println("Рабочего места с таким id не существует!");
@@ -302,7 +303,7 @@ public class UserConsole {
      * Runs the commands loop for managing conference hall operations.
      * Includes options for adding, updating, deleting conference halls, and managing bookings.
      */
-    public void runConferenceHallCommands() {
+    public void runConferenceHallCommands() throws IOException, SQLException {
         while (true) {
 
             ConsoleUI.printConferenceHallCommands();
@@ -385,7 +386,7 @@ public class UserConsole {
                     if (conferenceHall != null) {
                         LocalDateTime startDateTime = dateTimes[0];
                         LocalDateTime endDateTime = dateTimes[1];
-                        Booking booking = new Booking(null, conferenceHall.getId(), conferenceHall.getName(), startDateTime, endDateTime, ResourceType.CONFERENCEHALL, true);
+                        Booking booking = new Booking(01, conferenceHall.getId(), conferenceHall.getName(), startDateTime, endDateTime, ResourceType.CONFERENCEHALL, true);
                         bookingService.addBooking(booking);
                     } else {
                         System.out.println("Конференц-зала с таким id не существует!");
@@ -446,7 +447,7 @@ public class UserConsole {
      * Runs the commands loop for managing bookings.
      * Provides options for viewing, filtering, creating, and canceling bookings.
      */
-    public void runBookingCommands() {
+    public void runBookingCommands() throws IOException {
         while (true) {
             ConsoleUI.printBookingCommands();
 
@@ -489,11 +490,11 @@ public class UserConsole {
                     Booking foundBooking = bookingService.findBookingById(id);
                     if (foundBooking != null) {
 
-                        if (foundBooking.getUser() != null && !foundBooking.getUser().equals(currentUser)) {
+                        if (foundBooking.getUserId() > 0 && foundBooking.getUserId() != currentUser.getId()) {
                             System.out.println("Данная бронь уже занята другим пользователем!");
                         } else {
                             foundBooking.setAvailable(false);
-                            foundBooking.setUser(currentUser);
+                            foundBooking.setUserId(currentUser.getId());
                         }
 
                     } else {
@@ -508,15 +509,15 @@ public class UserConsole {
 
                     if (foundBooking != null) {
 
-                        if (foundBooking.getUser() == null) {
+                        if (foundBooking.getUserId() > 0) {
                             System.out.println("Свободная бронь не может быть отменена");
 
-                        } else if (!foundBooking.getUser().equals(currentUser)) {
+                        } else if (foundBooking.getUserId() != currentUser.getId()) {
                             System.out.println("Вы не можете отменить бронь другого пользователя");
 
                         } else {
                             foundBooking.setAvailable(true);
-                            foundBooking.setUser(null);
+                            foundBooking.setUserId(0);
                         }
 
                     } else  {

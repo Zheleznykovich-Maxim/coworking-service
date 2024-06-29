@@ -10,6 +10,11 @@ import org.example.coworking.model.enums.UserRole;
 @Data
 @AllArgsConstructor
 public class User {
+    private static int nextUserId = 1;
+    /**
+     * The id of the user.
+     */
+    private int id;
     /**
      * The username of the user.
      */
@@ -24,6 +29,13 @@ public class User {
      * The role of the user.
      */
     private UserRole role;
+
+    public User(String username, String password, UserRole role) {
+        this.id = nextUserId++;
+        this.username = username;
+        this.password = password;
+        this.role = role;
+    }
 
     /**
      * Returns a string representation of the user.

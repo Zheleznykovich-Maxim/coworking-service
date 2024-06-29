@@ -14,7 +14,7 @@
             <column name="resource_name" value="Conference Room A"/>
             <column name="start_time" value="2024-07-01T10:00:00"/>
             <column name="end_time" value="2024-07-01T11:00:00"/>
-            <column name="resource_type" value="Room"/>
+            <column name="resource_type" value="WORKPLACE"/>
             <column name="is_available" value="true"/>
         </insert>
 
@@ -25,7 +25,7 @@
             <column name="resource_name" value="Conference Room B"/>
             <column name="start_time" value="2024-07-01T12:00:00"/>
             <column name="end_time" value="2024-07-01T13:00:00"/>
-            <column name="resource_type" value="Room"/>
+            <column name="resource_type" value="CONFERENCEHALL"/>
             <column name="is_available" value="true"/>
         </insert>
     </changeSet>

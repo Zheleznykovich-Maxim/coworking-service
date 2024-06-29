@@ -1,6 +1,8 @@
 package org.example.coworking.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.example.coworking.model.enums.ResourceType;
 import java.time.LocalDateTime;
 
@@ -9,8 +11,10 @@ import java.time.LocalDateTime;
  * Each booking is uniquely identified by an id which is auto-incremented.
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Booking {
-    private static int nextBookingId = 1;
+    private static int nextBookingId = 3;
 
     /**
      * Unique identifier for the booking.
@@ -20,7 +24,7 @@ public class Booking {
     /**
      * The user who made the booking.
      */
-    private User user;
+    private int userId;
 
     /**
      * The id of the resource being booked.
@@ -64,9 +68,9 @@ public class Booking {
      * @param resourceType the type of the resource being booked
      * @param isAvailable whether the booking is currently available
      */
-    public Booking(User user, int resourceId, String resourceName, LocalDateTime startTime, LocalDateTime endTime, ResourceType resourceType, boolean isAvailable) {
+    public Booking(int userId, int resourceId, String resourceName, LocalDateTime startTime, LocalDateTime endTime, ResourceType resourceType, boolean isAvailable) {
         this.id = nextBookingId++;
-        this.user = user;
+        this.userId = userId;
         this.resourceId = resourceId;
         this.resourceName = resourceName;
         this.startTime = startTime;
@@ -75,13 +79,13 @@ public class Booking {
         this.isAvailable = isAvailable;
     }
 
-    /**
-     * Checks if the user who made the booking is null.
-     *
-     * @return true if the user is null, false otherwise
-     */
-    public boolean isUserNull() {
-        return this.user == null;
-    }
+//    /**
+//     * Checks if the user who made the booking is null.
+//     *
+//     * @return true if the user is null, false otherwise
+//     */
+//    public boolean isUserNull() {
+//        return this.userId == null;
+//    }
 }
 

@@ -10,6 +10,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Properties;
 
 public class LiquibaseConfig {
@@ -21,8 +22,12 @@ public class LiquibaseConfig {
             Connection connection = DatabaseConfig.getConnection();
             Database database =
                     DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
+            String query = "CREATE SCHEMA IF NOT EXISTS liquibase_logs;";
+            try (Statement statement = connection.createStatement()){
+                statement.execute(query);
+            }
             database.setDefaultSchemaName("coworking");
-            database.setLiquibaseSchemaName("liquibase logs");
+            database.setLiquibaseSchemaName("liquibase_logs");
             Liquibase liquibase = new Liquibase(properties.getProperty("liquibase.changelog"), new ClassLoaderResourceAccessor(), database);
             liquibase.update();
             connection.close();

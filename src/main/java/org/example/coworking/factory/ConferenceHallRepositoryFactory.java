@@ -1,10 +1,6 @@
 package org.example.coworking.factory;
 
-import org.example.coworking.model.ConferenceHall;
 import org.example.coworking.repository.ConferenceHallRepository;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Фабрика для создания объектов типа ConferenceHallRepository.
@@ -19,7 +15,6 @@ public class ConferenceHallRepositoryFactory implements CoworkingFactory<Confere
      */
     @Override
     public ConferenceHallRepository create() {
-        Map<Integer, ConferenceHall> conferenceHallMap = new HashMap<>();
-        return new ConferenceHallRepository(conferenceHallMap);
+        return new ConferenceHallRepository();
     }
 }

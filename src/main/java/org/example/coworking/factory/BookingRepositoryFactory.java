@@ -1,10 +1,6 @@
 package org.example.coworking.factory;
 
-import org.example.coworking.model.Booking;
 import org.example.coworking.repository.BookingRepository;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Фабрика для создания объектов типа BookingRepository.
@@ -19,7 +15,6 @@ public class BookingRepositoryFactory implements CoworkingFactory<BookingReposit
      */
     @Override
     public BookingRepository create() {
-        Map<Integer, Booking> bookingMap = new HashMap<>();
-        return new BookingRepository(bookingMap);
+        return new BookingRepository();
     }
 }

@@ -5,6 +5,8 @@ import org.example.coworking.model.enums.ResourceType;
 import org.example.coworking.model.Booking;
 import org.example.coworking.model.User;
 import org.example.coworking.repository.BookingRepository;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Collection;
 
@@ -20,7 +22,7 @@ public class BookingService {
      *
      * @param booking The booking to add.
      */
-    public void addBooking(Booking booking) {
+    public void addBooking(Booking booking) throws SQLException, IOException {
         bookingRepository.addBooking(booking);
     }
 
@@ -38,8 +40,17 @@ public class BookingService {
      *
      * @return A collection of all bookings.
      */
-    public Collection<Booking> getAllBookings() {
+    public Collection<Booking> getAllBookings() throws IOException {
         return bookingRepository.getAllBookings();
+    }
+
+    /**
+     * Updates a booking based on its ID to the repository.
+     *
+     * @param booking The booking to update.
+     */
+    public void updateBooking(Booking booking) throws IOException, SQLException {
+        bookingRepository.updateBooking(booking);
     }
 
     /**

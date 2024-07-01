@@ -6,6 +6,7 @@ import org.example.coworking.model.Workplace;
 import org.example.coworking.repository.ConferenceHallRepository;
 import org.example.coworking.repository.WorkplaceRepository;
 
+import java.io.IOException;
 import java.util.Collection;
 
 /**
@@ -48,7 +49,7 @@ public class CoworkingSpaceService {
      *
      * @param conferenceHall the conference hall to add.
      */
-    public void addConferenceHall(ConferenceHall conferenceHall) {
+    public void addConferenceHall(ConferenceHall conferenceHall) throws IOException {
         conferenceHallRepository.addConferenceHall(conferenceHall);
     }
 

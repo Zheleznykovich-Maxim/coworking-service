@@ -26,7 +26,7 @@ public class BookingRepository {
      */
     public Collection<Booking> getAllBookings() throws IOException {
         try (Connection connection = DatabaseConfig.getConnection()) {
-            String query = "SELECT * FROM coworking.booking";
+            String query = "SELECT * FROM coworking.bookings";
             try (Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery(query)) {
                     Collection<Booking> bookings = new ArrayList<>();
@@ -58,10 +58,10 @@ public class BookingRepository {
                 }
             }
 
-            String insertQuery = "INSERT INTO coworking.booking " +
+            String insertQuery = "INSERT INTO coworking.bookings " +
                     "(id, user_id, resource_id, resource_name, start_time, end_time, resource_type, is_available)" +
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-            try (PreparedStatement preparedStatement = connection.prepareStatement(insertQuery, new String[]{"id"})) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(insertQuery)) {
                 preparedStatement.setInt(1, booking.getId());
                 preparedStatement.setInt(2, booking.getUserId());
                 preparedStatement.setInt(3, booking.getResourceId());
@@ -84,7 +84,7 @@ public class BookingRepository {
      */
     public void removeBookingById(int bookingId) {
         try (Connection connection = DatabaseConfig.getConnection()) {
-            String query = "DELETE FROM coworking.booking WHERE id = ?";
+            String query = "DELETE FROM coworking.bookings WHERE id = ?";
             try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
                 preparedStatement.setInt(1, bookingId);
                 preparedStatement.executeUpdate();
@@ -101,7 +101,7 @@ public class BookingRepository {
      */
     public void updateBooking(Booking booking) throws SQLException, IOException {
         try (Connection connection = DatabaseConfig.getConnection()) {
-            String query = "UPDATE coworking.booking SET user_id = ?, resource_id = ?, resource_name = ?, start_time = ?, end_time = ?, resource_type = ?, is_available = ? WHERE id = ?";
+            String query = "UPDATE coworking.bookings SET user_id = ?, resource_id = ?, resource_name = ?, start_time = ?, end_time = ?, resource_type = ?, is_available = ? WHERE id = ?";
             try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
                 preparedStatement.setInt(1, booking.getUserId());
                 preparedStatement.setInt(2, booking.getResourceId());
@@ -125,7 +125,7 @@ public class BookingRepository {
      */
     public Booking findBookingById(int bookingId) {
         try (Connection connection = DatabaseConfig.getConnection()) {
-            String query = "SELECT * FROM coworking.booking WHERE id = ?";
+            String query = "SELECT * FROM coworking.bookings WHERE id = ?";
             try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
                 preparedStatement.setInt(1, bookingId);
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -148,7 +148,7 @@ public class BookingRepository {
      */
     public Collection<Booking> filterBookingsByDate(LocalDate date) {
         try (Connection connection = DatabaseConfig.getConnection()) {
-            String query = "SELECT * FROM coworking.booking WHERE DATE(start_time) = ? OR DATE(end_time) = ?";
+            String query = "SELECT * FROM coworking.bookings WHERE DATE(start_time) = ? OR DATE(end_time) = ?";
             try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
                 preparedStatement.setDate(1, Date.valueOf(date));
                 preparedStatement.setDate(2, Date.valueOf(date));
@@ -173,7 +173,7 @@ public class BookingRepository {
      */
     public Collection<Booking> filterBookingsByResource(ResourceType resourceType) {
         try (Connection connection = DatabaseConfig.getConnection()) {
-            String query = "SELECT * FROM coworking.booking WHERE resource_type = ?";
+            String query = "SELECT * FROM coworking.bookings WHERE resource_type = ?";
             try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
                 preparedStatement.setString(1, resourceType.name());
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -197,7 +197,7 @@ public class BookingRepository {
      */
     public Collection<Booking> filterBookingsByUser(User user) {
         try (Connection connection = DatabaseConfig.getConnection()) {
-            String query = "SELECT * FROM coworking.booking WHERE user_id = ?";
+            String query = "SELECT * FROM coworking.bookings WHERE user_id = ?";
             try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
                 preparedStatement.setInt(1, user.getId());
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {

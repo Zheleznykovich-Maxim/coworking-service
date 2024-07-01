@@ -7,13 +7,13 @@
         logicalFilePath="db/changelog/main-changelog.xml">
 
     <changeSet id="v2-2" author="Maxim Zheleznykovich">
-        <insert tableName="conference_hall">
+        <insert tableName="conference_halls">
             <column name="id" valueSequenceNext="conference_hall_seq"/>
             <column name="name" value="Main Hall"/>
             <column name="is_available" value="true"/>
         </insert>
 
-        <insert tableName="conference_hall">
+        <insert tableName="conference_halls">
             <column name="id" valueSequenceNext="conference_hall_seq"/>
             <column name="name" value="Small Hall"/>
             <column name="is_available" value="true"/>

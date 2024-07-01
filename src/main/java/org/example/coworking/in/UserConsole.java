@@ -207,19 +207,9 @@ public class UserConsole {
             switch (command) {
                 case 1 -> {
                     System.out.println("Создание рабочего места");
-                    System.out.print("Введите идентификатор: ");
-                    int id = in.nextInt();
-                    in.nextLine();
-                    Workplace workplace = coworkingSpaceService.findWorkplaceById(id);
-
-                    if (workplace != null) {
-                        System.out.println("Рабочее место с таким id уже существует!");
-                        continue;
-                    }
-
                     System.out.print("Введите название: ");
                     String name = in.nextLine();
-                    coworkingSpaceService.addWorkplace(new Workplace(id, name, true));
+                    coworkingSpaceService.addWorkplace(new Workplace(name, true));
                 }
                 case 2 -> {
                     System.out.println("Обновление рабочего места");
@@ -259,7 +249,7 @@ public class UserConsole {
                     int id = in.nextInt();
                     Workplace workplace = coworkingSpaceService.findWorkplaceById(id);
 
-                    if (workplace != null) {
+                    if (workplace == null) {
                         System.out.println("Рабочго места с таким id не существует!");
                         continue;
                     }
@@ -314,19 +304,9 @@ public class UserConsole {
             switch (command) {
                 case 1 -> {
                     System.out.println("Создание конференц-зала");
-                    System.out.print("Введите идентификатор: ");
-                    int id = in.nextInt();
-                    in.nextLine();
-                    ConferenceHall conferenceHall = coworkingSpaceService.findConferenceHallById(id);
-
-                    if (conferenceHall != null) {
-                        System.out.println("Конференц-зал с таким id уже существует!");
-                        continue;
-                    }
-
                     System.out.print("Введите название: ");
                     String name = in.nextLine();
-                    coworkingSpaceService.addConferenceHall(new ConferenceHall(id, name, true));
+                    coworkingSpaceService.addConferenceHall(new ConferenceHall(name, true));
                 }
                 case 2 -> {
                     System.out.println("Обновление конференц-зала");
@@ -335,7 +315,7 @@ public class UserConsole {
                     in.nextLine();
                     ConferenceHall conferenceHall = coworkingSpaceService.findConferenceHallById(id);
 
-                    if (conferenceHall != null) {
+                    if (conferenceHall == null) {
                         System.out.println("Конференц-зал с таким id не существует!");
                         continue;
                     }
@@ -367,7 +347,7 @@ public class UserConsole {
 
                     ConferenceHall conferenceHall = coworkingSpaceService.findConferenceHallById(id);
 
-                    if (conferenceHall != null) {
+                    if (conferenceHall == null) {
                         System.out.println("Конференц-зал с таким id не существует!");
                         continue;
                     }
@@ -464,13 +444,13 @@ public class UserConsole {
                     printCollection(bookingService.filterBookingsByDate(startLocalDate));
                 }
                 case 3 -> {
-                    System.out.print("Введите id пользователя для фильтрации бронирования: ");
+                    System.out.print("Введите имя пользователя для фильтрации бронирования: ");
                     String username = in.nextLine();
                     User filterUser = userService.findUserByName(username);
                     if (filterUser != null) {
                         printCollection(bookingService.filterBookingsByUser(filterUser));
                     } else {
-                        System.out.println("Пользователь с таким username не найден!");
+                        System.out.println("Пользователь с таким id не найден!");
                     }
                 }
                 case 4 -> {

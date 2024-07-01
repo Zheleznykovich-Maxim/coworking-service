@@ -7,13 +7,13 @@
         logicalFilePath="db/changelog/main-changelog.xml">
 
     <changeSet id="v2-4" author="Maxim Zheleznykovich">
-        <insert tableName="workplace">
+        <insert tableName="workplaces">
             <column name="id" valueSequenceNext="workplace_seq"/>
             <column name="name" value="Workstation 1"/>
             <column name="is_available" value="true"/>
         </insert>
 
-        <insert tableName="workplace">
+        <insert tableName="workplaces">
             <column name="id" valueSequenceNext="workplace_seq"/>
             <column name="name" value="Workstation 2"/>
             <column name="is_available" value="false"/>

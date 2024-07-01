@@ -7,7 +7,7 @@
         logicalFilePath="db/changelog/main-changelog.xml">
 
     <changeSet id="v2-1" author="Maxim Zheleznykovich">
-        <insert tableName="booking">
+        <insert tableName="bookings">
             <column name="id" valueSequenceNext="booking_seq"/>
             <column name="user_id" value="1"/>
             <column name="resource_id" value="101"/>
@@ -18,7 +18,7 @@
             <column name="is_available" value="true"/>
         </insert>
 
-        <insert tableName="booking">
+        <insert tableName="bookings">
             <column name="id" valueSequenceNext="booking_seq"/>
             <column name="user_id" value="2"/>
             <column name="resource_id" value="102"/>

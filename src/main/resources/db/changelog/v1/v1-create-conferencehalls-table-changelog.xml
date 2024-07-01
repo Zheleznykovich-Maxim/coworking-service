@@ -8,7 +8,7 @@
         <changeSet id="v1-2" author="Maxim Zheleznykovich">
             <createSequence sequenceName="conference_hall_seq"/>
 
-            <createTable tableName="conference_hall">
+            <createTable tableName="conference_halls">
                 <column name="id" type="int" autoIncrement="true">
                     <constraints primaryKey="true" nullable="false"/>
                 </column>

@@ -1,5 +1,6 @@
 package org.example.coworking.in;
 
+import lombok.RequiredArgsConstructor;
 import org.example.coworking.model.enums.ResourceType;
 import org.example.coworking.model.enums.UserRole;
 import org.example.coworking.model.Booking;
@@ -25,26 +26,15 @@ import java.util.Scanner;
  * UserConsole processes user input and manages the logic for a coworking space management system.
  * This class handles user registration, authorization, and navigation through various commands for users and administrators.
  */
-public class UserConsole {
-    private UserService userService;
-    private CoworkingSpaceService coworkingSpaceService;
-    private BookingService bookingService;
-    private Scanner in = new Scanner(System.in);
-    private User currentUser;
-    private boolean isAuthorized = false;
 
-    /**
-     * Constructs a UserConsole object with the necessary services.
-     *
-     * @param userService          User service instance for managing user-related operations.
-     * @param coworkingSpaceService Coworking space service instance for managing space-related operations.
-     * @param bookingService       Booking service instance for managing booking-related operations.
-     */
-    public UserConsole(UserService userService, CoworkingSpaceService coworkingSpaceService, BookingService bookingService) {
-        this.userService = userService;
-        this.coworkingSpaceService = coworkingSpaceService;
-        this.bookingService = bookingService;
-    }
+@RequiredArgsConstructor
+public class UserConsole {
+    private final UserService userService;
+    private final CoworkingSpaceService coworkingSpaceService;
+    private final BookingService bookingService;
+    private final Scanner in = new Scanner(System.in);
+    private User currentUser = new User();
+    private boolean isAuthorized = false;
 
     /**
      * Runs the initial commands loop of the console application.

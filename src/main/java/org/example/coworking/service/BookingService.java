@@ -1,6 +1,6 @@
 package org.example.coworking.service;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.example.coworking.model.enums.ResourceType;
 import org.example.coworking.model.Booking;
 import org.example.coworking.model.User;
@@ -13,7 +13,7 @@ import java.util.Collection;
 /**
  * Service class for managing bookings.
  */
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class BookingService {
     private final BookingRepository bookingRepository;
 

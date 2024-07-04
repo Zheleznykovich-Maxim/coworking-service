@@ -1,4 +1,4 @@
-package org.example.coworking.entity;
+package org.example.coworking.exception;
 
 public class EntityNotFoundException extends RuntimeException {
     public EntityNotFoundException(String message) {

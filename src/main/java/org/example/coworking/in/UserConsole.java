@@ -1,7 +1,7 @@
 package org.example.coworking.in;
 
 import lombok.RequiredArgsConstructor;
-import org.example.coworking.entity.EntityNotFoundException;
+import org.example.coworking.exception.EntityNotFoundException;
 import org.example.coworking.model.enums.ResourceType;
 import org.example.coworking.model.enums.UserRole;
 import org.example.coworking.model.Booking;

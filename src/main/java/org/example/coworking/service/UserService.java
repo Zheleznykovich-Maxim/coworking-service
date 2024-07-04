@@ -1,7 +1,7 @@
 package org.example.coworking.service;
 
 import lombok.AllArgsConstructor;
-import org.example.coworking.entity.EntityNotFoundException;
+import org.example.coworking.exception.EntityNotFoundException;
 import org.example.coworking.model.User;
 import org.example.coworking.repository.UserRepository;
 

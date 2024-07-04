@@ -1,6 +1,7 @@
 package org.example.coworking.in;
 
 import lombok.RequiredArgsConstructor;
+import org.example.coworking.entity.EntityNotFoundException;
 import org.example.coworking.model.enums.ResourceType;
 import org.example.coworking.model.enums.UserRole;
 import org.example.coworking.model.Booking;
@@ -20,6 +21,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Collection;
 import java.util.InputMismatchException;
+import java.util.Optional;
 import java.util.Scanner;
 
 /**
@@ -71,6 +73,8 @@ public class UserConsole {
                 in.next();
             } catch (DateTimeParseException | IOException | SQLException e) {
                 System.out.println("Некорректный формат ввода данных бронирования. Введите корректные данные " + e.getMessage());
+            } catch (EntityNotFoundException entityNotFoundException) {
+                System.out.println(entityNotFoundException.getMessage());
             }
         }
     }
@@ -457,43 +461,34 @@ public class UserConsole {
                     System.out.println("Бронирование");
                     System.out.print("Введите идентификатор брони: ");
                     int id = in.nextInt();
-                    Booking foundBooking = bookingService.findBookingById(id);
-                    if (foundBooking != null) {
+                    Optional<Booking> foundBookingOptional = bookingService.findBookingById(id);
 
-                        if (foundBooking.getUserId() > 0 && foundBooking.getUserId() != currentUser.getId()) {
-                            System.out.println("Данная бронь уже занята другим пользователем!");
-                        } else {
-                            foundBooking.setAvailable(false);
-                            foundBooking.setUserId(currentUser.getId());
-                            bookingService.updateBooking(foundBooking);
-                        }
-
+                    Booking foundBooking = foundBookingOptional.get();
+                    if (foundBooking.getUserId() > 0 && foundBooking.getUserId() != currentUser.getId()) {
+                        System.out.println("Данная бронь уже занята другим пользователем!");
                     } else {
-                        System.out.println("Бронирования с таким id не существует!");
+                        foundBooking.setAvailable(false);
+                        foundBooking.setUserId(currentUser.getId());
+                        bookingService.updateBooking(foundBooking);
                     }
                 }
                 case 6 -> {
                     System.out.println("Отмена брони");
                     System.out.print("Введите идентификатор: ");
                     int id = in.nextInt();
-                    Booking foundBooking = bookingService.findBookingById(id);
+                    Optional<Booking> foundBookingOptional = bookingService.findBookingById(id);
 
-                    if (foundBooking != null) {
+                    Booking foundBooking = foundBookingOptional.get();
+                    if (foundBooking.getUserId() == 0) {
+                        System.out.println("Свободная бронь не может быть отменена");
 
-                        if (foundBooking.getUserId() == 0) {
-                            System.out.println("Свободная бронь не может быть отменена");
+                    } else if (foundBooking.getUserId() != currentUser.getId()) {
+                        System.out.println("Вы не можете отменить бронь другого пользователя");
 
-                        } else if (foundBooking.getUserId() != currentUser.getId()) {
-                            System.out.println("Вы не можете отменить бронь другого пользователя");
-
-                        } else {
-                            foundBooking.setAvailable(true);
-                            foundBooking.setUserId(0);
-                            bookingService.updateBooking(foundBooking);
-                        }
-
-                    } else  {
-                        System.out.println("Бронь с таким id не существует!");
+                    } else {
+                        foundBooking.setAvailable(true);
+                        foundBooking.setUserId(0);
+                        bookingService.updateBooking(foundBooking);
                     }
                 }
                 case 7 -> {

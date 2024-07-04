@@ -1,6 +1,7 @@
 package org.example.coworking.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.coworking.entity.EntityNotFoundException;
 import org.example.coworking.model.enums.ResourceType;
 import org.example.coworking.model.Booking;
 import org.example.coworking.model.User;
@@ -9,6 +10,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * Service class for managing bookings.
@@ -89,7 +91,8 @@ public class BookingService {
      * @param id The ID of the booking to find.
      * @return The booking with the specified ID, or null if not found.
      */
-    public Booking findBookingById(int id) {
-        return bookingRepository.findBookingById(id);
+    public Optional<Booking> findBookingById(int id) {
+        return Optional.ofNullable(bookingRepository.findBookingById(id))
+                .orElseThrow(() -> new EntityNotFoundException("Бронь с таким id не найдена!"));
     }
 }

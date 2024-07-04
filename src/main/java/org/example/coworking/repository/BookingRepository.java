@@ -11,6 +11,7 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 
 
 /**
@@ -123,14 +124,14 @@ public class BookingRepository {
      * @param bookingId the ID of the booking to find.
      * @return the booking with the specified ID, or null if not found.
      */
-    public Booking findBookingById(int bookingId) {
+    public Optional<Booking> findBookingById(int bookingId) {
         try (Connection connection = DatabaseConfig.getConnection()) {
             String query = "SELECT * FROM coworking.bookings WHERE id = ?";
             try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
                 preparedStatement.setInt(1, bookingId);
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     if (resultSet.next()) {
-                        return BookingMapper.resultSetToBooking(resultSet);
+                        return Optional.of(BookingMapper.resultSetToBooking(resultSet));
                     }
                 }
             }

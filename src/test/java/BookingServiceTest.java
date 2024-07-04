@@ -11,13 +11,13 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 
@@ -119,10 +119,10 @@ public class BookingServiceTest {
     public void testFindBookingById() {
         int id = 1;
         Booking booking = new Booking();
-        when(bookingRepository.findBookingById(id)).thenReturn(booking);
+        when(bookingRepository.findBookingById(id)).thenReturn(Optional.of(booking));
 
-        Booking result = bookingService.findBookingById(id);
+        Optional<Booking> result = bookingService.findBookingById(id);
 
-        Assertions.assertThat(result).isEqualTo(booking);
+        Assertions.assertThat(result.get()).isEqualTo(booking);
     }
 }

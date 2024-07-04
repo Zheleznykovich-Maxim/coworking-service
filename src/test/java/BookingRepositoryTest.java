@@ -12,6 +12,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -82,10 +83,10 @@ public class BookingRepositoryTest {
         bookingRepository.addBooking(booking);
 
         // Проверка успешности добавления
-        Booking retrievedBooking = bookingRepository.findBookingById(booking.getId());
-        assertThat(retrievedBooking).isNotNull();
-        assertThat(retrievedBooking.getUserId()).isEqualTo(booking.getUserId());
-        assertThat(retrievedBooking.getResourceId()).isEqualTo(booking.getResourceId());
+        Optional<Booking> retrievedBooking = bookingRepository.findBookingById(booking.getId());
+        assertThat(retrievedBooking).isPresent();
+        assertThat(retrievedBooking.get().getUserId()).isEqualTo(booking.getUserId());
+        assertThat(retrievedBooking.get().getResourceId()).isEqualTo(booking.getResourceId());
     }
 
     // Закрытие соединения с базой данных после всех тестов

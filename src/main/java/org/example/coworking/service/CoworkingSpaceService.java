@@ -1,6 +1,7 @@
 package org.example.coworking.service;
 
 import lombok.AllArgsConstructor;
+import org.example.coworking.entity.EntityNotFoundException;
 import org.example.coworking.model.ConferenceHall;
 import org.example.coworking.model.Workplace;
 import org.example.coworking.repository.ConferenceHallRepository;
@@ -114,7 +115,8 @@ public class CoworkingSpaceService {
      * @return the workplace with the specified ID, or null if not found.
      */
     public Workplace findWorkplaceById(int id) {
-        return workplaceRepository.findWorkplaceById(id);
+        return workplaceRepository.findWorkplaceById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Рабочее место с таким id не существует!"));
     }
 
     /**
@@ -124,6 +126,7 @@ public class CoworkingSpaceService {
      * @return the conference hall with the specified ID, or null if not found.
      */
     public ConferenceHall findConferenceHallById(int id) {
-        return conferenceHallRepository.findConferenceById(id);
+        return conferenceHallRepository.findConferenceById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Конференц-холл с таким id не существует!"));
     }
 }

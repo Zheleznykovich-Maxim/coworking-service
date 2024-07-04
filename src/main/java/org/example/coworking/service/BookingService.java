@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.Optional;
 
 /**
  * Service class for managing bookings.
@@ -91,8 +90,8 @@ public class BookingService {
      * @param id The ID of the booking to find.
      * @return The booking with the specified ID, or null if not found.
      */
-    public Optional<Booking> findBookingById(int id) {
-        return Optional.ofNullable(bookingRepository.findBookingById(id))
+    public Booking findBookingById(int id) {
+        return bookingRepository.findBookingById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Бронь с таким id не найдена!"));
     }
 }

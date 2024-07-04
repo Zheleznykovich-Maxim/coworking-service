@@ -7,6 +7,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import java.io.IOException;
 import java.sql.*;
+import java.util.Optional;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -68,7 +69,7 @@ public class UserRepositoryTest {
     void testRegisterAndFindUserByUsername() throws SQLException, IOException {
         // Создаем тестового пользователя
         User user = new User();
-        user.setUsername("testuser");
+        user.setUsername("testuser1");
         user.setPassword("password");
         user.setRole(UserRole.USER);
 
@@ -76,11 +77,12 @@ public class UserRepositoryTest {
         userRepository.registerUser(user);
 
         // Проверяем, что пользователь был успешно зарегистрирован
-        User retrievedUser = userRepository.findUserByUsername(user.getUsername());
+        Optional<User> retrievedUser = userRepository.findUserByUsername(user.getUsername());
+        User foundUser = retrievedUser.get();
         assertThat(retrievedUser).isNotNull();
-        assertThat(retrievedUser.getUsername()).isEqualTo(user.getUsername());
-        assertThat(retrievedUser.getPassword()).isEqualTo(user.getPassword());
-        assertThat(retrievedUser.getRole()).isEqualTo(user.getRole());
+        assertThat(foundUser.getUsername()).isEqualTo(user.getUsername());
+        assertThat(foundUser.getPassword()).isEqualTo(user.getPassword());
+        assertThat(foundUser.getRole()).isEqualTo(user.getRole());
     }
 
     // Закрытие соединения с базой данных после всех тестов

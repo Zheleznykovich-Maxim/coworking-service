@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Optional;
 
 /**
  * Repository class for managing users.
@@ -53,20 +54,20 @@ public class UserRepository {
      * @param username The username of the user to find.
      * @return The user object with the specified username, or null if not found.
      */
-    public User findUserByUsername(String username) {
+    public Optional<User> findUserByUsername(String username) {
         try (Connection connection = DatabaseConfig.getConnection()) {
             String query = "SELECT * FROM coworking.users WHERE username = ?";
             try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
                 preparedStatement.setString(1, username);
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     if (resultSet.next()) {
-                        return UserMapper.resultSetToUser(resultSet);
+                        return Optional.of(UserMapper.resultSetToUser(resultSet));
                     }
                 }
             }
         } catch (SQLException | IOException e) {
             throw new RuntimeException(e);
         }
-        return null;
+        return Optional.empty();
     }
 }

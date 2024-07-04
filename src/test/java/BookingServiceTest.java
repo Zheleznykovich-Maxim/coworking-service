@@ -121,8 +121,8 @@ public class BookingServiceTest {
         Booking booking = new Booking();
         when(bookingRepository.findBookingById(id)).thenReturn(Optional.of(booking));
 
-        Optional<Booking> result = bookingService.findBookingById(id);
+        Booking result = bookingService.findBookingById(id);
 
-        Assertions.assertThat(result.get()).isEqualTo(booking);
+        Assertions.assertThat(result).isEqualTo(booking);
     }
 }

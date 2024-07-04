@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * Repository class for managing workplaces.
@@ -97,21 +98,21 @@ public class WorkplaceRepository {
      * @param workplaceId The ID of the workplace to find.
      * @return The workplace with the specified ID, or null if not found.
      */
-    public Workplace findWorkplaceById(int workplaceId) {
+    public Optional<Workplace> findWorkplaceById(int workplaceId) {
         try (Connection connection = DatabaseConfig.getConnection()) {
             String query = "SELECT * FROM coworking.workplaces WHERE id = ?";
             try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
                 preparedStatement.setInt(1, workplaceId);
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     if (resultSet.next()) {
-                        return WorkplaceMapper.resultSetToWorkplace(resultSet);
+                        return Optional.of(WorkplaceMapper.resultSetToWorkplace(resultSet));
                     }
                 }
             }
         } catch (SQLException | IOException e) {
             throw new RuntimeException(e);
         }
-        return null;
+        return Optional.empty();
     }
 
     /**

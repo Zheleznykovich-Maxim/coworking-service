@@ -138,7 +138,7 @@ public class BookingRepository {
         } catch (SQLException | IOException e) {
             throw new RuntimeException(e);
         }
-        return null;
+        return Optional.empty();
     }
 
     /**

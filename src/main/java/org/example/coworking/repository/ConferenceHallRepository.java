@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * Repository class for managing ConferenceHall entities.
@@ -97,21 +98,21 @@ public class ConferenceHallRepository {
      * @param conferenceHallId the ID of the conference hall to find.
      * @return the conference hall with the specified ID, or null if not found.
      */
-    public ConferenceHall findConferenceById(int conferenceHallId) {
+    public Optional<ConferenceHall> findConferenceById(int conferenceHallId) {
         try (Connection connection = DatabaseConfig.getConnection()) {
             String query = "SELECT * FROM coworking.conference_halls WHERE id = ?";
             try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
                 preparedStatement.setInt(1, conferenceHallId);
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     if (resultSet.next()) {
-                        return ConferenceHallMapper.resultSetToConferenceHall(resultSet);
+                        return Optional.of(ConferenceHallMapper.resultSetToConferenceHall(resultSet));
                     }
                 }
             }
         } catch (SQLException | IOException e) {
             throw new RuntimeException(e);
         }
-        return null;
+        return Optional.empty();
     }
 
     /**

@@ -21,7 +21,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Collection;
 import java.util.InputMismatchException;
-import java.util.Optional;
 import java.util.Scanner;
 
 /**
@@ -86,9 +85,8 @@ public class UserConsole {
     private void registration() {
         System.out.print("Введите имя пользователя: ");
         String username = in.nextLine();
-        User user = userService.findUserByName(username);
 
-        if (user != null) {
+        if (userService.checkUsernameExists(username)) {
             System.out.println("Пользователь с таким именем уже существует!");
             return;
         }
@@ -120,12 +118,7 @@ public class UserConsole {
         String password = in.nextLine();
         User user = userService.findUserByName(username);
 
-        if (user == null) {
-            System.out.println("Пользователя с таким именем не существует!");
-            return;
-        }
-
-        boolean success = userService.login(username, password);
+        boolean success = userService.login(user);
         if (success) {
             System.out.println("Авторизация прошла успешно.");
             currentUser = userService.findUserByName(username);
@@ -441,11 +434,9 @@ public class UserConsole {
                     System.out.print("Введите имя пользователя для фильтрации бронирования: ");
                     String username = in.nextLine();
                     User filterUser = userService.findUserByName(username);
-                    if (filterUser != null) {
-                        printCollection(bookingService.filterBookingsByUser(filterUser));
-                    } else {
-                        System.out.println("Пользователь с таким id не найден!");
-                    }
+
+                    printCollection(bookingService.filterBookingsByUser(filterUser));
+
                 }
                 case 4 -> {
                     ConsoleUI.printResourceTypes();
@@ -461,9 +452,8 @@ public class UserConsole {
                     System.out.println("Бронирование");
                     System.out.print("Введите идентификатор брони: ");
                     int id = in.nextInt();
-                    Optional<Booking> foundBookingOptional = bookingService.findBookingById(id);
+                    Booking foundBooking = bookingService.findBookingById(id);
 
-                    Booking foundBooking = foundBookingOptional.get();
                     if (foundBooking.getUserId() > 0 && foundBooking.getUserId() != currentUser.getId()) {
                         System.out.println("Данная бронь уже занята другим пользователем!");
                     } else {
@@ -476,9 +466,8 @@ public class UserConsole {
                     System.out.println("Отмена брони");
                     System.out.print("Введите идентификатор: ");
                     int id = in.nextInt();
-                    Optional<Booking> foundBookingOptional = bookingService.findBookingById(id);
+                    Booking foundBooking = bookingService.findBookingById(id);
 
-                    Booking foundBooking = foundBookingOptional.get();
                     if (foundBooking.getUserId() == 0) {
                         System.out.println("Свободная бронь не может быть отменена");
 

@@ -1,6 +1,7 @@
 package org.example.coworking.service;
 
 import lombok.AllArgsConstructor;
+import org.example.coworking.entity.EntityNotFoundException;
 import org.example.coworking.model.User;
 import org.example.coworking.repository.UserRepository;
 
@@ -23,13 +24,13 @@ public class UserService {
     /**
      * Logs in a user by checking if the credentials match.
      *
-     * @param username the user attempting to log in.
-     * @param password the user attempting to log in
+     * @param user the user attempting to log in.
+
      * @return true if the credentials match, otherwise false.
      */
-    public boolean login(String username, String password) {
-        return userRepository.findUserByUsername(username).getPassword()
-                .equals(password);
+    public boolean login(User user) {
+        return userRepository.findUserByUsername(user.getUsername()).get().getPassword()
+                .equals(user.getPassword());
     }
 
     /**
@@ -39,6 +40,17 @@ public class UserService {
      * @return the user with the specified username, or null if not found.
      */
     public User findUserByName(String username) {
-        return userRepository.findUserByUsername(username);
+        return userRepository.findUserByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException("Пользователь с таким именем не найдено!"));
+    }
+
+    /**
+     * check a user for existence.
+     *
+     * @param username the username to search for.
+     * @return true if user exists, or false if not found.
+     */
+    public boolean checkUsernameExists(String username) {
+        return userRepository.findUserByUsername(username).isPresent();
     }
 }

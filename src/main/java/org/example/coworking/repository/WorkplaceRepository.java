@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.example.coworking.config.DatabaseConfig;
 import org.example.coworking.mapper.WorkplaceMapper;
 import org.example.coworking.model.Workplace;
+import org.example.coworking.repository.query.WorkplaceQuery;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -27,16 +28,14 @@ public class WorkplaceRepository {
      */
     public Collection<Workplace> getAllWorkplaces() {
         try (Connection connection = DatabaseConfig.getConnection()) {
-            String query = "SELECT * FROM coworking.workplaces";
+
             try (Statement statement = connection.createStatement();
-                 ResultSet resultSet = statement.executeQuery(query)) {
+                 ResultSet resultSet = statement.executeQuery(WorkplaceQuery.GET_ALL_WORKPLACES)) {
                 Collection<Workplace> workplaces = new ArrayList<>();
                 while (resultSet.next()) {
                     workplaces.add(WorkplaceMapper.resultSetToWorkplace(resultSet));
                 }
                 return workplaces;
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
             }
         } catch (SQLException | IOException e) {
             throw new RuntimeException(e);
@@ -50,19 +49,16 @@ public class WorkplaceRepository {
      */
     public void addWorkplace(Workplace workplace) {
         try (Connection connection = DatabaseConfig.getConnection()) {
-            String getIdQuery = "SELECT nextval('coworking.workplace_seq')";
+
             try (Statement statement = connection.createStatement()) {
-                ResultSet resultSet = statement.executeQuery(getIdQuery);
+                ResultSet resultSet = statement.executeQuery(WorkplaceQuery.GET_ID_NEXT_WORKPLACE);
                 if (resultSet.next()) {
                     int generatedId = resultSet.getInt(1);
                     workplace.setId(generatedId);
                 }
             }
 
-            String insertQuery = "INSERT INTO coworking.workplaces " +
-                    "(id, name, is_available)" +
-                    "VALUES (?, ?, ?)";
-            try (PreparedStatement preparedStatement = connection.prepareStatement(insertQuery)) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(WorkplaceQuery.ADD_WORKPLACE)) {
                 preparedStatement.setInt(1, workplace.getId());
                 preparedStatement.setString(2, workplace.getName());
                 preparedStatement.setBoolean(3, workplace.isAvailable());
@@ -70,6 +66,7 @@ public class WorkplaceRepository {
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             }
+
         } catch (SQLException | IOException e) {
             throw new RuntimeException(e);
         }
@@ -82,8 +79,8 @@ public class WorkplaceRepository {
      */
     public void removeWorkplaceById(int workplaceId) {
         try (Connection connection = DatabaseConfig.getConnection()) {
-            String query = "DELETE FROM coworking.workplaces WHERE id = ?";
-            try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            try (PreparedStatement preparedStatement = connection.prepareStatement(WorkplaceQuery.DELETE_WORKPLACE)) {
                 preparedStatement.setInt(1, workplaceId);
                 preparedStatement.executeUpdate();
             }
@@ -100,9 +97,10 @@ public class WorkplaceRepository {
      */
     public Optional<Workplace> findWorkplaceById(int workplaceId) {
         try (Connection connection = DatabaseConfig.getConnection()) {
-            String query = "SELECT * FROM coworking.workplaces WHERE id = ?";
-            try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            try (PreparedStatement preparedStatement = connection.prepareStatement(WorkplaceQuery.FIND_WORKPLACE_BY_ID)) {
                 preparedStatement.setInt(1, workplaceId);
+
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     if (resultSet.next()) {
                         return Optional.of(WorkplaceMapper.resultSetToWorkplace(resultSet));
@@ -122,8 +120,8 @@ public class WorkplaceRepository {
      */
     public void updateWorkplace(Workplace workplace) {
         try (Connection connection = DatabaseConfig.getConnection()) {
-            String query = "UPDATE coworking.workplaces SET name = ?, is_available = ? WHERE id = ?";
-            try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            try (PreparedStatement preparedStatement = connection.prepareStatement(WorkplaceQuery.UPDATE_WORKPLACE)) {
                 preparedStatement.setString(1, workplace.getName());
                 preparedStatement.setBoolean(2, workplace.isAvailable());
                 preparedStatement.setInt(3, workplace.getId());
@@ -142,16 +140,14 @@ public class WorkplaceRepository {
      */
     public Collection<Workplace> getAvailableWorkplaces() {
         try (Connection connection = DatabaseConfig.getConnection()) {
-            String query = "SELECT * FROM coworking.workplaces WHERE is_available = true";
+
             try (Statement statement = connection.createStatement();
-                 ResultSet resultSet = statement.executeQuery(query)) {
+                 ResultSet resultSet = statement.executeQuery(WorkplaceQuery.GET_ALL_AVAILABLE_WORKPLACES)) {
                 Collection<Workplace> workplaces = new ArrayList<>();
                 while (resultSet.next()) {
                     workplaces.add(WorkplaceMapper.resultSetToWorkplace(resultSet));
                 }
                 return workplaces;
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
             }
         } catch (SQLException | IOException e) {
             throw new RuntimeException(e);

@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import org.example.coworking.config.DatabaseConfig;
 import org.example.coworking.mapper.ConferenceHallMapper;
 import org.example.coworking.model.ConferenceHall;
+import org.example.coworking.repository.query.ConferenceHallQuery;
+
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -27,16 +29,14 @@ public class ConferenceHallRepository {
      */
     public Collection<ConferenceHall> getAllConferenceHalls() {
         try (Connection connection = DatabaseConfig.getConnection()) {
-            String query = "SELECT * FROM coworking.conference_halls";
+
             try (Statement statement = connection.createStatement();
-                 ResultSet resultSet = statement.executeQuery(query)) {
+                 ResultSet resultSet = statement.executeQuery(ConferenceHallQuery.GET_ALL_CONFERENCE_HALLS)) {
                 Collection<ConferenceHall> conferenceHalls = new ArrayList<>();
                 while (resultSet.next()) {
                     conferenceHalls.add(ConferenceHallMapper.resultSetToConferenceHall(resultSet));
                 }
                 return conferenceHalls;
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
             }
         } catch (SQLException | IOException e) {
             throw new RuntimeException(e);
@@ -50,25 +50,20 @@ public class ConferenceHallRepository {
      */
     public void addConferenceHall(ConferenceHall conferenceHall) throws IOException {
         try (Connection connection = DatabaseConfig.getConnection()) {
-            String getIdQuery = "SELECT nextval('coworking.conference_hall_seq')";
+
             try (Statement statement = connection.createStatement()) {
-                ResultSet resultSet = statement.executeQuery(getIdQuery);
+                ResultSet resultSet = statement.executeQuery(ConferenceHallQuery.GET_ID_NEXT_CONFERENCE_HALL);
                 if (resultSet.next()) {
                     int generatedId = resultSet.getInt(1);
                     conferenceHall.setId(generatedId);
                 }
             }
 
-            String insertQuery = "INSERT INTO coworking.conference_halls " +
-                    "(id, name, is_available)" +
-                    "VALUES (?, ?, ?)";
-            try (PreparedStatement preparedStatement = connection.prepareStatement(insertQuery)) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(ConferenceHallQuery.ADD_CONFERENCE_HALL)) {
                 preparedStatement.setInt(1, conferenceHall.getId());
                 preparedStatement.setString(2, conferenceHall.getName());
                 preparedStatement.setBoolean(3, conferenceHall.isAvailable());
                 preparedStatement.executeUpdate();
-            } catch (SQLException ex) {
-                throw new RuntimeException(ex);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -82,8 +77,8 @@ public class ConferenceHallRepository {
      */
     public void removeConferenceHallById(int conferenceHallId) {
         try (Connection connection = DatabaseConfig.getConnection()) {
-            String query = "DELETE FROM coworking.conference_halls WHERE id = ?";
-            try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            try (PreparedStatement preparedStatement = connection.prepareStatement(ConferenceHallQuery.DELETE_CONFERENCE_HALL)) {
                 preparedStatement.setInt(1, conferenceHallId);
                 preparedStatement.executeUpdate();
             }
@@ -100,9 +95,10 @@ public class ConferenceHallRepository {
      */
     public Optional<ConferenceHall> findConferenceById(int conferenceHallId) {
         try (Connection connection = DatabaseConfig.getConnection()) {
-            String query = "SELECT * FROM coworking.conference_halls WHERE id = ?";
-            try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            try (PreparedStatement preparedStatement = connection.prepareStatement(ConferenceHallQuery.FIND_CONFERENCE_HALL_BY_ID)) {
                 preparedStatement.setInt(1, conferenceHallId);
+
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     if (resultSet.next()) {
                         return Optional.of(ConferenceHallMapper.resultSetToConferenceHall(resultSet));
@@ -122,8 +118,8 @@ public class ConferenceHallRepository {
      */
     public void updateConferenceHall(ConferenceHall conferenceHall) {
         try (Connection connection = DatabaseConfig.getConnection()) {
-            String query = "UPDATE coworking.conference_halls SET name = ?, is_available = ? WHERE id = ?";
-            try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            try (PreparedStatement preparedStatement = connection.prepareStatement(ConferenceHallQuery.UPDATE_CONFERENCE_HALL)) {
                 preparedStatement.setString(1, conferenceHall.getName());
                 preparedStatement.setBoolean(2, conferenceHall.isAvailable());
                 preparedStatement.setInt(3, conferenceHall.getId());
@@ -142,16 +138,14 @@ public class ConferenceHallRepository {
      */
     public Collection<ConferenceHall> getAvailableConferenceHalls() {
         try (Connection connection = DatabaseConfig.getConnection()) {
-            String query = "SELECT * FROM coworking.conference_halls WHERE is_available = true";
+
             try (Statement statement = connection.createStatement();
-                 ResultSet resultSet = statement.executeQuery(query)) {
+                 ResultSet resultSet = statement.executeQuery(ConferenceHallQuery.GET_ALL_AVAILABLE_CONFERENCE_HALLS)) {
                 Collection<ConferenceHall> conferenceHalls = new ArrayList<>();
                 while (resultSet.next()) {
                     conferenceHalls.add(ConferenceHallMapper.resultSetToConferenceHall(resultSet));
                 }
                 return conferenceHalls;
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
             }
         } catch (SQLException | IOException e) {
             throw new RuntimeException(e);

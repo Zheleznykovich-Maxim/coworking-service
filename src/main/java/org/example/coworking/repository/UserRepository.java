@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import org.example.coworking.config.DatabaseConfig;
 import org.example.coworking.mapper.UserMapper;
 import org.example.coworking.model.User;
+import org.example.coworking.repository.query.UserQuery;
+
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -25,18 +27,16 @@ public class UserRepository {
      */
     public void registerUser(User user) {
         try (Connection connection = DatabaseConfig.getConnection()) {
-            String getIdQuery = "SELECT nextval('coworking.user_seq')";
+
             try (Statement statement = connection.createStatement()){
-                ResultSet resultSet = statement.executeQuery(getIdQuery);
+                ResultSet resultSet = statement.executeQuery(UserQuery.GET_ID_NEXT_USER);
                 if (resultSet.next()) {
                     int generatedId = resultSet.getInt(1);
                     user.setId(generatedId);
                 }
             }
-            String insertQuery = "INSERT INTO coworking.users " +
-                    "(id, username, password, role)" +
-                    "VALUES (?, ?, ?, ?)";
-            try (PreparedStatement preparedStatement = connection.prepareStatement(insertQuery)) {
+
+            try (PreparedStatement preparedStatement = connection.prepareStatement(UserQuery.ADD_USER)) {
                 preparedStatement.setInt(1, user.getId());
                 preparedStatement.setString(2, user.getUsername());
                 preparedStatement.setString(3, user.getPassword());
@@ -56,9 +56,10 @@ public class UserRepository {
      */
     public Optional<User> findUserByUsername(String username) {
         try (Connection connection = DatabaseConfig.getConnection()) {
-            String query = "SELECT * FROM coworking.users WHERE username = ?";
-            try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            try (PreparedStatement preparedStatement = connection.prepareStatement(UserQuery.FIND_USER_BY_USERNAME)) {
                 preparedStatement.setString(1, username);
+
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     if (resultSet.next()) {
                         return Optional.of(UserMapper.resultSetToUser(resultSet));

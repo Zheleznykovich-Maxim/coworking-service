@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd"
+        logicalFilePath="db/changelog/main-changelog.xml">
+
+    <changeSet id="v2-4" author="Maxim Zheleznykovich">
+        <insert tableName="workplaces">
+            <column name="id" valueSequenceNext="workplace_seq"/>
+            <column name="name" value="Workstation 1"/>
+            <column name="is_available" value="true"/>
+        </insert>
+
+        <insert tableName="workplaces">
+            <column name="id" valueSequenceNext="workplace_seq"/>
+            <column name="name" value="Workstation 2"/>
+            <column name="is_available" value="false"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

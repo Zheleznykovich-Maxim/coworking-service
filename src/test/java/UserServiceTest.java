@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
+import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -45,8 +45,8 @@ class UserServiceTest {
     void loginSuccessful() {
         // Arrange
         User user = new User("user1", "password1", UserRole.USER);
-        when(userRepository.findUserByUsername("user1")).thenReturn(user);
 
+        when(userRepository.findUserByUsername("user1")).thenReturn(Optional.of(user));
         // Act
         boolean result = userService.login(user);
 
@@ -59,12 +59,14 @@ class UserServiceTest {
     @DisplayName("Login Failed Test")
     void loginFailed() {
         // Arrange
-        User user = new User("user1", "wrongpassword", UserRole.USER);
+        String username = "user1";
+        String password = "wrongpassword";
+        User wrongUser = new User(username, password, UserRole.USER);
         User storedUser = new User("user1", "password1", UserRole.USER);
-        when(userRepository.findUserByUsername("user1")).thenReturn(storedUser);
+        when(userRepository.findUserByUsername("user1")).thenReturn(Optional.of(storedUser));
 
         // Act
-        boolean result = userService.login(user);
+        boolean result = userService.login(wrongUser);
 
         // Assert
         assertThat(result).isFalse();
@@ -76,7 +78,7 @@ class UserServiceTest {
     void findUserByName() {
         // Arrange
         User user = new User("user1", "password1", UserRole.USER);
-        when(userRepository.findUserByUsername("user1")).thenReturn(user);
+        when(userRepository.findUserByUsername("user1")).thenReturn(Optional.of(user));
 
         // Act
         User foundUser = userService.findUserByName("user1");

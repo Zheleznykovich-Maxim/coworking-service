@@ -1,6 +1,8 @@
 package org.example.coworking.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.example.coworking.model.enums.ResourceType;
 import java.time.LocalDateTime;
 
@@ -9,8 +11,9 @@ import java.time.LocalDateTime;
  * Each booking is uniquely identified by an id which is auto-incremented.
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Booking {
-    private static int nextBookingId = 1;
 
     /**
      * Unique identifier for the booking.
@@ -20,7 +23,7 @@ public class Booking {
     /**
      * The user who made the booking.
      */
-    private User user;
+    private int userId;
 
     /**
      * The id of the resource being booked.
@@ -56,7 +59,7 @@ public class Booking {
      * Constructs a new Booking with the given parameters.
      * The id is auto-generated and incremented.
      *
-     * @param user the user who made the booking
+     * @param userId the id of the user who made the booking
      * @param resourceId the id of the resource being booked
      * @param resourceName the name of the resource being booked
      * @param startTime the start time of the booking
@@ -64,24 +67,14 @@ public class Booking {
      * @param resourceType the type of the resource being booked
      * @param isAvailable whether the booking is currently available
      */
-    public Booking(User user, int resourceId, String resourceName, LocalDateTime startTime, LocalDateTime endTime, ResourceType resourceType, boolean isAvailable) {
-        this.id = nextBookingId++;
-        this.user = user;
+    public Booking(int userId, int resourceId, String resourceName, LocalDateTime startTime, LocalDateTime endTime, ResourceType resourceType, boolean isAvailable) {
+        this.userId = userId;
         this.resourceId = resourceId;
         this.resourceName = resourceName;
         this.startTime = startTime;
         this.endTime = endTime;
         this.resourceType = resourceType;
         this.isAvailable = isAvailable;
-    }
-
-    /**
-     * Checks if the user who made the booking is null.
-     *
-     * @return true if the user is null, false otherwise
-     */
-    public boolean isUserNull() {
-        return this.user == null;
     }
 }
 

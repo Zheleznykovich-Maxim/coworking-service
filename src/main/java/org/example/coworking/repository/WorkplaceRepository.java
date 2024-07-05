@@ -1,18 +1,25 @@
 package org.example.coworking.repository;
 
 import lombok.AllArgsConstructor;
+import org.example.coworking.config.DatabaseConfig;
+import org.example.coworking.mapper.WorkplaceMapper;
 import org.example.coworking.model.Workplace;
-
+import org.example.coworking.repository.query.WorkplaceQuery;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 /**
  * Repository class for managing workplaces.
  */
 @AllArgsConstructor
 public class WorkplaceRepository {
-    private final Map<Integer, Workplace> workplaceMap;
 
     /**
      * Retrieves all workplaces from the repository.
@@ -20,7 +27,19 @@ public class WorkplaceRepository {
      * @return A collection of all workplaces.
      */
     public Collection<Workplace> getAllWorkplaces() {
-        return workplaceMap.values();
+        try (Connection connection = DatabaseConfig.getConnection()) {
+
+            try (Statement statement = connection.createStatement();
+                 ResultSet resultSet = statement.executeQuery(WorkplaceQuery.GET_ALL_WORKPLACES)) {
+                Collection<Workplace> workplaces = new ArrayList<>();
+                while (resultSet.next()) {
+                    workplaces.add(WorkplaceMapper.resultSetToWorkplace(resultSet));
+                }
+                return workplaces;
+            }
+        } catch (SQLException | IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -29,7 +48,28 @@ public class WorkplaceRepository {
      * @param workplace The workplace to add.
      */
     public void addWorkplace(Workplace workplace) {
-        workplaceMap.put(workplace.getId(), workplace);
+        try (Connection connection = DatabaseConfig.getConnection()) {
+
+            try (Statement statement = connection.createStatement();
+                 ResultSet resultSet = statement.executeQuery(WorkplaceQuery.GET_ID_NEXT_WORKPLACE)) {
+                if (resultSet.next()) {
+                    int generatedId = resultSet.getInt(1);
+                    workplace.setId(generatedId);
+                }
+            }
+
+            try (PreparedStatement preparedStatement = connection.prepareStatement(WorkplaceQuery.ADD_WORKPLACE)) {
+                preparedStatement.setInt(1, workplace.getId());
+                preparedStatement.setString(2, workplace.getName());
+                preparedStatement.setBoolean(3, workplace.isAvailable());
+                preparedStatement.executeUpdate();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+
+        } catch (SQLException | IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -38,7 +78,15 @@ public class WorkplaceRepository {
      * @param workplaceId The ID of the workplace to remove.
      */
     public void removeWorkplaceById(int workplaceId) {
-        workplaceMap.remove(workplaceId);
+        try (Connection connection = DatabaseConfig.getConnection()) {
+
+            try (PreparedStatement preparedStatement = connection.prepareStatement(WorkplaceQuery.DELETE_WORKPLACE)) {
+                preparedStatement.setInt(1, workplaceId);
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException | IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -47,8 +95,22 @@ public class WorkplaceRepository {
      * @param workplaceId The ID of the workplace to find.
      * @return The workplace with the specified ID, or null if not found.
      */
-    public Workplace findWorkplaceById(int workplaceId) {
-        return workplaceMap.get(workplaceId);
+    public Optional<Workplace> findWorkplaceById(int workplaceId) {
+        try (Connection connection = DatabaseConfig.getConnection()) {
+
+            try (PreparedStatement preparedStatement = connection.prepareStatement(WorkplaceQuery.FIND_WORKPLACE_BY_ID)) {
+                preparedStatement.setInt(1, workplaceId);
+
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    if (resultSet.next()) {
+                        return Optional.of(WorkplaceMapper.resultSetToWorkplace(resultSet));
+                    }
+                }
+            }
+        } catch (SQLException | IOException e) {
+            throw new RuntimeException(e);
+        }
+        return Optional.empty();
     }
 
     /**
@@ -57,7 +119,18 @@ public class WorkplaceRepository {
      * @param workplace The updated workplace object.
      */
     public void updateWorkplace(Workplace workplace) {
-        workplaceMap.put(workplace.getId(), workplace);
+        try (Connection connection = DatabaseConfig.getConnection()) {
+
+            try (PreparedStatement preparedStatement = connection.prepareStatement(WorkplaceQuery.UPDATE_WORKPLACE)) {
+                preparedStatement.setString(1, workplace.getName());
+                preparedStatement.setBoolean(2, workplace.isAvailable());
+                preparedStatement.setInt(3, workplace.getId());
+
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException | IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -66,8 +139,18 @@ public class WorkplaceRepository {
      * @return A collection of all available workplaces.
      */
     public Collection<Workplace> getAvailableWorkplaces() {
-        return workplaceMap.values().stream()
-                .filter(Workplace::isAvailable)
-                .collect(Collectors.toList());
+        try (Connection connection = DatabaseConfig.getConnection()) {
+
+            try (Statement statement = connection.createStatement();
+                 ResultSet resultSet = statement.executeQuery(WorkplaceQuery.GET_ALL_AVAILABLE_WORKPLACES)) {
+                Collection<Workplace> workplaces = new ArrayList<>();
+                while (resultSet.next()) {
+                    workplaces.add(WorkplaceMapper.resultSetToWorkplace(resultSet));
+                }
+                return workplaces;
+            }
+        } catch (SQLException | IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

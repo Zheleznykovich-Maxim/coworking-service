@@ -2,6 +2,7 @@ package org.example.coworking.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.example.coworking.model.enums.UserRole;
 
 /**
@@ -9,7 +10,13 @@ import org.example.coworking.model.enums.UserRole;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class User {
+
+    /**
+     * The id of the user.
+     */
+    private int id;
     /**
      * The username of the user.
      */
@@ -24,6 +31,12 @@ public class User {
      * The role of the user.
      */
     private UserRole role;
+
+    public User(String username, String password, UserRole role) {
+        this.username = username;
+        this.password = password;
+        this.role = role;
+    }
 
     /**
      * Returns a string representation of the user.

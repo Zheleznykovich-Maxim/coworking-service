@@ -50,8 +50,8 @@ public class BookingRepository {
     public void addBooking(Booking booking) throws IOException, SQLException {
         try (Connection connection = DatabaseConfig.getConnection()) {
 
-            try (Statement statement = connection.createStatement()) {
-                ResultSet resultSet = statement.executeQuery(BookingQuery.GET_ID_NEXT_BOOKING);
+            try (Statement statement = connection.createStatement();
+                 ResultSet resultSet = statement.executeQuery(BookingQuery.GET_ID_NEXT_BOOKING)) {
                 if (resultSet.next()) {
                     int generatedId = resultSet.getInt(1);
                     booking.setId(generatedId);

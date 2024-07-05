@@ -28,8 +28,8 @@ public class UserRepository {
     public void registerUser(User user) {
         try (Connection connection = DatabaseConfig.getConnection()) {
 
-            try (Statement statement = connection.createStatement()){
-                ResultSet resultSet = statement.executeQuery(UserQuery.GET_ID_NEXT_USER);
+            try (Statement statement = connection.createStatement();
+                 ResultSet resultSet = statement.executeQuery(UserQuery.GET_ID_NEXT_USER)) {
                 if (resultSet.next()) {
                     int generatedId = resultSet.getInt(1);
                     user.setId(generatedId);

@@ -51,8 +51,8 @@ public class ConferenceHallRepository {
     public void addConferenceHall(ConferenceHall conferenceHall) throws IOException {
         try (Connection connection = DatabaseConfig.getConnection()) {
 
-            try (Statement statement = connection.createStatement()) {
-                ResultSet resultSet = statement.executeQuery(ConferenceHallQuery.GET_ID_NEXT_CONFERENCE_HALL);
+            try (Statement statement = connection.createStatement();
+                ResultSet resultSet = statement.executeQuery(ConferenceHallQuery.GET_ID_NEXT_CONFERENCE_HALL)) {
                 if (resultSet.next()) {
                     int generatedId = resultSet.getInt(1);
                     conferenceHall.setId(generatedId);

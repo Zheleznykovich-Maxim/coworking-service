@@ -12,7 +12,7 @@ import org.mockito.MockitoAnnotations;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
-
+import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -141,7 +141,7 @@ public class CoworkingSpaceServiceTest {
     public void testFindWorkplaceById() {
         int id = 1;
         Workplace workplace = new Workplace(id, "Desk 1", true);
-        when(workplaceRepository.findWorkplaceById(id)).thenReturn(workplace);
+        when(workplaceRepository.findWorkplaceById(id)).thenReturn(Optional.of(workplace));
 
         Workplace foundWorkplace = coworkingSpaceService.findWorkplaceById(id);
 
@@ -154,7 +154,7 @@ public class CoworkingSpaceServiceTest {
     public void testFindConferenceHallById() {
         int id = 1;
         ConferenceHall conferenceHall = new ConferenceHall(id, "Main Hall", true);
-        when(conferenceHallRepository.findConferenceById(id)).thenReturn(conferenceHall);
+        when(conferenceHallRepository.findConferenceById(id)).thenReturn(Optional.of(conferenceHall));
 
         ConferenceHall foundConferenceHall = coworkingSpaceService.findConferenceHallById(id);
 

@@ -1,22 +1,23 @@
 package org.example.coworking.config;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
+import java.io.InputStream;
 import java.util.Properties;
 
 public class DatabaseConfig {
-    public static Connection getConnection() throws IOException {
-        try {
+    public static DatabaseConnection getDatabaseConnection() throws IOException {
+        try (InputStream input = DatabaseConfig.class.getClassLoader().getResourceAsStream("application.properties")) {
             Properties properties = new Properties();
-            properties.load(new FileInputStream("src/main/resources/application.properties"));
+            if (input == null) {
+                throw new IOException("Sorry, unable to find application.properties");
+            }
+            properties.load(input);
 
             String url = properties.getProperty("db.url");
             String username = properties.getProperty("db.username");
             String password = properties.getProperty("db.password");
 
-            return DriverManager.getConnection(url, username, password);
+            return new DatabaseConnection(url, username, password);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             throw new IOException("Failed to connect to database", e);

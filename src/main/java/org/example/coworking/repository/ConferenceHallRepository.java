@@ -1,12 +1,10 @@
 package org.example.coworking.repository;
 
 import lombok.AllArgsConstructor;
-import org.example.coworking.config.DatabaseConfig;
+import org.example.coworking.config.DatabaseConnection;
 import org.example.coworking.mapper.ConferenceHallMapper;
 import org.example.coworking.model.ConferenceHall;
 import org.example.coworking.repository.query.ConferenceHallQuery;
-
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,6 +19,7 @@ import java.util.Optional;
  */
 @AllArgsConstructor
 public class ConferenceHallRepository {
+    private final DatabaseConnection databaseConnection;
 
     /**
      * Retrieves all conference halls.
@@ -28,7 +27,7 @@ public class ConferenceHallRepository {
      * @return a collection of all conference halls.
      */
     public Collection<ConferenceHall> getAllConferenceHalls() {
-        try (Connection connection = DatabaseConfig.getConnection()) {
+        try (Connection connection = databaseConnection.getConnection()) {
 
             try (Statement statement = connection.createStatement();
                  ResultSet resultSet = statement.executeQuery(ConferenceHallQuery.GET_ALL_CONFERENCE_HALLS)) {
@@ -38,7 +37,7 @@ public class ConferenceHallRepository {
                 }
                 return conferenceHalls;
             }
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
@@ -48,8 +47,8 @@ public class ConferenceHallRepository {
      *
      * @param conferenceHall the conference hall to add.
      */
-    public void addConferenceHall(ConferenceHall conferenceHall) throws IOException {
-        try (Connection connection = DatabaseConfig.getConnection()) {
+    public void addConferenceHall(ConferenceHall conferenceHall) {
+        try (Connection connection = databaseConnection.getConnection()) {
 
             try (Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery(ConferenceHallQuery.GET_ID_NEXT_CONFERENCE_HALL)) {
@@ -76,13 +75,13 @@ public class ConferenceHallRepository {
      * @param conferenceHallId the ID of the conference hall to remove.
      */
     public void removeConferenceHallById(int conferenceHallId) {
-        try (Connection connection = DatabaseConfig.getConnection()) {
+        try (Connection connection = databaseConnection.getConnection()) {
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(ConferenceHallQuery.DELETE_CONFERENCE_HALL)) {
                 preparedStatement.setInt(1, conferenceHallId);
                 preparedStatement.executeUpdate();
             }
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
@@ -94,7 +93,7 @@ public class ConferenceHallRepository {
      * @return the conference hall with the specified ID, or null if not found.
      */
     public Optional<ConferenceHall> findConferenceById(int conferenceHallId) {
-        try (Connection connection = DatabaseConfig.getConnection()) {
+        try (Connection connection = databaseConnection.getConnection()) {
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(ConferenceHallQuery.FIND_CONFERENCE_HALL_BY_ID)) {
                 preparedStatement.setInt(1, conferenceHallId);
@@ -105,7 +104,7 @@ public class ConferenceHallRepository {
                     }
                 }
             }
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
         return Optional.empty();
@@ -117,7 +116,7 @@ public class ConferenceHallRepository {
      * @param conferenceHall the conference hall with updated information.
      */
     public void updateConferenceHall(ConferenceHall conferenceHall) {
-        try (Connection connection = DatabaseConfig.getConnection()) {
+        try (Connection connection = databaseConnection.getConnection()) {
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(ConferenceHallQuery.UPDATE_CONFERENCE_HALL)) {
                 preparedStatement.setString(1, conferenceHall.getName());
@@ -126,7 +125,7 @@ public class ConferenceHallRepository {
 
                 preparedStatement.executeUpdate();
             }
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
@@ -137,7 +136,7 @@ public class ConferenceHallRepository {
      * @return a collection of available conference halls.
      */
     public Collection<ConferenceHall> getAvailableConferenceHalls() {
-        try (Connection connection = DatabaseConfig.getConnection()) {
+        try (Connection connection = databaseConnection.getConnection()) {
 
             try (Statement statement = connection.createStatement();
                  ResultSet resultSet = statement.executeQuery(ConferenceHallQuery.GET_ALL_AVAILABLE_CONFERENCE_HALLS)) {
@@ -147,7 +146,7 @@ public class ConferenceHallRepository {
                 }
                 return conferenceHalls;
             }
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }

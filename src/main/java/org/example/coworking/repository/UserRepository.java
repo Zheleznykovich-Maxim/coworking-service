@@ -1,12 +1,10 @@
 package org.example.coworking.repository;
 
 import lombok.AllArgsConstructor;
-import org.example.coworking.config.DatabaseConfig;
+import org.example.coworking.config.DatabaseConnection;
 import org.example.coworking.mapper.UserMapper;
 import org.example.coworking.model.User;
 import org.example.coworking.repository.query.UserQuery;
-
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,6 +17,7 @@ import java.util.Optional;
  */
 @AllArgsConstructor
 public class UserRepository {
+    private final DatabaseConnection databaseConnection;
 
     /**
      * Registers a new user in the repository.
@@ -26,7 +25,7 @@ public class UserRepository {
      * @param user The user object to register.
      */
     public void registerUser(User user) {
-        try (Connection connection = DatabaseConfig.getConnection()) {
+        try (Connection connection = databaseConnection.getConnection()) {
 
             try (Statement statement = connection.createStatement();
                  ResultSet resultSet = statement.executeQuery(UserQuery.GET_ID_NEXT_USER)) {
@@ -43,7 +42,7 @@ public class UserRepository {
                 preparedStatement.setString(4, user.getRole().name());
                 preparedStatement.executeUpdate();
             }
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
@@ -55,7 +54,7 @@ public class UserRepository {
      * @return The user object with the specified username, or null if not found.
      */
     public Optional<User> findUserByUsername(String username) {
-        try (Connection connection = DatabaseConfig.getConnection()) {
+        try (Connection connection = databaseConnection.getConnection()) {
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(UserQuery.FIND_USER_BY_USERNAME)) {
                 preparedStatement.setString(1, username);
@@ -66,7 +65,7 @@ public class UserRepository {
                     }
                 }
             }
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
         return Optional.empty();

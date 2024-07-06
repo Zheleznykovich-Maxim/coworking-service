@@ -12,29 +12,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Testcontainers
 public class BookingRepositoryTest {
-
+    private BookingRepository bookingRepository;
 
     @BeforeAll
-    static void init() throws SQLException {
+    static void init() {
         DatabaseTestContainer.startContainer();
-        String createTableSQL = "CREATE TABLE IF NOT EXISTS bookings (" +
-                "id SERIAL PRIMARY KEY," +
-                "user_id INT," +
-                "resource_id INT," +
-                "resource_name VARCHAR(255)," +
-                "start_time TIMESTAMP," +
-                "end_time TIMESTAMP," +
-                "resource_type VARCHAR(50)," +
-                "is_available BOOLEAN" +
-                ")";
-        DatabaseTestContainer.initializeDatabase(createTableSQL);
+    }
+
+    @BeforeEach
+    void setUp() {
+        bookingRepository = new BookingRepository(DatabaseTestContainer.getDatabaseConnection());
     }
 
     @Test
     @DisplayName("Test addBooking method")
     void testAddBooking() throws SQLException, IOException {
-        BookingRepository bookingRepository = new BookingRepository();
-
         Booking booking = new Booking();
         booking.setUserId(1);
         booking.setResourceId(1);
@@ -53,7 +45,7 @@ public class BookingRepositoryTest {
     }
 
     @AfterAll
-    static void tearDown() throws SQLException {
+    static void tearDown() {
         DatabaseTestContainer.stopContainer();
     }
 }

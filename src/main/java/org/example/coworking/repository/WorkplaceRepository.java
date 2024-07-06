@@ -1,11 +1,11 @@
 package org.example.coworking.repository;
 
 import lombok.AllArgsConstructor;
-import org.example.coworking.config.DatabaseConfig;
+import org.example.coworking.config.DatabaseConnection;
 import org.example.coworking.mapper.WorkplaceMapper;
+import org.example.coworking.mapper.WorkplaceMapperImpl;
 import org.example.coworking.model.Workplace;
 import org.example.coworking.repository.query.WorkplaceQuery;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,24 +20,25 @@ import java.util.Optional;
  */
 @AllArgsConstructor
 public class WorkplaceRepository {
-
+    private final WorkplaceMapper workplaceMapper = new WorkplaceMapperImpl();
+    private final DatabaseConnection databaseConnection;
     /**
      * Retrieves all workplaces from the repository.
      *
      * @return A collection of all workplaces.
      */
     public Collection<Workplace> getAllWorkplaces() {
-        try (Connection connection = DatabaseConfig.getConnection()) {
+        try (Connection connection =  databaseConnection.getConnection()) {
 
             try (Statement statement = connection.createStatement();
                  ResultSet resultSet = statement.executeQuery(WorkplaceQuery.GET_ALL_WORKPLACES)) {
                 Collection<Workplace> workplaces = new ArrayList<>();
                 while (resultSet.next()) {
-                    workplaces.add(WorkplaceMapper.resultSetToWorkplace(resultSet));
+                    workplaces.add(workplaceMapper.resultSetToWorkplace(resultSet));
                 }
                 return workplaces;
             }
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
@@ -48,7 +49,7 @@ public class WorkplaceRepository {
      * @param workplace The workplace to add.
      */
     public void addWorkplace(Workplace workplace) {
-        try (Connection connection = DatabaseConfig.getConnection()) {
+        try (Connection connection = databaseConnection.getConnection()) {
 
             try (Statement statement = connection.createStatement();
                  ResultSet resultSet = statement.executeQuery(WorkplaceQuery.GET_ID_NEXT_WORKPLACE)) {
@@ -67,7 +68,7 @@ public class WorkplaceRepository {
                 throw new RuntimeException(ex);
             }
 
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
@@ -78,13 +79,13 @@ public class WorkplaceRepository {
      * @param workplaceId The ID of the workplace to remove.
      */
     public void removeWorkplaceById(int workplaceId) {
-        try (Connection connection = DatabaseConfig.getConnection()) {
+        try (Connection connection = databaseConnection.getConnection()) {
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(WorkplaceQuery.DELETE_WORKPLACE)) {
                 preparedStatement.setInt(1, workplaceId);
                 preparedStatement.executeUpdate();
             }
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
@@ -96,18 +97,18 @@ public class WorkplaceRepository {
      * @return The workplace with the specified ID, or null if not found.
      */
     public Optional<Workplace> findWorkplaceById(int workplaceId) {
-        try (Connection connection = DatabaseConfig.getConnection()) {
+        try (Connection connection = databaseConnection.getConnection()) {
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(WorkplaceQuery.FIND_WORKPLACE_BY_ID)) {
                 preparedStatement.setInt(1, workplaceId);
 
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     if (resultSet.next()) {
-                        return Optional.of(WorkplaceMapper.resultSetToWorkplace(resultSet));
+                        return Optional.of(workplaceMapper.resultSetToWorkplace(resultSet));
                     }
                 }
             }
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
         return Optional.empty();
@@ -119,7 +120,7 @@ public class WorkplaceRepository {
      * @param workplace The updated workplace object.
      */
     public void updateWorkplace(Workplace workplace) {
-        try (Connection connection = DatabaseConfig.getConnection()) {
+        try (Connection connection = databaseConnection.getConnection()) {
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(WorkplaceQuery.UPDATE_WORKPLACE)) {
                 preparedStatement.setString(1, workplace.getName());
@@ -128,7 +129,7 @@ public class WorkplaceRepository {
 
                 preparedStatement.executeUpdate();
             }
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
@@ -139,17 +140,17 @@ public class WorkplaceRepository {
      * @return A collection of all available workplaces.
      */
     public Collection<Workplace> getAvailableWorkplaces() {
-        try (Connection connection = DatabaseConfig.getConnection()) {
+        try (Connection connection = databaseConnection.getConnection()) {
 
             try (Statement statement = connection.createStatement();
                  ResultSet resultSet = statement.executeQuery(WorkplaceQuery.GET_ALL_AVAILABLE_WORKPLACES)) {
                 Collection<Workplace> workplaces = new ArrayList<>();
                 while (resultSet.next()) {
-                    workplaces.add(WorkplaceMapper.resultSetToWorkplace(resultSet));
+                    workplaces.add(workplaceMapper.resultSetToWorkplace(resultSet));
                 }
                 return workplaces;
             }
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }

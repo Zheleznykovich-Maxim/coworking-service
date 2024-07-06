@@ -1,5 +1,7 @@
 package org.example.coworking.factory;
 
+import java.io.IOException;
+
 /**
  * Интерфейс для общей фабрики, создающей экземпляры заданного типа.
  * @param <T> тип объекта, который будет создаваться фабрикой.
@@ -11,5 +13,5 @@ public interface CoworkingFactory<T> {
      *
      * @return новый экземпляр заданного типа T.
      */
-    T create();
+    T create() throws IOException;
 }

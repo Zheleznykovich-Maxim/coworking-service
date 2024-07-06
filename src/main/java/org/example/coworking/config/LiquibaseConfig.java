@@ -19,7 +19,7 @@ public class LiquibaseConfig {
             Properties properties = new Properties();
             properties.load(new FileInputStream("src/main/resources/application.properties"));
 
-            Connection connection = DatabaseConfig.getConnection();
+            Connection connection = DatabaseConfig.getDatabaseConnection().getConnection();
             Database database =
                     DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
             String query = "CREATE SCHEMA IF NOT EXISTS liquibase_logs;";

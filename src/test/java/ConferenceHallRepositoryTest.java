@@ -4,7 +4,6 @@ import org.example.coworking.repository.ConferenceHallRepository;
 import org.junit.jupiter.api.*;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -14,24 +13,18 @@ public class ConferenceHallRepositoryTest {
     private ConferenceHallRepository conferenceHallRepository;
 
     @BeforeAll
-    static void init() throws SQLException {
+    static void init() {
         DatabaseTestContainer.startContainer();
-        String createTableSQL = "CREATE TABLE IF NOT EXISTS conference_halls (" +
-                "id SERIAL PRIMARY KEY," +
-                "name VARCHAR(255)," +
-                "is_available BOOLEAN" +
-                ")";
-        DatabaseTestContainer.initializeDatabase(createTableSQL);
     }
 
     @BeforeEach
     void setUp() {
-        conferenceHallRepository = new ConferenceHallRepository();
+        conferenceHallRepository = new ConferenceHallRepository(DatabaseTestContainer.getDatabaseConnection());
     }
 
     @Test
     @DisplayName("Test addConferenceHall and findConferenceById methods")
-    void testAddAndFindConferenceHall() throws SQLException, IOException {
+    void testAddAndFindConferenceHall() throws IOException {
         ConferenceHall conferenceHall = new ConferenceHall();
         conferenceHall.setName("Conference Room 1");
         conferenceHall.setAvailable(true);
@@ -45,7 +38,7 @@ public class ConferenceHallRepositoryTest {
     }
 
     @AfterAll
-    static void tearDown() throws SQLException {
+    static void tearDown() {
         DatabaseTestContainer.stopContainer();
     }
 }

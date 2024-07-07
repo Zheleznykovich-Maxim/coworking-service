@@ -6,4 +6,5 @@ public class UserQuery {
             "(id, username, password, role)" +
             "VALUES (?, ?, ?, ?)";
     public static final String FIND_USER_BY_USERNAME = "SELECT * FROM coworking.users WHERE username = ?";
+    public static final String FIND_USER_BY_ID = "SELECT * FROM coworking.users WHERE id = ?";
 }

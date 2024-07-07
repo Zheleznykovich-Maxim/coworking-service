@@ -45,6 +45,17 @@ public class UserService {
     }
 
     /**
+     * Finds a user by their id.
+     *
+     * @param id the username to search for.
+     * @return the user with the specified username, or null if not found.
+     */
+    public User findUserById(int id) {
+        return userRepository.findUserById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Пользователь с таким именем не найдено!"));
+    }
+
+    /**
      * check a user for existence.
      *
      * @param username the username to search for.

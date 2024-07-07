@@ -70,4 +70,28 @@ public class UserRepository {
         }
         return Optional.empty();
     }
+
+    /**
+     * Finds a user by their id.
+     *
+     * @param id The username of the user to find.
+     * @return The user object with the specified username, or null if not found.
+     */
+    public Optional<User> findUserById(int id) {
+        try (Connection connection = databaseConnection.getConnection()) {
+
+            try (PreparedStatement preparedStatement = connection.prepareStatement(UserQuery.FIND_USER_BY_ID)) {
+                preparedStatement.setInt(1, id);
+
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    if (resultSet.next()) {
+                        return Optional.of(UserMapper.resultSetToUser(resultSet));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return Optional.empty();
+    }
 }

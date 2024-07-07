@@ -26,11 +26,10 @@ public class BookingRepositoryTest {
 
     @Test
     @DisplayName("Test addBooking method")
-    void testAddBooking() throws SQLException, IOException {
+    void testAddBooking() throws SQLException {
         Booking booking = new Booking();
         booking.setUserId(1);
         booking.setResourceId(1);
-        booking.setResourceName("Meeting Room A");
         booking.setStartTime(LocalDateTime.now());
         booking.setEndTime(LocalDateTime.now().plusHours(1));
         booking.setResourceType(ResourceType.CONFERENCEHALL);

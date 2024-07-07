@@ -254,7 +254,7 @@ public class UserConsole {
                     if (workplace != null) {
                         LocalDateTime startDateTime = dateTimes[0];
                         LocalDateTime endDateTime = dateTimes[1];
-                        Booking booking = new Booking(0, workplace.getId(), workplace.getName(), startDateTime, endDateTime, ResourceType.WORKPLACE, true);
+                        Booking booking = new Booking(0, workplace.getId(), startDateTime, endDateTime, ResourceType.WORKPLACE, true);
                         bookingService.addBooking(booking);
                     } else {
                         System.out.println("Рабочего места с таким id не существует!");
@@ -348,7 +348,7 @@ public class UserConsole {
                     if (conferenceHall != null) {
                         LocalDateTime startDateTime = dateTimes[0];
                         LocalDateTime endDateTime = dateTimes[1];
-                        Booking booking = new Booking(0, conferenceHall.getId(), conferenceHall.getName(), startDateTime, endDateTime, ResourceType.CONFERENCEHALL, true);
+                        Booking booking = new Booking(0, conferenceHall.getId(), startDateTime, endDateTime, ResourceType.CONFERENCEHALL, true);
                         bookingService.addBooking(booking);
                     } else {
                         System.out.println("Конференц-зала с таким id не существует!");

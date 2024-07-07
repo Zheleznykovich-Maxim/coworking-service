@@ -1,6 +1,7 @@
 package org.example.coworking.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.coworking.annotations.Loggable;
 import org.example.coworking.exception.EntityNotFoundException;
 import org.example.coworking.model.enums.ResourceType;
 import org.example.coworking.model.Booking;
@@ -14,16 +15,16 @@ import java.util.Collection;
 /**
  * Service class for managing bookings.
  */
+@Loggable
 @RequiredArgsConstructor
 public class BookingService {
     private final BookingRepository bookingRepository;
-
     /**
      * Adds a new booking to the repository.
      *
      * @param booking The booking to add.
      */
-    public void addBooking(Booking booking) throws SQLException, IOException {
+    public void addBooking(Booking booking) throws SQLException {
         bookingRepository.addBooking(booking);
     }
 
@@ -41,7 +42,7 @@ public class BookingService {
      *
      * @return A collection of all bookings.
      */
-    public Collection<Booking> getAllBookings() throws IOException {
+    public Collection<Booking> getAllBookings() {
         return bookingRepository.getAllBookings();
     }
 
@@ -50,7 +51,7 @@ public class BookingService {
      *
      * @param booking The booking to update.
      */
-    public void updateBooking(Booking booking) throws IOException, SQLException {
+    public void updateBooking(Booking booking) throws SQLException {
         bookingRepository.updateBooking(booking);
     }
 

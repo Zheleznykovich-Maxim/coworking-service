@@ -39,6 +39,7 @@ public class BookingServiceTest {
     @DisplayName("Test adding a booking")
     public void testAddBooking() throws SQLException, IOException {
         Booking booking = new Booking();
+
         doNothing().when(bookingRepository).addBooking(ArgumentMatchers.any(Booking.class));
 
         bookingService.addBooking(booking);

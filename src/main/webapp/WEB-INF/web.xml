@@ -22,4 +22,13 @@
         <servlet-name>conferenceHallServlet</servlet-name>
         <url-pattern>/conference-hall</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>bookingServlet</servlet-name>
+        <servlet-class>org.example.coworking.servlet.BookingServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>bookingServlet</servlet-name>
+        <url-pattern>/booking</url-pattern>
+    </servlet-mapping>
 </web-app>

@@ -302,11 +302,6 @@ public class UserConsole {
                     in.nextLine();
                     ConferenceHall conferenceHall = coworkingSpaceService.findConferenceHallById(id);
 
-                    if (conferenceHall == null) {
-                        System.out.println("Конференц-зал с таким id не существует!");
-                        continue;
-                    }
-
                     System.out.print("Введите название: ");
                     String name = in.nextLine();
                     ConsoleUI.printAvailableCommands();

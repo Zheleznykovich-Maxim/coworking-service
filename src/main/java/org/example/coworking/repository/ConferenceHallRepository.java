@@ -3,6 +3,7 @@ package org.example.coworking.repository;
 import lombok.AllArgsConstructor;
 import org.example.coworking.config.DatabaseConnection;
 import org.example.coworking.mapper.ConferenceHallMapper;
+import org.example.coworking.mapper.ConferenceHallMapperImpl;
 import org.example.coworking.model.ConferenceHall;
 import org.example.coworking.repository.query.ConferenceHallQuery;
 import java.sql.Connection;
@@ -19,6 +20,7 @@ import java.util.Optional;
  */
 @AllArgsConstructor
 public class ConferenceHallRepository {
+    private final ConferenceHallMapper conferenceHallMapper = new ConferenceHallMapperImpl();
     private final DatabaseConnection databaseConnection;
 
     /**
@@ -33,7 +35,7 @@ public class ConferenceHallRepository {
                  ResultSet resultSet = statement.executeQuery(ConferenceHallQuery.GET_ALL_CONFERENCE_HALLS)) {
                 Collection<ConferenceHall> conferenceHalls = new ArrayList<>();
                 while (resultSet.next()) {
-                    conferenceHalls.add(ConferenceHallMapper.resultSetToConferenceHall(resultSet));
+                    conferenceHalls.add(conferenceHallMapper.resultSetToConferenceHall(resultSet));
                 }
                 return conferenceHalls;
             }
@@ -100,7 +102,7 @@ public class ConferenceHallRepository {
 
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     if (resultSet.next()) {
-                        return Optional.of(ConferenceHallMapper.resultSetToConferenceHall(resultSet));
+                        return Optional.of(conferenceHallMapper.resultSetToConferenceHall(resultSet));
                     }
                 }
             }
@@ -142,7 +144,7 @@ public class ConferenceHallRepository {
                  ResultSet resultSet = statement.executeQuery(ConferenceHallQuery.GET_ALL_AVAILABLE_CONFERENCE_HALLS)) {
                 Collection<ConferenceHall> conferenceHalls = new ArrayList<>();
                 while (resultSet.next()) {
-                    conferenceHalls.add(ConferenceHallMapper.resultSetToConferenceHall(resultSet));
+                    conferenceHalls.add(conferenceHallMapper.resultSetToConferenceHall(resultSet));
                 }
                 return conferenceHalls;
             }

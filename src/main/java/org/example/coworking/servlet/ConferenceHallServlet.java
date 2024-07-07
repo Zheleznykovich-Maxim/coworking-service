@@ -7,28 +7,28 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.coworking.annotations.Loggable;
-import org.example.coworking.dto.request.WorkplaceRequestDto;
-import org.example.coworking.dto.response.WorkplaceResponseDto;
+import org.example.coworking.dto.request.ConferenceHallRequestDto;
+import org.example.coworking.dto.response.ConferenceHallResponseDto;
 import org.example.coworking.factory.CoworkingSpaceServiceFactory;
-import org.example.coworking.mapper.WorkplaceMapper;
-import org.example.coworking.mapper.WorkplaceMapperImpl;
-import org.example.coworking.model.Workplace;
+import org.example.coworking.mapper.ConferenceHallMapper;
+import org.example.coworking.mapper.ConferenceHallMapperImpl;
+import org.example.coworking.model.ConferenceHall;
 import org.example.coworking.service.CoworkingSpaceService;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Collection;
 
 @Loggable
-@WebServlet("/workplace/*")
-public class WorkplaceServlet extends HttpServlet {
+@WebServlet("/conference-hall/*")
+public class ConferenceHallServlet extends HttpServlet {
     private final ObjectMapper objectMapper;
     private final CoworkingSpaceService coworkingSpaceService;
-    private final WorkplaceMapper workplaceMapper;
+    private final ConferenceHallMapper conferenceHallMapper;
 
-    public WorkplaceServlet() throws IOException {
-        this.workplaceMapper = new WorkplaceMapperImpl();
+    public ConferenceHallServlet() throws IOException {
         this.objectMapper = new ObjectMapper();
         this.objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+        this.conferenceHallMapper = new ConferenceHallMapperImpl();
         this.coworkingSpaceService = new CoworkingSpaceServiceFactory().create();
     }
 
@@ -36,19 +36,19 @@ public class WorkplaceServlet extends HttpServlet {
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String pathInfo = req.getPathInfo();
         if (pathInfo == null || pathInfo.equals("/")) {
-            Collection<Workplace> workplaces = coworkingSpaceService.getWorkplaces();
-            Collection<WorkplaceResponseDto> workplaceResponseDtos = workplaceMapper.worplacesToWorkplaceResponseDtos(workplaces);
+            Collection<ConferenceHall> conferenceHalls = coworkingSpaceService.getConferenceHalls();
+            Collection<ConferenceHallResponseDto> conferenceHallResponseDtos = conferenceHallMapper.conferenceHallsToConferenceHallResponseDtos(conferenceHalls);
             resp.setContentType("application/json");
             resp.setStatus(HttpServletResponse.SC_OK);
-            objectMapper.writeValue(resp.getOutputStream(), workplaceResponseDtos);
+            objectMapper.writeValue(resp.getOutputStream(), conferenceHallResponseDtos);
         } else {
             try {
                 int id = Integer.parseInt(pathInfo.substring(1));
-                Workplace workplace = coworkingSpaceService.findWorkplaceById(id);
-                WorkplaceResponseDto workplaceResponseDto = workplaceMapper.workplaceToWorkplaceResponseDto(workplace);
+                ConferenceHall conferenceHall = coworkingSpaceService.findConferenceHallById(id);
+                ConferenceHallResponseDto conferenceHallResponseDto = conferenceHallMapper.conferenceHallToConferenceHallResponseDto(conferenceHall);
                 resp.setContentType("application/json");
                 resp.setStatus(HttpServletResponse.SC_OK);
-                objectMapper.writeValue(resp.getOutputStream(), workplaceResponseDto);
+                objectMapper.writeValue(resp.getOutputStream(), conferenceHallResponseDto);
             } catch (NumberFormatException e) {
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Неверный путь запроса!");
             }
@@ -59,9 +59,9 @@ public class WorkplaceServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
             BufferedReader reader = req.getReader();
-            WorkplaceRequestDto workplaceRequestDto = objectMapper.readValue(reader, WorkplaceRequestDto.class);
-            Workplace workplace = workplaceMapper.workplaceRequestDtotoWorkplace(workplaceRequestDto);
-            coworkingSpaceService.addWorkplace(workplace);
+            ConferenceHallRequestDto conferenceHallRequestDto = objectMapper.readValue(reader, ConferenceHallRequestDto.class);
+            ConferenceHall conferenceHall = conferenceHallMapper.conferenceHallRequestDtotoConferenceHall(conferenceHallRequestDto);
+            coworkingSpaceService.addConferenceHall(conferenceHall);
             resp.setStatus(HttpServletResponse.SC_CREATED);
         } catch (Exception e) {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
@@ -80,14 +80,14 @@ public class WorkplaceServlet extends HttpServlet {
         try {
             int id = Integer.parseInt(pathParts[1]);
             BufferedReader reader = req.getReader();
-            WorkplaceRequestDto workplaceRequestDto = objectMapper.readValue(reader, WorkplaceRequestDto.class);
-            Workplace workplace = workplaceMapper.workplaceRequestDtotoWorkplace(workplaceRequestDto);
-            workplace.setId(id);
-            WorkplaceResponseDto workplaceResponseDto = workplaceMapper.workplaceToWorkplaceResponseDto(workplace);
-            coworkingSpaceService.findWorkplaceById(id);
-            coworkingSpaceService.updateWorkplace(workplace);
+            ConferenceHallRequestDto conferenceHallRequestDto = objectMapper.readValue(reader, ConferenceHallRequestDto.class);
+            ConferenceHall conferenceHall = conferenceHallMapper.conferenceHallRequestDtotoConferenceHall(conferenceHallRequestDto);
+            conferenceHall.setId(id);
+            ConferenceHallResponseDto conferenceHallResponseDto = conferenceHallMapper.conferenceHallToConferenceHallResponseDto(conferenceHall);
+            coworkingSpaceService.findConferenceHallById(id);
+            coworkingSpaceService.updateConferenceHall(conferenceHall);
             resp.setStatus(HttpServletResponse.SC_OK);
-            objectMapper.writeValue(resp.getOutputStream(), workplaceResponseDto);
+            objectMapper.writeValue(resp.getOutputStream(), conferenceHallResponseDto);
         } catch (NumberFormatException e) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid workplace ID");
         }
@@ -103,8 +103,8 @@ public class WorkplaceServlet extends HttpServlet {
         String[] pathParts = pathInfo.split("/");
         try {
             int id = Integer.parseInt(pathParts[1]);
-            coworkingSpaceService.findWorkplaceById(id);
-            coworkingSpaceService.deleteWorkplace(id);
+            coworkingSpaceService.findConferenceHallById(id);
+            coworkingSpaceService.deleteConferenceHall(id);
             resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
         } catch (NumberFormatException e) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid workplace ID");

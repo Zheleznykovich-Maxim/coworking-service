@@ -5,12 +5,21 @@
          version="4.0">
     <display-name>Archetype Created Web Application</display-name>
     <servlet>
-        <servlet-name>workspaceServlet</servlet-name>
+        <servlet-name>workplaceServlet</servlet-name>
         <servlet-class>org.example.coworking.servlet.WorkplaceServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
-        <servlet-name>workspaceServlet</servlet-name>
-        <url-pattern>/workspace</url-pattern>
+        <servlet-name>workplaceServlet</servlet-name>
+        <url-pattern>/workplace</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>conferenceHallServlet</servlet-name>
+        <servlet-class>org.example.coworking.servlet.ConferenceHallServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>conferenceHallServlet</servlet-name>
+        <url-pattern>/conference-hall</url-pattern>
     </servlet-mapping>
 </web-app>

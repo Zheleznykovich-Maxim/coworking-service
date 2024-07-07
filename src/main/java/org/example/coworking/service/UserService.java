@@ -1,6 +1,7 @@
 package org.example.coworking.service;
 
 import lombok.AllArgsConstructor;
+import org.example.coworking.annotations.Loggable;
 import org.example.coworking.exception.EntityNotFoundException;
 import org.example.coworking.model.User;
 import org.example.coworking.repository.UserRepository;
@@ -8,6 +9,7 @@ import org.example.coworking.repository.UserRepository;
 /**
  * Service class for managing User operations.
  */
+@Loggable
 @AllArgsConstructor
 public class UserService {
     private final UserRepository userRepository;

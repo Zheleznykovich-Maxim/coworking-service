@@ -37,7 +37,7 @@ public class BookingServiceTest {
 
     @Test
     @DisplayName("Test adding a booking")
-    public void testAddBooking() throws SQLException, IOException {
+    public void testAddBooking() throws SQLException {
         Booking booking = new Booking();
 
         doNothing().when(bookingRepository).addBooking(ArgumentMatchers.any(Booking.class));
@@ -60,7 +60,7 @@ public class BookingServiceTest {
 
     @Test
     @DisplayName("Test getting all bookings")
-    public void testGetAllBookings() throws IOException {
+    public void testGetAllBookings() {
         Booking booking1 = new Booking();
         Booking booking2 = new Booking();
         Collection<Booking> bookings = Arrays.asList(booking1, booking2);
@@ -73,7 +73,7 @@ public class BookingServiceTest {
 
     @Test
     @DisplayName("Test updating a booking")
-    public void testUpdateBooking() throws IOException, SQLException {
+    public void testUpdateBooking() throws SQLException {
         Booking booking = new Booking();
         doNothing().when(bookingRepository).updateBooking(ArgumentMatchers.any(Booking.class));
 

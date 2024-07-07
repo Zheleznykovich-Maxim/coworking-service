@@ -4,7 +4,6 @@ import org.example.coworking.model.enums.ResourceType;
 import org.example.coworking.repository.BookingRepository;
 import org.junit.jupiter.api.*;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Optional;

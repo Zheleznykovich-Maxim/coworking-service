@@ -409,7 +409,7 @@ public class UserConsole {
      * Runs the commands loop for managing bookings.
      * Provides options for viewing, filtering, creating, and canceling bookings.
      */
-    public void runBookingCommands() throws IOException, SQLException {
+    public void runBookingCommands() throws SQLException {
         while (true) {
             ConsoleUI.printBookingCommands();
 

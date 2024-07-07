@@ -3,6 +3,7 @@ package org.example.coworking.repository;
 import lombok.AllArgsConstructor;
 import org.example.coworking.config.DatabaseConnection;
 import org.example.coworking.mapper.UserMapper;
+import org.example.coworking.mapper.UserMapperImpl;
 import org.example.coworking.model.User;
 import org.example.coworking.repository.query.UserQuery;
 import java.sql.Connection;
@@ -17,6 +18,7 @@ import java.util.Optional;
  */
 @AllArgsConstructor
 public class UserRepository {
+    private final UserMapper userMapper = new UserMapperImpl();
     private final DatabaseConnection databaseConnection;
 
     /**
@@ -61,7 +63,7 @@ public class UserRepository {
 
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     if (resultSet.next()) {
-                        return Optional.of(UserMapper.resultSetToUser(resultSet));
+                        return Optional.of(userMapper.resultSetToUser(resultSet));
                     }
                 }
             }
@@ -85,7 +87,7 @@ public class UserRepository {
 
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     if (resultSet.next()) {
-                        return Optional.of(UserMapper.resultSetToUser(resultSet));
+                        return Optional.of(userMapper.resultSetToUser(resultSet));
                     }
                 }
             }

@@ -7,7 +7,6 @@ import org.example.coworking.model.enums.ResourceType;
 import org.example.coworking.model.Booking;
 import org.example.coworking.model.User;
 import org.example.coworking.repository.BookingRepository;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Collection;

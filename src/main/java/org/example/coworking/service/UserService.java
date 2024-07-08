@@ -1,6 +1,7 @@
 package org.example.coworking.service;
 
 import lombok.AllArgsConstructor;
+import org.example.coworking.annotations.Auditable;
 import org.example.coworking.annotations.Loggable;
 import org.example.coworking.exception.EntityNotFoundException;
 import org.example.coworking.model.User;
@@ -19,6 +20,7 @@ public class UserService {
      *
      * @param user the user to register.
      */
+    @Auditable(action = "Регистрация пользователя")
     public void register(User user) {
         userRepository.registerUser(user);
     }
@@ -30,6 +32,7 @@ public class UserService {
 
      * @return true if the credentials match, otherwise false.
      */
+    @Auditable(action = "Авторизация пользователя")
     public boolean login(User user) {
         return userRepository.findUserByUsername(user.getUsername()).get().getPassword()
                 .equals(user.getPassword());

@@ -5,7 +5,6 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd"
         logicalFilePath="db/changelog/main-changelog.xml">
-    <include file="v1/v1-accumulate-changelog.xml" relativeToChangelogFile="true"/>
-    <include file="v2/v2-accumulate-changelog.xml" relativeToChangelogFile="true"/>
-    <include file="v3/v3-accumulate-changelog.xml" relativeToChangelogFile="true"/>
+    <include file="v3-edit-bookings-table-changelog.xml" relativeToChangelogFile="true"/>
+    <include file="v3-create-user-actions-table-changelog.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

@@ -1,6 +1,7 @@
 package org.example.coworking.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.coworking.annotations.Auditable;
 import org.example.coworking.annotations.Loggable;
 import org.example.coworking.exception.EntityNotFoundException;
 import org.example.coworking.model.enums.ResourceType;
@@ -23,6 +24,7 @@ public class BookingService {
      *
      * @param booking The booking to add.
      */
+    @Auditable(action = "Создание брони")
     public void addBooking(Booking booking) throws SQLException {
         bookingRepository.addBooking(booking);
     }
@@ -32,6 +34,7 @@ public class BookingService {
      *
      * @param bookingId The ID of the booking to delete.
      */
+    @Auditable(action = "Удаление брони")
     public void deleteBooking(int bookingId) {
         bookingRepository.removeBookingById(bookingId);
     }

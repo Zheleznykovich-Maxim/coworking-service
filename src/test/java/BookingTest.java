@@ -68,7 +68,7 @@ public class BookingTest {
     @DisplayName("Test toString method")
     public void testToString() {
         String expectedString = "Booking(id=0, userId=0, resourceId=101, " +
-                "startTime=2024-06-24T10:00, endTime=2024-06-24T12:00, resourceType=WORKPLACE, isAvailable=true)";
+                "startTime=2024-06-24T10:00, endTime=2024-06-24T12:00, resourceType=WORKPLACE, available=true)";
         assertThat(booking.toString()).isEqualTo(expectedString);
     }
 

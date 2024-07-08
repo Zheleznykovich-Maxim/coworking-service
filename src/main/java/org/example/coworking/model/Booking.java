@@ -48,8 +48,7 @@ public class Booking {
     /**
      * Indicates whether the booking is currently available.
      */
-    private boolean isAvailable;
-
+    private boolean available;
     /**
      * Constructs a new Booking with the given parameters.
      * The id is auto-generated and incremented.
@@ -67,7 +66,7 @@ public class Booking {
         this.startTime = startTime;
         this.endTime = endTime;
         this.resourceType = resourceType;
-        this.isAvailable = isAvailable;
+        this.available = isAvailable;
     }
 }
 

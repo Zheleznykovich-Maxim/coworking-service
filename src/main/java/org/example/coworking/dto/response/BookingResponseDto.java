@@ -16,6 +16,6 @@ public record BookingResponseDto(
 
         ResourceType resourceType,
 
-        boolean isAvailable
+        boolean available
 ) {
 }

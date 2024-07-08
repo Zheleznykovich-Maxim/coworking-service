@@ -24,7 +24,7 @@
 
 6. Для остановки Tomcat: запустить файл `shutdown.bat`.
 
-##Примеры запросов
+## Примеры запросов
 WORKPLACE
 Для получения всех рабочих мест: GET http://localhost:8080/coworking/workplace
 Для получения рабочего места с id равным 1: GET http://localhost:8080/coworking/workplace/1

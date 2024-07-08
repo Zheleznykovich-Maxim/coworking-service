@@ -68,7 +68,7 @@ public class BookingServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
             BufferedReader reader = req.getReader();
             BookingRequestDto bookingRequestDto = objectMapper.readValue(reader, BookingRequestDto.class);
@@ -87,7 +87,7 @@ public class BookingServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    public void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String pathInfo = req.getPathInfo();
         if (pathInfo == null || pathInfo.split("/").length != 2) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid request path");
@@ -118,7 +118,7 @@ public class BookingServlet extends HttpServlet {
     }
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    public void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String pathInfo = req.getPathInfo();
         if (pathInfo == null || pathInfo.split("/").length != 2) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid request path");

@@ -56,7 +56,7 @@ public class WorkplaceServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
             BufferedReader reader = req.getReader();
             WorkplaceRequestDto workplaceRequestDto = objectMapper.readValue(reader, WorkplaceRequestDto.class);
@@ -70,7 +70,7 @@ public class WorkplaceServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    public void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String pathInfo = req.getPathInfo();
         if (pathInfo == null || pathInfo.split("/").length != 2) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid request path");
@@ -94,7 +94,7 @@ public class WorkplaceServlet extends HttpServlet {
     }
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    public void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String pathInfo = req.getPathInfo();
         if (pathInfo == null || pathInfo.split("/").length != 2) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid request path");

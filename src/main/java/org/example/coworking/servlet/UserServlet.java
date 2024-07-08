@@ -16,6 +16,7 @@ import org.example.coworking.mapper.UserMapperImpl;
 import org.example.coworking.model.User;
 import org.example.coworking.service.UserService;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 
 @Loggable
@@ -33,7 +34,7 @@ public class UserServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String pathInfo = req.getPathInfo();
         if (pathInfo != null) {
             if (pathInfo.equals("/register")) {
@@ -49,7 +50,8 @@ public class UserServlet extends HttpServlet {
     }
 
     private void handleRegister(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        UserRegisterRequestDto userRegisterRequestDto = objectMapper.readValue(req.getInputStream(), UserRegisterRequestDto.class);
+        BufferedReader reader = req.getReader();
+        UserRegisterRequestDto userRegisterRequestDto = objectMapper.readValue(reader, UserRegisterRequestDto.class);
         User user = userMapper.userRegisterRequestDtotoUser(userRegisterRequestDto);
         if (userService.checkUsernameExists(user.getUsername()))
             resp.sendError(HttpServletResponse.SC_CONFLICT, "Username already exists");
@@ -63,7 +65,8 @@ public class UserServlet extends HttpServlet {
     }
 
     private void handleLogin(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        UserLoginRequestDto userLoginRequestDto = objectMapper.readValue(req.getInputStream(), UserLoginRequestDto.class);
+        BufferedReader reader = req.getReader();
+        UserLoginRequestDto userLoginRequestDto = objectMapper.readValue(reader, UserLoginRequestDto.class);
         User user = userMapper.userLoginRequestDtotoUser(userLoginRequestDto);
         boolean success = userService.login(user);
         if (success) {

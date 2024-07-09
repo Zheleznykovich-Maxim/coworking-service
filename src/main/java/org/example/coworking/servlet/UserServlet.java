@@ -19,6 +19,9 @@ import org.example.coworking.service.UserService;
 import java.io.BufferedReader;
 import java.io.IOException;
 
+/**
+ * Servlet for handling user registration and login.
+ */
 @Loggable
 @WebServlet("/user/*")
 public class UserServlet extends HttpServlet {
@@ -26,6 +29,11 @@ public class UserServlet extends HttpServlet {
     private final UserMapper userMapper;
     private final UserService userService;
 
+    /**
+     * Initializes the servlet with necessary services and mappers.
+     *
+     * @throws IOException if an I/O error occurs
+     */
     public UserServlet() throws IOException {
         this.userMapper = new UserMapperImpl();
         this.objectMapper = new ObjectMapper();
@@ -33,6 +41,13 @@ public class UserServlet extends HttpServlet {
         this.userService = new UserServiceFactory().create();
     }
 
+    /**
+     * Handles POST requests for user operations (register or login).
+     *
+     * @param req  HTTP servlet request
+     * @param resp HTTP servlet response
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String pathInfo = req.getPathInfo();
@@ -58,7 +73,7 @@ public class UserServlet extends HttpServlet {
         else {
             userService.register(user);
         }
-        UserResponseDto userResponseDto = userMapper.userToUserResponseDto(user, "Регистрация прошла успешна!");
+        UserResponseDto userResponseDto = userMapper.userToUserResponseDto(user, "Регистрация прошла успешно!");
         resp.setStatus(HttpServletResponse.SC_CREATED);
         resp.setContentType("application/json");
         objectMapper.writeValue(resp.getOutputStream(), userResponseDto);
@@ -73,7 +88,7 @@ public class UserServlet extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_OK);
             resp.setContentType("application/json");
             User foundUser = userService.findUserByName(user.getUsername());
-            UserResponseDto userResponseDto = userMapper.userToUserResponseDto(foundUser, "Авторизация прошла успешна!");
+            UserResponseDto userResponseDto = userMapper.userToUserResponseDto(foundUser, "Авторизация прошла успешно!");
             objectMapper.writeValue(resp.getOutputStream(), userResponseDto);
         } else {
             resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid username or password");

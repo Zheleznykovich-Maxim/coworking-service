@@ -18,6 +18,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Collection;
 
+/**
+ * Servlet for handling conference hall operations.
+ */
 @Loggable
 @WebServlet("/conference-hall/*")
 public class ConferenceHallServlet extends HttpServlet {
@@ -25,6 +28,11 @@ public class ConferenceHallServlet extends HttpServlet {
     private final CoworkingSpaceService coworkingSpaceService;
     private final ConferenceHallMapper conferenceHallMapper;
 
+    /**
+     * Initializes the servlet with necessary services and mappers.
+     *
+     * @throws IOException if an I/O error occurs
+     */
     public ConferenceHallServlet() throws IOException {
         this.objectMapper = new ObjectMapper();
         this.objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
@@ -32,6 +40,13 @@ public class ConferenceHallServlet extends HttpServlet {
         this.coworkingSpaceService = new CoworkingSpaceServiceFactory().create();
     }
 
+    /**
+     * Handles GET requests to retrieve conference halls.
+     *
+     * @param req  HTTP servlet request
+     * @param resp HTTP servlet response
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String pathInfo = req.getPathInfo();
@@ -55,8 +70,15 @@ public class ConferenceHallServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Handles POST requests to create a new conference hall.
+     *
+     * @param req  HTTP servlet request
+     * @param resp HTTP servlet response
+     * @throws IOException if an I/O error occurs
+     */
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
             BufferedReader reader = req.getReader();
             ConferenceHallRequestDto conferenceHallRequestDto = objectMapper.readValue(reader, ConferenceHallRequestDto.class);
@@ -69,8 +91,15 @@ public class ConferenceHallServlet extends HttpServlet {
 
     }
 
+    /**
+     * Handles PUT requests to update an existing conference hall.
+     *
+     * @param req  HTTP servlet request
+     * @param resp HTTP servlet response
+     * @throws IOException if an I/O error occurs
+     */
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    public void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String pathInfo = req.getPathInfo();
         if (pathInfo == null || pathInfo.split("/").length != 2) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid request path");
@@ -93,8 +122,15 @@ public class ConferenceHallServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Handles DELETE requests to delete an existing conference hall.
+     *
+     * @param req  HTTP servlet request
+     * @param resp HTTP servlet response
+     * @throws IOException if an I/O error occurs
+     */
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    public void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String pathInfo = req.getPathInfo();
         if (pathInfo == null || pathInfo.split("/").length != 2) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid request path");

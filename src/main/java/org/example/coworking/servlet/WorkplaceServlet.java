@@ -18,6 +18,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Collection;
 
+/**
+ * Servlet implementation for handling workplace-related operations.
+ */
 @Loggable
 @WebServlet("/workplace/*")
 public class WorkplaceServlet extends HttpServlet {
@@ -25,6 +28,11 @@ public class WorkplaceServlet extends HttpServlet {
     private final CoworkingSpaceService coworkingSpaceService;
     private final WorkplaceMapper workplaceMapper;
 
+    /**
+     * Initializes the WorkplaceServlet.
+     *
+     * @throws IOException if there is an issue initializing ObjectMapper or CoworkingSpaceServiceFactory.
+     */
     public WorkplaceServlet() throws IOException {
         this.workplaceMapper = new WorkplaceMapperImpl();
         this.objectMapper = new ObjectMapper();
@@ -32,6 +40,13 @@ public class WorkplaceServlet extends HttpServlet {
         this.coworkingSpaceService = new CoworkingSpaceServiceFactory().create();
     }
 
+    /**
+     * Handles GET requests for retrieving workplaces.
+     *
+     * @param req  HTTP servlet request.
+     * @param resp HTTP servlet response.
+     * @throws IOException if there is an issue with servlet IO operations.
+     */
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String pathInfo = req.getPathInfo();
@@ -55,6 +70,13 @@ public class WorkplaceServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Handles POST requests for creating new workplaces.
+     *
+     * @param req  HTTP servlet request.
+     * @param resp HTTP servlet response.
+     * @throws IOException if there is an issue with servlet IO operations.
+     */
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
@@ -66,9 +88,15 @@ public class WorkplaceServlet extends HttpServlet {
         } catch (Exception e) {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
-
     }
 
+    /**
+     * Handles PUT requests for updating existing workplaces.
+     *
+     * @param req  HTTP servlet request.
+     * @param resp HTTP servlet response.
+     * @throws IOException if there is an issue with servlet IO operations.
+     */
     @Override
     public void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String pathInfo = req.getPathInfo();
@@ -93,6 +121,13 @@ public class WorkplaceServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Handles DELETE requests for deleting existing workplaces.
+     *
+     * @param req  HTTP servlet request.
+     * @param resp HTTP servlet response.
+     * @throws IOException if there is an issue with servlet IO operations.
+     */
     @Override
     public void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String pathInfo = req.getPathInfo();

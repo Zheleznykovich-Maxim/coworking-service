@@ -58,7 +58,6 @@ public class BookingServletTest {
 
         verify(response).setContentType("application/json");
         verify(response).setStatus(HttpServletResponse.SC_OK);
-        // Additional checks can be performed on outputStream.toString() to verify the JSON content
     }
 
     @Test
@@ -78,7 +77,6 @@ public class BookingServletTest {
 
         verify(response).setContentType("application/json");
         verify(response).setStatus(HttpServletResponse.SC_OK);
-        // Additional checks can be performed on outputStream.toString() to verify the JSON content
     }
 
     @Test
@@ -121,7 +119,6 @@ public class BookingServletTest {
         bookingServlet.doPost(request, response);
 
         verify(response).setStatus(HttpServletResponse.SC_CREATED);
-        // Additional checks if needed
     }
 
     @Test

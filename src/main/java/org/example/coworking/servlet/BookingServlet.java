@@ -24,6 +24,9 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collection;
 
+/**
+ * Servlet for handling bookings.
+ */
 @Loggable
 @WebServlet("/booking/*")
 public class BookingServlet extends HttpServlet {
@@ -33,6 +36,11 @@ public class BookingServlet extends HttpServlet {
     private final UserService userService;
     private final CoworkingSpaceService coworkingSpaceService;
 
+    /**
+     * Initializes the servlet with necessary services and mappers.
+     *
+     * @throws IOException if an I/O error occurs
+     */
     public BookingServlet() throws IOException {
         this.objectMapper = new ObjectMapper();
         this.objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
@@ -44,6 +52,13 @@ public class BookingServlet extends HttpServlet {
         this.coworkingSpaceService = new CoworkingSpaceServiceFactory().create();
     }
 
+    /**
+     * Handles GET requests to retrieve bookings.
+     *
+     * @param req  HTTP servlet request
+     * @param resp HTTP servlet response
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String pathInfo = req.getPathInfo();
@@ -67,6 +82,13 @@ public class BookingServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Handles POST requests to create a new booking.
+     *
+     * @param req  HTTP servlet request
+     * @param resp HTTP servlet response
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
@@ -83,9 +105,15 @@ public class BookingServlet extends HttpServlet {
         } catch (Exception e) {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
-
     }
 
+    /**
+     * Handles PUT requests to update an existing booking.
+     *
+     * @param req  HTTP servlet request
+     * @param resp HTTP servlet response
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     public void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String pathInfo = req.getPathInfo();
@@ -117,6 +145,13 @@ public class BookingServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Handles DELETE requests to delete an existing booking.
+     *
+     * @param req  HTTP servlet request
+     * @param resp HTTP servlet response
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     public void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String pathInfo = req.getPathInfo();

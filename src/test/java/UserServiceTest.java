@@ -30,27 +30,24 @@ class UserServiceTest {
     @Test
     @DisplayName("Register User Test")
     void register() {
-        // Arrange
+
         User user = new User("user1", "password1", UserRole.USER);
 
-        // Act
         userService.register(user);
 
-        // Assert
         verify(userRepository, times(1)).registerUser(any(User.class));
     }
 
     @Test
     @DisplayName("Login Successful Test")
     void loginSuccessful() {
-        // Arrange
+
         User user = new User("user1", "password1", UserRole.USER);
 
         when(userRepository.findUserByUsername("user1")).thenReturn(Optional.of(user));
-        // Act
+
         boolean result = userService.login(user);
 
-        // Assert
         assertThat(result).isTrue();
         verify(userRepository, times(1)).findUserByUsername("user1");
     }
@@ -65,10 +62,8 @@ class UserServiceTest {
         User storedUser = new User("user1", "password1", UserRole.USER);
         when(userRepository.findUserByUsername("user1")).thenReturn(Optional.of(storedUser));
 
-        // Act
         boolean result = userService.login(wrongUser);
 
-        // Assert
         assertThat(result).isFalse();
         verify(userRepository, times(1)).findUserByUsername("user1");
     }
@@ -76,14 +71,12 @@ class UserServiceTest {
     @Test
     @DisplayName("Find User By Name Test")
     void findUserByName() {
-        // Arrange
+
         User user = new User("user1", "password1", UserRole.USER);
         when(userRepository.findUserByUsername("user1")).thenReturn(Optional.of(user));
 
-        // Act
         User foundUser = userService.findUserByName("user1");
 
-        // Assert
         assertThat(foundUser).isEqualTo(user);
         verify(userRepository, times(1)).findUserByUsername("user1");
     }

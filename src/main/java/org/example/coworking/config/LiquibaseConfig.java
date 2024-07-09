@@ -13,7 +13,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
+/**
+ * Configures and runs Liquibase database migrations.
+ */
 public class LiquibaseConfig {
+
+    /**
+     * Runs the Liquibase migrations based on the configuration in the properties file.
+     */
     public static void runMigrations() {
         try {
             Properties properties = new Properties();

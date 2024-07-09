@@ -13,13 +13,20 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
+/**
+ * Configures and runs Liquibase database migrations.
+ */
 public class LiquibaseConfig {
+
+    /**
+     * Runs the Liquibase migrations based on the configuration in the properties file.
+     */
     public static void runMigrations() {
         try {
             Properties properties = new Properties();
             properties.load(new FileInputStream("src/main/resources/application.properties"));
 
-            Connection connection = DatabaseConfig.getConnection();
+            Connection connection = DatabaseConfig.getDatabaseConnection().getConnection();
             Database database =
                     DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
             String query = "CREATE SCHEMA IF NOT EXISTS liquibase_logs;";

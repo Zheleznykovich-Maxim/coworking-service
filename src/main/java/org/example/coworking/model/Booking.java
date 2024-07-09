@@ -31,11 +31,6 @@ public class Booking {
     private int resourceId;
 
     /**
-     * The name of the resource being booked.
-     */
-    private String resourceName;
-
-    /**
      * The start time of the booking.
      */
     private LocalDateTime startTime;
@@ -53,28 +48,25 @@ public class Booking {
     /**
      * Indicates whether the booking is currently available.
      */
-    private boolean isAvailable;
-
+    private boolean available;
     /**
      * Constructs a new Booking with the given parameters.
      * The id is auto-generated and incremented.
      *
      * @param userId the id of the user who made the booking
      * @param resourceId the id of the resource being booked
-     * @param resourceName the name of the resource being booked
      * @param startTime the start time of the booking
      * @param endTime the end time of the booking
      * @param resourceType the type of the resource being booked
      * @param isAvailable whether the booking is currently available
      */
-    public Booking(int userId, int resourceId, String resourceName, LocalDateTime startTime, LocalDateTime endTime, ResourceType resourceType, boolean isAvailable) {
+    public Booking(int userId, int resourceId, LocalDateTime startTime, LocalDateTime endTime, ResourceType resourceType, boolean isAvailable) {
         this.userId = userId;
         this.resourceId = resourceId;
-        this.resourceName = resourceName;
         this.startTime = startTime;
         this.endTime = endTime;
         this.resourceType = resourceType;
-        this.isAvailable = isAvailable;
+        this.available = isAvailable;
     }
 }
 

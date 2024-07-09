@@ -1,12 +1,13 @@
 package org.example.coworking.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.coworking.annotations.Auditable;
+import org.example.coworking.annotations.Loggable;
 import org.example.coworking.exception.EntityNotFoundException;
 import org.example.coworking.model.enums.ResourceType;
 import org.example.coworking.model.Booking;
 import org.example.coworking.model.User;
 import org.example.coworking.repository.BookingRepository;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Collection;
@@ -14,16 +15,17 @@ import java.util.Collection;
 /**
  * Service class for managing bookings.
  */
+@Loggable
 @RequiredArgsConstructor
 public class BookingService {
     private final BookingRepository bookingRepository;
-
     /**
      * Adds a new booking to the repository.
      *
      * @param booking The booking to add.
      */
-    public void addBooking(Booking booking) throws SQLException, IOException {
+    @Auditable(action = "Создание брони")
+    public void addBooking(Booking booking) throws SQLException {
         bookingRepository.addBooking(booking);
     }
 
@@ -32,6 +34,7 @@ public class BookingService {
      *
      * @param bookingId The ID of the booking to delete.
      */
+    @Auditable(action = "Удаление брони")
     public void deleteBooking(int bookingId) {
         bookingRepository.removeBookingById(bookingId);
     }
@@ -41,7 +44,7 @@ public class BookingService {
      *
      * @return A collection of all bookings.
      */
-    public Collection<Booking> getAllBookings() throws IOException {
+    public Collection<Booking> getAllBookings() {
         return bookingRepository.getAllBookings();
     }
 
@@ -50,7 +53,7 @@ public class BookingService {
      *
      * @param booking The booking to update.
      */
-    public void updateBooking(Booking booking) throws IOException, SQLException {
+    public void updateBooking(Booking booking) throws SQLException {
         bookingRepository.updateBooking(booking);
     }
 

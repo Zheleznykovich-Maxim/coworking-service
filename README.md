@@ -8,24 +8,85 @@
 ## Тестирование
 Необходимо перейти в папку `test`, нажать <b>ПКМ</b> и запустить все тесты
 ## Взаимодействие с программой
-Инетерфейс построен на вводе пользователем чисел, за которые отвечают определённые команды и после выбора команд будут запрошены необходимые данные для ввода
-1. Происходит регистрация/авторизация
-2. В завимисомти от того, какой ролью обладает пользователь, такой набор команд и будет доступен
-3. Если администратор - CRUD всех помещений, создание/удаление брони, бронирование/отмена брони
-4. Если пользователь - просмотр доступных помещений и бронирований, их бронирование/отмена брони
-# Пояснение классов
-- Booking - класс для представления и управления информации о бронировании
-- ConferenceHall - для конференц-залов
-- User - для пользователей
-- Workplace - для рабочих мест
+1. Запустить миграции: необходимо запустить класс `Main.Java`.
+2. Запустить команду Maven `package`.
+3. Скопировать папку `coworking` из `target` и вставить в `webapps` вашего Tomcat.
+4. Проверить наличие JDBC драйвера в папке `lib` вашего Tomcat. При его отстуствии скачать его и вставить в папку `lib`.
+   
+Ссылка для скаичвания: https://jdbc.postgresql.org/download/ 
+Пример названия файла драйвера: `postgresql-42.7.3.jar`.
 
-+ BookingService - логика для управления бронированием
-+ CoworkingSpaceService - логика для управления всеми помещениями в коворкинге
-+ UserService - логика для управления пользователями
+6. Для запуска Tomcat: запустить файл `startup.bat`.
 
-* ConsoleUI - класс для хранения текстового представления комманд в консоли
-* Main - запуск приложения, в нём происходит создание экземпляров основных классов и инициализация коллекций
-* UserConsole - логика для управления вводом пользователя и отработкой комманд
+Теперь приложение готово получать запросы!
 
-+ ResourceType - enum для типа помещений
-+ UserRole - enum для ролей пользователя
+<b>При попытке первого запроса может выскочить ошибка со статусом 500, но если отправить запрос ещё раз то всё зарабаотает!</b>
+
+6. Для остановки Tomcat: запустить файл `shutdown.bat`.
+
+## Примеры запросов
+WORKPLACE
+1. Для получения всех рабочих мест: GET http://localhost:8080/coworking/workplace
+2. Для получения рабочего места с id равным 1: GET http://localhost:8080/coworking/workplace/1
+3. Для измненеия рабочего места с id равным 1: PUT http://localhost:8080/coworking/workplace/1
+req body: {
+    "name" : "Example",
+    "isAvailable": false
+}
+4. Для удаления рабочего места по id равынм 1: DELETE http://localhost:8080/coworking/workplace/1
+5. Для создания рабочего места: POST http://localhost:8080/coworking/workplace
+req body {
+    "name" : "Example",
+    "isAvailable": false
+}
+
+CONFERENCEHALL
+1. Для получения всех конференц-залов: GET http://localhost:8080/coworking/conference-hall
+2. Для получения конференц-зала с id равным 1: GET http://localhost:8080/coworking/conference-hall/1
+3. Для измненеия конференц-зала с id равным 1: PUT http://localhost:8080/coworking/conference-hall/1
+req body: {
+    "name" : "Example",
+    "isAvailable": false
+}
+4. Для удаления конференц-зала по id равынм 1: DELETE http://localhost:8080/coworking/workplace/1
+5. Для создания конференц-зала: POST http://localhost:8080/coworking/conference-hall
+req body {
+    "name" : "Example",
+    "isAvailable": false
+}
+
+BOOKING
+1. Для получения всех броней: GET http://localhost:8080/coworking/coworking
+2. Для получения брони с id равным 1: GET http://localhost:8080/coworking/booking/1
+3. Для измненеия брони с id равным 1: PUT http://localhost:8080/coworking/booking/1
+req body {
+    "userId": 2,
+    "resourceId": 2,
+    "startTime": "2024-06-01T10:00:00",
+    "endTime": "2024-07-01T10:00:00",
+    "resourceType": "WORKPLACE",
+    "available": true
+}
+4. Для удаления брони по id равынм 1: DELETE http://localhost:8080/coworking/booking/1
+5. Для создания брони: POST http://localhost:8080/coworking/booking
+req body {
+    "userId": 2,
+    "resourceId": 2,
+    "startTime": "2024-06-01T10:00:00",
+    "endTime": "2024-07-01T10:00:00",
+    "resourceType": "WORKPLACE",
+    "available": true
+}
+
+USER
+1. Для регистрации пользователя: POST http://localhost:8080/coworking/user/register
+req body {
+    "username": "username",
+    "password": "password",
+    "role": "ADMIN"
+}
+2. Для авторизации пользователя: POST http://localhost:8080/coworking/user/login
+req body {
+    "username": "username",
+    "password": "password"
+}

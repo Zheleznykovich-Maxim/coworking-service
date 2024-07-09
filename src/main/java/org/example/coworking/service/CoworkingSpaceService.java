@@ -1,18 +1,18 @@
 package org.example.coworking.service;
 
 import lombok.AllArgsConstructor;
+import org.example.coworking.annotations.Loggable;
 import org.example.coworking.exception.EntityNotFoundException;
 import org.example.coworking.model.ConferenceHall;
 import org.example.coworking.model.Workplace;
 import org.example.coworking.repository.ConferenceHallRepository;
 import org.example.coworking.repository.WorkplaceRepository;
-
-import java.io.IOException;
 import java.util.Collection;
 
 /**
  * Service class for managing coworking space operations.
  */
+@Loggable
 @AllArgsConstructor
 public class CoworkingSpaceService {
     private final ConferenceHallRepository conferenceHallRepository;
@@ -50,7 +50,7 @@ public class CoworkingSpaceService {
      *
      * @param conferenceHall the conference hall to add.
      */
-    public void addConferenceHall(ConferenceHall conferenceHall) throws IOException {
+    public void addConferenceHall(ConferenceHall conferenceHall) {
         conferenceHallRepository.addConferenceHall(conferenceHall);
     }
 

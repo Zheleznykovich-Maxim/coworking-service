@@ -1,6 +1,8 @@
 package org.example.coworking.service;
 
 import lombok.AllArgsConstructor;
+import org.example.coworking.annotations.Auditable;
+import org.example.coworking.annotations.Loggable;
 import org.example.coworking.exception.EntityNotFoundException;
 import org.example.coworking.model.User;
 import org.example.coworking.repository.UserRepository;
@@ -8,6 +10,7 @@ import org.example.coworking.repository.UserRepository;
 /**
  * Service class for managing User operations.
  */
+@Loggable
 @AllArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
@@ -17,6 +20,7 @@ public class UserService {
      *
      * @param user the user to register.
      */
+    @Auditable(action = "Регистрация пользователя")
     public void register(User user) {
         userRepository.registerUser(user);
     }
@@ -28,6 +32,7 @@ public class UserService {
 
      * @return true if the credentials match, otherwise false.
      */
+    @Auditable(action = "Авторизация пользователя")
     public boolean login(User user) {
         return userRepository.findUserByUsername(user.getUsername()).get().getPassword()
                 .equals(user.getPassword());
@@ -41,6 +46,17 @@ public class UserService {
      */
     public User findUserByName(String username) {
         return userRepository.findUserByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException("Пользователь с таким именем не найдено!"));
+    }
+
+    /**
+     * Finds a user by their id.
+     *
+     * @param id the username to search for.
+     * @return the user with the specified username, or null if not found.
+     */
+    public User findUserById(int id) {
+        return userRepository.findUserById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Пользователь с таким именем не найдено!"));
     }
 

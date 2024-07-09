@@ -4,10 +4,7 @@ import org.example.coworking.model.enums.UserRole;
 import org.example.coworking.repository.UserRepository;
 import org.junit.jupiter.api.*;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Testcontainers
@@ -16,25 +13,18 @@ public class UserRepositoryTest {
     private UserRepository userRepository;
 
     @BeforeAll
-    static void init() throws SQLException {
+    static void init() {
         DatabaseTestContainer.startContainer();
-        String createTableSQL = "CREATE TABLE IF NOT EXISTS users (" +
-                "id SERIAL PRIMARY KEY," +
-                "username VARCHAR(255) UNIQUE," +
-                "password VARCHAR(255)," +
-                "role VARCHAR(50)" +
-                ")";
-        DatabaseTestContainer.initializeDatabase(createTableSQL);
     }
 
     @BeforeEach
     void setUp() {
-        userRepository = new UserRepository();
+        userRepository = new UserRepository(DatabaseTestContainer.getDatabaseConnection());
     }
 
     @Test
     @DisplayName("Test registerUser and findUserByUsername methods")
-    void testRegisterAndFindUserByUsername() throws SQLException, IOException {
+    void testRegisterAndFindUserByUsername() {
         User user = new User();
         user.setUsername("testuser4");
         user.setPassword("password");
@@ -52,7 +42,7 @@ public class UserRepositoryTest {
     }
 
     @AfterAll
-    static void tearDown() throws SQLException {
+    static void tearDown()  {
         DatabaseTestContainer.stopContainer();
     }
 }

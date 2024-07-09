@@ -9,8 +9,8 @@
     <changeSet id="v2-1" author="Maxim Zheleznykovich">
         <insert tableName="bookings">
             <column name="id" valueSequenceNext="booking_seq"/>
-            <column name="user_id" value="1"/>
-            <column name="resource_id" value="101"/>
+            <column name="user_id" value="2"/>
+            <column name="resource_id" value="1"/>
             <column name="resource_name" value="Conference Room A"/>
             <column name="start_time" value="2024-07-01T10:00:00"/>
             <column name="end_time" value="2024-07-01T11:00:00"/>
@@ -21,8 +21,8 @@
         <insert tableName="bookings">
             <column name="id" valueSequenceNext="booking_seq"/>
             <column name="user_id" value="2"/>
-            <column name="resource_id" value="102"/>
-            <column name="resource_name" value="Conference Room B"/>
+            <column name="resource_id" value="2"/>
+            <column name="resource_name" value="Conference Room A"/>
             <column name="start_time" value="2024-07-01T12:00:00"/>
             <column name="end_time" value="2024-07-01T13:00:00"/>
             <column name="resource_type" value="CONFERENCEHALL"/>

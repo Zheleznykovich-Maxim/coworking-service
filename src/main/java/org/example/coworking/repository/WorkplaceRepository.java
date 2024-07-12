@@ -1,11 +1,11 @@
 package org.example.coworking.repository;
 
-import lombok.AllArgsConstructor;
-import org.example.coworking.config.DatabaseConnection;
+import org.example.coworking.config.DatabaseConfig;
 import org.example.coworking.mapper.WorkplaceMapper;
-import org.example.coworking.mapper.WorkplaceMapperImpl;
-import org.example.coworking.model.Workplace;
+import org.example.coworking.domain.model.Workplace;
 import org.example.coworking.repository.query.WorkplaceQuery;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,17 +18,24 @@ import java.util.Optional;
 /**
  * Repository class for managing workplaces.
  */
-@AllArgsConstructor
+@Repository
 public class WorkplaceRepository {
-    private final WorkplaceMapper workplaceMapper = new WorkplaceMapperImpl();
-    private final DatabaseConnection databaseConnection;
+    private final WorkplaceMapper workplaceMapper;
+    private final DatabaseConfig databaseConfig;
+
+    @Autowired
+    public WorkplaceRepository(WorkplaceMapper workplaceMapper, DatabaseConfig databaseConfig) {
+        this.workplaceMapper = workplaceMapper;
+        this.databaseConfig = databaseConfig;
+    }
+
     /**
      * Retrieves all workplaces from the repository.
      *
      * @return A collection of all workplaces.
      */
     public Collection<Workplace> getAllWorkplaces() {
-        try (Connection connection =  databaseConnection.getConnection()) {
+        try (Connection connection =  databaseConfig.getConnection()) {
 
             try (Statement statement = connection.createStatement();
                  ResultSet resultSet = statement.executeQuery(WorkplaceQuery.GET_ALL_WORKPLACES)) {
@@ -49,7 +56,7 @@ public class WorkplaceRepository {
      * @param workplace The workplace to add.
      */
     public void addWorkplace(Workplace workplace) {
-        try (Connection connection = databaseConnection.getConnection()) {
+        try (Connection connection = databaseConfig.getConnection()) {
 
             try (Statement statement = connection.createStatement();
                  ResultSet resultSet = statement.executeQuery(WorkplaceQuery.GET_ID_NEXT_WORKPLACE)) {
@@ -79,7 +86,7 @@ public class WorkplaceRepository {
      * @param workplaceId The ID of the workplace to remove.
      */
     public void removeWorkplaceById(int workplaceId) {
-        try (Connection connection = databaseConnection.getConnection()) {
+        try (Connection connection = databaseConfig.getConnection()) {
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(WorkplaceQuery.DELETE_WORKPLACE)) {
                 preparedStatement.setInt(1, workplaceId);
@@ -97,10 +104,10 @@ public class WorkplaceRepository {
      * @return The workplace with the specified ID, or null if not found.
      */
     public Optional<Workplace> findWorkplaceById(int workplaceId) {
-        try (Connection connection = databaseConnection.getConnection()) {
+        try (Connection connection = databaseConfig.getConnection()) {
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(WorkplaceQuery.FIND_WORKPLACE_BY_ID)) {
-                preparedStatement.setInt(1, workplaceId);
+                preparedStatement.setLong(1, workplaceId);
 
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     if (resultSet.next()) {
@@ -120,7 +127,7 @@ public class WorkplaceRepository {
      * @param workplace The updated workplace object.
      */
     public void updateWorkplace(Workplace workplace) {
-        try (Connection connection = databaseConnection.getConnection()) {
+        try (Connection connection = databaseConfig.getConnection()) {
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(WorkplaceQuery.UPDATE_WORKPLACE)) {
                 preparedStatement.setString(1, workplace.getName());
@@ -140,7 +147,7 @@ public class WorkplaceRepository {
      * @return A collection of all available workplaces.
      */
     public Collection<Workplace> getAvailableWorkplaces() {
-        try (Connection connection = databaseConnection.getConnection()) {
+        try (Connection connection = databaseConfig.getConnection()) {
 
             try (Statement statement = connection.createStatement();
                  ResultSet resultSet = statement.executeQuery(WorkplaceQuery.GET_ALL_AVAILABLE_WORKPLACES)) {

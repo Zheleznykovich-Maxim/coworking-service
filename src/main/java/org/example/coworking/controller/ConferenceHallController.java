@@ -27,11 +27,6 @@ public class ConferenceHallController {
         this.conferenceHallService = conferenceHallService;
     }
 
-    @GetMapping(value = "/hello", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String sayHello() {
-        return "ResponseEntity.)";
-    }
-
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<ConferenceHallResponseDto>> getWorkplaces() {
         Collection<ConferenceHallResponseDto> workplaceResponseDtos = this.conferenceHallService.getConferenceHalls();

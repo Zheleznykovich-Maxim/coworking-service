@@ -1,9 +1,10 @@
-package org.example.coworking.model;
+package org.example.coworking.domain.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.example.coworking.model.enums.ResourceType;
+import org.example.coworking.domain.model.enums.ResourceType;
+
 import java.time.LocalDateTime;
 
 /**

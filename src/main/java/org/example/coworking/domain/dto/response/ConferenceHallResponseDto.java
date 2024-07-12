@@ -1,4 +1,4 @@
-package org.example.coworking.dto.response;
+package org.example.coworking.domain.dto.response;
 
 public record ConferenceHallResponseDto (
         int id,

@@ -1,10 +1,10 @@
 package org.example.coworking.mapper;
 
-import org.example.coworking.dto.request.user.UserLoginRequestDto;
-import org.example.coworking.dto.request.user.UserRegisterRequestDto;
-import org.example.coworking.dto.response.UserResponseDto;
-import org.example.coworking.model.User;
-import org.example.coworking.model.enums.UserRole;
+import org.example.coworking.domain.dto.request.user.UserLoginRequestDto;
+import org.example.coworking.domain.dto.request.user.UserRegisterRequestDto;
+import org.example.coworking.domain.dto.response.UserResponseDto;
+import org.example.coworking.domain.model.User;
+import org.example.coworking.domain.model.enums.UserRole;
 import org.mapstruct.Mapper;
 import org.mapstruct.Named;
 import java.sql.ResultSet;

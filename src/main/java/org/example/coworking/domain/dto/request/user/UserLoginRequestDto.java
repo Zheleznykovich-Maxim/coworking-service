@@ -1,4 +1,4 @@
-package org.example.coworking.dto.request.user;
+package org.example.coworking.domain.dto.request.user;
 
 public record UserLoginRequestDto(
         String username,

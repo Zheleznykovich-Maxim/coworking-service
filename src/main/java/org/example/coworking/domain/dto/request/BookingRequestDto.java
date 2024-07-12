@@ -1,10 +1,10 @@
-package org.example.coworking.dto.response;
+package org.example.coworking.domain.dto.request;
 
-import org.example.coworking.model.enums.ResourceType;
+import org.example.coworking.domain.model.enums.ResourceType;
+
 import java.time.LocalDateTime;
 
-public record BookingResponseDto(
-        int id,
+public record BookingRequestDto(
 
         int userId,
 

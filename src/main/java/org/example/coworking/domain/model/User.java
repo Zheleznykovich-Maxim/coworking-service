@@ -1,9 +1,9 @@
-package org.example.coworking.model;
+package org.example.coworking.domain.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.example.coworking.model.enums.UserRole;
+import org.example.coworking.domain.model.enums.UserRole;
 
 /**
  * Represents a user in the coworking space system.

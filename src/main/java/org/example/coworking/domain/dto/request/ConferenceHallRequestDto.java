@@ -1,4 +1,4 @@
-package org.example.coworking.dto.request;
+package org.example.coworking.domain.dto.request;
 
 public record ConferenceHallRequestDto (
         String name,

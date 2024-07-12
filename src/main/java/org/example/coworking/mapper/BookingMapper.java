@@ -1,9 +1,9 @@
 package org.example.coworking.mapper;
 
-import org.example.coworking.dto.request.BookingRequestDto;
-import org.example.coworking.dto.response.BookingResponseDto;
-import org.example.coworking.model.Booking;
-import org.example.coworking.model.enums.ResourceType;
+import org.example.coworking.domain.dto.request.BookingRequestDto;
+import org.example.coworking.domain.dto.response.BookingResponseDto;
+import org.example.coworking.domain.model.Booking;
+import org.example.coworking.domain.model.enums.ResourceType;
 import org.mapstruct.Mapper;
 import org.mapstruct.Named;
 

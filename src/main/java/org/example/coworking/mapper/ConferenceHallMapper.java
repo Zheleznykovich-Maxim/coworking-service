@@ -1,8 +1,8 @@
 package org.example.coworking.mapper;
 
-import org.example.coworking.dto.request.ConferenceHallRequestDto;
-import org.example.coworking.dto.response.ConferenceHallResponseDto;
-import org.example.coworking.model.ConferenceHall;
+import org.example.coworking.domain.dto.request.ConferenceHallRequestDto;
+import org.example.coworking.domain.dto.response.ConferenceHallResponseDto;
+import org.example.coworking.domain.model.ConferenceHall;
 import org.mapstruct.Mapper;
 import org.mapstruct.Named;
 import java.sql.ResultSet;

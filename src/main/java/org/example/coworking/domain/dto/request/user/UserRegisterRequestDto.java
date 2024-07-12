@@ -1,6 +1,6 @@
-package org.example.coworking.dto.request.user;
+package org.example.coworking.domain.dto.request.user;
 
-import org.example.coworking.model.enums.UserRole;
+import org.example.coworking.domain.model.enums.UserRole;
 
 public record UserRegisterRequestDto(
         String username,

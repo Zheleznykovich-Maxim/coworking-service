@@ -1,4 +1,4 @@
-package org.example.coworking.model;
+package org.example.coworking.domain.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

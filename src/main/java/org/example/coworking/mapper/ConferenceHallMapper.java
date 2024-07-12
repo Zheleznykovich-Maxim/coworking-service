@@ -11,8 +11,11 @@ import java.util.Collection;
 
 @Mapper
 public interface ConferenceHallMapper {
+
     ConferenceHall conferenceHallRequestDtotoConferenceHall(ConferenceHallRequestDto conferenceHallRequestDto);
+
     ConferenceHallResponseDto conferenceHallToConferenceHallResponseDto(ConferenceHall conferenceHall);
+
     Collection<ConferenceHallResponseDto> conferenceHallsToConferenceHallResponseDtos(Collection<ConferenceHall> conferenceHalls);
 
     @Named("resultSetToConferenceHall")

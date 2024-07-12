@@ -1,0 +1,7 @@
+db:
+  url: jdbc:postgresql://localhost:5432/postgres
+  username: postgres
+  password: maxim20
+
+liquibase:
+  changelog: db/changelog/main-changelog.xml

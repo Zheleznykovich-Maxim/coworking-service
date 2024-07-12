@@ -1,13 +1,13 @@
 package org.example.coworking.repository;
 
-import lombok.AllArgsConstructor;
-import org.example.coworking.config.DatabaseConnection;
+import org.example.coworking.config.DatabaseConfig;
 import org.example.coworking.mapper.BookingMapper;
-import org.example.coworking.mapper.BookingMapperImpl;
-import org.example.coworking.model.Booking;
-import org.example.coworking.model.User;
-import org.example.coworking.model.enums.ResourceType;
+import org.example.coworking.domain.model.Booking;
+import org.example.coworking.domain.model.User;
+import org.example.coworking.domain.model.enums.ResourceType;
 import org.example.coworking.repository.query.BookingQuery;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -17,10 +17,16 @@ import java.util.Optional;
 /**
  * Repository class for managing Booking entities.
  */
-@AllArgsConstructor
+@Repository
 public class BookingRepository {
-    private final BookingMapper bookingMapper = new BookingMapperImpl();
-    private final DatabaseConnection databaseConnection;
+    private final BookingMapper bookingMapper;
+    private final DatabaseConfig databaseConfig;
+
+    @Autowired
+    public BookingRepository(BookingMapper bookingMapper, DatabaseConfig databaseConfig) {
+        this.bookingMapper = bookingMapper;
+        this.databaseConfig = databaseConfig;
+    }
 
     /**
      * Retrieves all bookings.
@@ -28,7 +34,7 @@ public class BookingRepository {
      * @return a collection of all bookings.
      */
     public Collection<Booking> getAllBookings() {
-        try (Connection connection = databaseConnection.getConnection()) {
+        try (Connection connection = databaseConfig.getConnection()) {
             try (Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(BookingQuery.GET_ALL_BOOKINGS)) {
                     Collection<Booking> bookings = new ArrayList<>();
@@ -49,8 +55,8 @@ public class BookingRepository {
      *
      * @param booking the booking to add.
      */
-    public void addBooking(Booking booking) throws SQLException {
-        try (Connection connection = databaseConnection.getConnection()) {
+    public void addBooking(Booking booking) {
+        try (Connection connection = databaseConfig.getConnection()) {
 
             try (Statement statement = connection.createStatement();
                  ResultSet resultSet = statement.executeQuery(BookingQuery.GET_ID_NEXT_BOOKING)) {
@@ -72,6 +78,8 @@ public class BookingRepository {
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -81,7 +89,7 @@ public class BookingRepository {
      * @param bookingId the ID of the booking to remove.
      */
     public void removeBookingById(int bookingId) {
-        try (Connection connection = databaseConnection.getConnection()) {
+        try (Connection connection = databaseConfig.getConnection()) {
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(BookingQuery.DELETE_BOOKING)) {
                 preparedStatement.setInt(1, bookingId);
@@ -97,8 +105,8 @@ public class BookingRepository {
      *
      * @param booking the booking to update.
      */
-    public void updateBooking(Booking booking) throws SQLException {
-        try (Connection connection = databaseConnection.getConnection()) {
+    public void updateBooking(Booking booking) {
+        try (Connection connection = databaseConfig.getConnection()) {
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(BookingQuery.UPDATE_BOOKING)) {
                 preparedStatement.setInt(1, booking.getUserId());
@@ -111,6 +119,8 @@ public class BookingRepository {
 
                 preparedStatement.executeUpdate();
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -121,7 +131,7 @@ public class BookingRepository {
      * @return the booking with the specified ID, or null if not found.
      */
     public Optional<Booking> findBookingById(int bookingId) {
-        try (Connection connection = databaseConnection.getConnection()) {
+        try (Connection connection = databaseConfig.getConnection()) {
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(BookingQuery.FIND_BOOKING_BY_ID)) {
                 preparedStatement.setInt(1, bookingId);
@@ -145,7 +155,7 @@ public class BookingRepository {
      * @return a collection of bookings that start or end on the specified date.
      */
     public Collection<Booking> filterBookingsByDate(LocalDate date) {
-        try (Connection connection = databaseConnection.getConnection()) {
+        try (Connection connection = databaseConfig.getConnection()) {
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(BookingQuery.FILTER_BOOKINGS_BY_DATE)) {
                 preparedStatement.setDate(1, Date.valueOf(date));
@@ -171,7 +181,7 @@ public class BookingRepository {
      * @return a collection of bookings with the specified resource type.
      */
     public Collection<Booking> filterBookingsByResource(ResourceType resourceType) {
-        try (Connection connection = databaseConnection.getConnection()) {
+        try (Connection connection = databaseConfig.getConnection()) {
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(BookingQuery.FILTER_BOOKINGS_BY_RESOURCE)) {
                 preparedStatement.setString(1, resourceType.name());
@@ -196,7 +206,7 @@ public class BookingRepository {
      * @return a collection of bookings made by the specified user.
      */
     public Collection<Booking> filterBookingsByUser(User user) {
-        try (Connection connection = databaseConnection.getConnection()) {
+        try (Connection connection = databaseConfig.getConnection()) {
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(BookingQuery.FILTER_BOOKING_BY_USER)) {
                 preparedStatement.setInt(1, user.getId());

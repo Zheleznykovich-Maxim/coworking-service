@@ -6,15 +6,17 @@ import org.example.coworking.domain.model.Booking;
 import org.example.coworking.domain.model.enums.ResourceType;
 import org.mapstruct.Mapper;
 import org.mapstruct.Named;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 
 @Mapper
 public interface BookingMapper {
+
     Booking bookingRequestDtotoBooking(BookingRequestDto bookingRequestDto);
+
     BookingResponseDto bookingToBookingResponseDto(Booking booking);
+
     Collection<BookingResponseDto> bookingsToBookingResponseDtos(Collection<Booking> bookings);
 
     @Named("resultSetToBooking")

@@ -5,3 +5,5 @@ db:
 
 liquibase:
   changelog: db/changelog/main-changelog.xml
+  default-schema: coworking
+  liquibase-schema: liquibase_logs

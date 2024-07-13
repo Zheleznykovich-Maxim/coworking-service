@@ -38,7 +38,7 @@ public class DatabaseConfig {
         return bean;
     }
 
-    public Connection getConnection() throws SQLException {
+    public Connection connection() throws SQLException {
         return DriverManager.getConnection(url, username, password);
     }
 }

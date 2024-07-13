@@ -34,7 +34,7 @@ public class ConferenceHallController {
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ConferenceHallResponseDto> getWorkplaceById(@PathVariable int id) {
+    public ResponseEntity<ConferenceHallResponseDto> getWorkplaceById(@PathVariable("id") int id) {
         ConferenceHallResponseDto conferenceHallResponseDto = conferenceHallService.findConferenceHallById(id);
         return ResponseEntity.ok(conferenceHallResponseDto);
     }
@@ -45,8 +45,8 @@ public class ConferenceHallController {
         return ResponseEntity.status(201).body(workplaceResponseDto);
     }
 
-    @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ConferenceHallResponseDto> updateWorkplace(@PathVariable int id,
+    @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ConferenceHallResponseDto> updateWorkplace(@PathVariable("id") int id,
                                                                 @RequestBody ConferenceHallRequestDto workplaceRequestDto) {
         ConferenceHallResponseDto workplaceResponseDto = conferenceHallService.updateConferenceHall(id, workplaceRequestDto);
         return ResponseEntity.ok(workplaceResponseDto);
@@ -54,7 +54,7 @@ public class ConferenceHallController {
     }
 
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ConferenceHallResponseDto> deleteWorkplace(@PathVariable int id) {
+    public ResponseEntity<ConferenceHallResponseDto> deleteWorkplace(@PathVariable("id") int id) {
         ConferenceHallResponseDto workplaceResponseDto = conferenceHallService.deleteConferenceHall(id);
         return ResponseEntity.ok(workplaceResponseDto);
     }

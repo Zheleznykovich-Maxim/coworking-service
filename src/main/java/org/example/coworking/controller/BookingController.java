@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Collection;
 
@@ -37,19 +38,19 @@ public class BookingController {
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<BookingResponseDto> getBookingById(@PathVariable int id) {
+    public ResponseEntity<BookingResponseDto> getBookingById(@PathVariable("id") int id) {
         BookingResponseDto bookingResponseDto = bookingService.findBookingById(id);
         return ResponseEntity.ok(bookingResponseDto);
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<BookingResponseDto> createWorkplace(@RequestBody BookingRequestDto bookingRequestDto) {
+    public ResponseEntity<BookingResponseDto> createWorkplace(@RequestBody BookingRequestDto bookingRequestDto) throws SQLException {
         BookingResponseDto bookingResponseDto = bookingService.addBooking(bookingRequestDto);
         return ResponseEntity.status(201).body(bookingResponseDto);
     }
 
-    @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<BookingResponseDto> updateWorkplace(@PathVariable int id,
+    @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<BookingResponseDto> updateWorkplace(@PathVariable("id") int id,
                                                                 @RequestBody BookingRequestDto workplaceRequestDto) {
         BookingResponseDto bookingResponseDto = bookingService.updateBooking(id, workplaceRequestDto);
         return ResponseEntity.ok(bookingResponseDto);
@@ -57,7 +58,7 @@ public class BookingController {
     }
 
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<BookingResponseDto> deleteWorkplace(@PathVariable int id) {
+    public ResponseEntity<BookingResponseDto> deleteWorkplace(@PathVariable("id") int id) {
         BookingResponseDto bookingResponseDto = bookingService.deleteBooking(id);
         return ResponseEntity.ok(bookingResponseDto);
     }
@@ -70,7 +71,7 @@ public class BookingController {
     }
 
     @GetMapping("/filter/by-resource-type")
-    public ResponseEntity<Collection<BookingResponseDto>> getWorkplacesByResourceType(@RequestParam("type") ResourceType resourceType) {
+    public ResponseEntity<Collection<BookingResponseDto>> getWorkplacesByResourceType(@RequestParam("type") ResourceType resourceType) throws SQLException {
         Collection<BookingResponseDto> bookingResponseDtos = bookingService.filterBookingsByResource(resourceType);
         return ResponseEntity.ok(bookingResponseDtos);
     }

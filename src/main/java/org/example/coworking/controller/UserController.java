@@ -36,12 +36,12 @@ public class UserController {
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserResponseDto> getUserById(@PathVariable int id) {
+    public ResponseEntity<UserResponseDto> getUserById(@PathVariable("id") int id) {
         UserResponseDto workplaceResponseDto = userService.findUserById(id);
         return ResponseEntity.ok(workplaceResponseDto);
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/username", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserResponseDto> getUserByUsername(@RequestParam("username") String username) {
         UserResponseDto workplaceResponseDto = userService.findUserByName(username);
         return ResponseEntity.ok(workplaceResponseDto);
@@ -59,8 +59,8 @@ public class UserController {
         return ResponseEntity.ok(userResponseDto);
     }
 
-    @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserResponseDto> updateUser(@PathVariable int id,
+    @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserResponseDto> updateUser(@PathVariable("id") int id,
                                                                 @RequestBody UserRegisterRequestDto userRegisterRequestDto) {
         UserResponseDto userResponseDto = userService.updateUser(id,userRegisterRequestDto);
         return ResponseEntity.ok(userResponseDto);
@@ -68,7 +68,7 @@ public class UserController {
     }
 
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserResponseDto> deleteUser(@PathVariable int id) {
+    public ResponseEntity<UserResponseDto> deleteUser(@PathVariable("id") int id) {
         UserResponseDto userResponseDto = userService.removeUserById(id);
         return ResponseEntity.ok(userResponseDto);
     }

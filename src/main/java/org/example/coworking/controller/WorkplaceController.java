@@ -33,7 +33,7 @@ public class WorkplaceController {
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<WorkplaceResponseDto> getWorkplaceById(@PathVariable int id) {
+    public ResponseEntity<WorkplaceResponseDto> getWorkplaceById(@PathVariable("id") int id) {
         WorkplaceResponseDto workplaceResponseDto = workplaceService.findWorkplaceById(id);
         return ResponseEntity.ok(workplaceResponseDto);
     }
@@ -44,8 +44,8 @@ public class WorkplaceController {
         return ResponseEntity.status(201).body(workplaceResponseDto);
     }
 
-    @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<WorkplaceResponseDto> updateWorkplace(@PathVariable int id,
+    @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<WorkplaceResponseDto> updateWorkplace(@PathVariable("id") int id,
                                                                 @RequestBody WorkplaceRequestDto workplaceRequestDto) {
         WorkplaceResponseDto workplaceResponseDto = workplaceService.updateWorkplace(id, workplaceRequestDto);
         return ResponseEntity.ok(workplaceResponseDto);
@@ -53,7 +53,7 @@ public class WorkplaceController {
     }
 
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<WorkplaceResponseDto> deleteWorkplace(@PathVariable int id) {
+    public ResponseEntity<WorkplaceResponseDto> deleteWorkplace(@PathVariable("id") int id) {
         WorkplaceResponseDto workplaceResponseDto = workplaceService.deleteWorkplace(id);
         return ResponseEntity.ok(workplaceResponseDto);
     }

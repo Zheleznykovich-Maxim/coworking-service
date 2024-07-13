@@ -5,7 +5,6 @@ import org.example.coworking.domain.model.enums.UserRole;
 public record UserResponseDto(
         int id,
         String username,
-        UserRole role,
-        String message
+        UserRole role
 ) {
 }

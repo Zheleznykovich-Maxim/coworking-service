@@ -13,9 +13,13 @@ import java.util.Collection;
 
 @Mapper
 public interface UserMapper {
+
     User userRegisterRequestDtotoUser(UserRegisterRequestDto userRegisterRequestDto);
+
     User userLoginRequestDtotoUser(UserLoginRequestDto userLoginRequestDto);
-    UserResponseDto userToUserResponseDto(User user, String message);
+
+    UserResponseDto userToUserResponseDto(User user);
+
     Collection<UserResponseDto> usersToUserResponseDtos(Collection<User> users);
 
     @Named("resultSetToUser")

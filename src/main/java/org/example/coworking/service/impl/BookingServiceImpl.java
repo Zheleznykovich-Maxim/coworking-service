@@ -3,12 +3,14 @@ package org.example.coworking.service.impl;
 import org.example.coworking.domain.dto.request.BookingRequestDto;
 import org.example.coworking.domain.dto.response.BookingResponseDto;
 import org.example.coworking.domain.model.Booking;
+import org.example.coworking.domain.model.enums.ResourceType;
 import org.example.coworking.exception.EntityNotFoundException;
 import org.example.coworking.mapper.BookingMapper;
 import org.example.coworking.repository.BookingRepository;
 import org.example.coworking.service.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.time.LocalDate;
 import java.util.Collection;
 
 @Service
@@ -58,5 +60,23 @@ public class BookingServiceImpl implements BookingService {
                 .orElseThrow(() -> new EntityNotFoundException("booking", id));
         bookingRepository.removeBookingById(booking.getId());
         return bookingMapper.bookingToBookingResponseDto(booking);
+    }
+
+    @Override
+    public Collection<BookingResponseDto> filterBookingsByDate(LocalDate date) {
+        Collection<Booking> bookings = bookingRepository.filterBookingsByDate(date);
+        return bookingMapper.bookingsToBookingResponseDtos(bookings);
+    }
+
+    @Override
+    public Collection<BookingResponseDto> filterBookingsByUser(int userId) {
+        Collection<Booking> bookings = bookingRepository.filterBookingsByUser(userId);
+        return bookingMapper.bookingsToBookingResponseDtos(bookings);
+    }
+
+    @Override
+    public Collection<BookingResponseDto> filterBookingsByResource(ResourceType resourceType) {
+        Collection<Booking> bookings = bookingRepository.filterBookingsByResource(resourceType);
+        return bookingMapper.bookingsToBookingResponseDtos(bookings);
     }
 }

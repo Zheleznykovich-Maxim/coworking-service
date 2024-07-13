@@ -3,7 +3,6 @@ package org.example.coworking.repository;
 import org.example.coworking.config.DatabaseConfig;
 import org.example.coworking.mapper.BookingMapper;
 import org.example.coworking.domain.model.Booking;
-import org.example.coworking.domain.model.User;
 import org.example.coworking.domain.model.enums.ResourceType;
 import org.example.coworking.repository.query.BookingQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -202,14 +201,14 @@ public class BookingRepository {
     /**
      * Filters bookings by a specific user.
      *
-     * @param user the user to filter bookings by.
+     * @param userId the user to filter bookings by.
      * @return a collection of bookings made by the specified user.
      */
-    public Collection<Booking> filterBookingsByUser(User user) {
+    public Collection<Booking> filterBookingsByUser(int userId) {
         try (Connection connection = databaseConfig.getConnection()) {
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(BookingQuery.FILTER_BOOKING_BY_USER)) {
-                preparedStatement.setInt(1, user.getId());
+                preparedStatement.setInt(1, userId);
 
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     Collection<Booking> bookings = new ArrayList<>();

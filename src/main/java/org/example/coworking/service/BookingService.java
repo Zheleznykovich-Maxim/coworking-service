@@ -2,6 +2,8 @@ package org.example.coworking.service;
 
 import org.example.coworking.domain.dto.request.BookingRequestDto;
 import org.example.coworking.domain.dto.response.BookingResponseDto;
+import org.example.coworking.domain.model.enums.ResourceType;
+import java.time.LocalDate;
 import java.util.Collection;
 
 public interface BookingService {
@@ -15,4 +17,10 @@ public interface BookingService {
     BookingResponseDto findBookingById(int id);
 
     BookingResponseDto deleteBooking(int id);
+
+    Collection<BookingResponseDto> filterBookingsByDate(LocalDate date);
+
+    Collection<BookingResponseDto> filterBookingsByUser(int userId);
+
+    Collection<BookingResponseDto> filterBookingsByResource(ResourceType resourceType);
 }

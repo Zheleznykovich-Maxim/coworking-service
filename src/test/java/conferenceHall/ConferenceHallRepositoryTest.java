@@ -1,3 +1,4 @@
+package conferenceHall;
 
 import config.TestContainerManager;
 import org.example.coworking.config.DatabaseConnectionProviderImpl;

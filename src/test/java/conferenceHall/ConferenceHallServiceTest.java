@@ -1,3 +1,4 @@
+package conferenceHall;
 
 import org.example.coworking.domain.dto.request.ConferenceHallRequestDto;
 import org.example.coworking.domain.dto.response.ConferenceHallResponseDto;

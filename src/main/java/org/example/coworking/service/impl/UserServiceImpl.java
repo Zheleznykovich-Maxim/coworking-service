@@ -1,5 +1,6 @@
 package org.example.coworking.service.impl;
 
+import org.example.coworking.annotations.Auditable;
 import org.example.coworking.domain.dto.request.user.UserLoginRequestDto;
 import org.example.coworking.domain.dto.request.user.UserRegisterRequestDto;
 import org.example.coworking.domain.dto.response.UserResponseDto;
@@ -23,6 +24,7 @@ public class UserServiceImpl implements UserService {
         this.userMapper = userMapper;
     }
 
+    @Auditable(action = "Регистрация пользователя")
     @Override
     public UserResponseDto register(UserRegisterRequestDto userRegisterRequestDto) {
         User user = userMapper.userRegisterRequestDtotoUser(userRegisterRequestDto);
@@ -34,6 +36,7 @@ public class UserServiceImpl implements UserService {
         return userMapper.userToUserResponseDto(user);
     }
 
+    @Auditable(action = "Авторизация пользователя")
     @Override
     public UserResponseDto login(UserLoginRequestDto userLoginRequestDto) {
         User user = userMapper.userLoginRequestDtotoUser(userLoginRequestDto);

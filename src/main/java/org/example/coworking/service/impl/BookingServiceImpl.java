@@ -1,5 +1,6 @@
 package org.example.coworking.service.impl;
 
+import org.example.coworking.annotations.Auditable;
 import org.example.coworking.domain.dto.request.BookingRequestDto;
 import org.example.coworking.domain.dto.response.BookingResponseDto;
 import org.example.coworking.domain.model.Booking;
@@ -10,6 +11,7 @@ import org.example.coworking.repository.BookingRepository;
 import org.example.coworking.service.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Collection;
 
@@ -30,8 +32,9 @@ public class BookingServiceImpl implements BookingService {
         return bookingMapper.bookingsToBookingResponseDtos(bookings);
     }
 
+    @Auditable(action = "Создание брони")
     @Override
-    public BookingResponseDto addBooking(BookingRequestDto bookingRequestDto) {
+    public BookingResponseDto addBooking(BookingRequestDto bookingRequestDto) throws SQLException {
         Booking booking = bookingMapper.bookingRequestDtotoBooking(bookingRequestDto);
         bookingRepository.addBooking(booking);
         return bookingMapper.bookingToBookingResponseDto(booking);
@@ -54,6 +57,7 @@ public class BookingServiceImpl implements BookingService {
         return bookingMapper.bookingToBookingResponseDto(booking);
     }
 
+    @Auditable(action = "Удаление брони")
     @Override
     public BookingResponseDto deleteBooking(int id) {
         Booking booking = bookingRepository.findBookingById(id)

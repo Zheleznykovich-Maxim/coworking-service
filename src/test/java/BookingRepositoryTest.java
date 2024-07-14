@@ -1,49 +1,65 @@
-import config.DatabaseTestContainer;
-import org.example.coworking.model.Booking;
-import org.example.coworking.model.enums.ResourceType;
+import config.TestContainerManager;
+import org.example.coworking.config.DatabaseConnectionProviderImpl;
+import org.example.coworking.domain.model.Booking;
+import org.example.coworking.domain.model.enums.ResourceType;
 import org.example.coworking.repository.BookingRepository;
 import org.junit.jupiter.api.*;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Testcontainers
-public class BookingRepositoryTest {
-    private BookingRepository bookingRepository;
+@DisplayName("Tests for BookingRepository")
+class BookingRepositoryTest {
+
+    private BookingRepository bookingRepository = new BookingRepository(
+            new DatabaseConnectionProviderImpl(
+            postgreSQLContainer.getJdbcUrl(),
+            postgreSQLContainer.getUsername(),
+            postgreSQLContainer.getPassword())
+    );
+
+    @Container
+    private static final PostgreSQLContainer<?> postgreSQLContainer = TestContainerManager.getPostgresContainer();
 
     @BeforeAll
     static void init() {
-        DatabaseTestContainer.startContainer();
-    }
-
-    @BeforeEach
-    void setUp() {
-        bookingRepository = new BookingRepository(DatabaseTestContainer.getDatabaseConnection());
+        postgreSQLContainer.start();
+        TestContainerManager.establishConnection();
     }
 
     @Test
-    @DisplayName("Test addBooking method")
-    void testAddBooking() throws SQLException {
-        Booking booking = new Booking();
-        booking.setUserId(1);
-        booking.setResourceId(1);
-        booking.setStartTime(LocalDateTime.now());
-        booking.setEndTime(LocalDateTime.now().plusHours(1));
-        booking.setResourceType(ResourceType.CONFERENCEHALL);
-        booking.setAvailable(true);
-
+    @DisplayName("Test add booking")
+    void testAddBooking() {
+        LocalDateTime startTime = LocalDateTime.of(2024, 6, 25, 9, 0);
+        LocalDateTime endTime = LocalDateTime.of(2024, 6, 25, 11, 0);
+        Booking booking = new Booking(3, 1, 1, startTime, endTime, ResourceType.WORKPLACE, true);
         bookingRepository.addBooking(booking);
 
         Optional<Booking> retrievedBooking = bookingRepository.findBookingById(booking.getId());
         assertThat(retrievedBooking).isPresent();
-        assertThat(retrievedBooking.get().getUserId()).isEqualTo(booking.getUserId());
-        assertThat(retrievedBooking.get().getResourceId()).isEqualTo(booking.getResourceId());
+        assertThat(retrievedBooking.get()).isEqualTo(booking);
+    }
+
+    @Test
+    @DisplayName("Tests deleting booking by id")
+    void testRemoveBookingById() {
+        LocalDateTime startTime = LocalDateTime.of(2024, 6, 25, 9, 0);
+        LocalDateTime endTime = LocalDateTime.of(2024, 6, 25, 11, 0);
+        Booking booking = new Booking(1, 2, 1, startTime, endTime, ResourceType.WORKPLACE, true);
+        bookingRepository.addBooking(booking);
+
+        bookingRepository.removeBookingById(booking.getId());
+
+        Optional<Booking> retrievedBooking = bookingRepository.findBookingById(booking.getId());
+        assertThat(retrievedBooking).isEmpty();
     }
 
     @AfterAll
-    static void tearDown() {
-        DatabaseTestContainer.stopContainer();
+    public static void teardown() {
+        postgreSQLContainer.stop();
     }
 }

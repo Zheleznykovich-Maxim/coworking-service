@@ -1,6 +1,6 @@
-import org.example.coworking.model.enums.ResourceType;
-import org.example.coworking.model.Booking;
-import org.example.coworking.model.User;
+import org.example.coworking.domain.model.enums.ResourceType;
+import org.example.coworking.domain.model.Booking;
+import org.example.coworking.domain.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,7 +19,7 @@ public class BookingTest {
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         mockUser = mock(User.class);
-        booking = new Booking(0, 101,
+        booking = new Booking(1, 0, 101,
                 LocalDateTime.of(2024, 6, 24, 10, 0),
                 LocalDateTime.of(2024, 6, 24, 12, 0),
                 ResourceType.WORKPLACE,
@@ -67,7 +67,7 @@ public class BookingTest {
     @Test
     @DisplayName("Test toString method")
     public void testToString() {
-        String expectedString = "Booking(id=0, userId=0, resourceId=101, " +
+        String expectedString = "Booking(id=1, userId=0, resourceId=101, " +
                 "startTime=2024-06-24T10:00, endTime=2024-06-24T12:00, resourceType=WORKPLACE, available=true)";
         assertThat(booking.toString()).isEqualTo(expectedString);
     }

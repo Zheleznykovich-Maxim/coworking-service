@@ -1,7 +1,6 @@
 package org.example.coworking.repository;
 
-import org.example.coworking.config.DatabaseConfig;
-import org.example.coworking.mapper.ConferenceHallMapper;
+import org.example.coworking.config.DatabaseConnectionProvider;
 import org.example.coworking.domain.model.ConferenceHall;
 import org.example.coworking.repository.query.ConferenceHallQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +19,11 @@ import java.util.Optional;
  */
 @Repository
 public class ConferenceHallRepository {
-    private final ConferenceHallMapper conferenceHallMapper;
-    private final DatabaseConfig databaseConfig;
+    private final DatabaseConnectionProvider databaseConnectionProvider;
 
     @Autowired
-    public ConferenceHallRepository(ConferenceHallMapper conferenceHallMapper, DatabaseConfig databaseConfig) {
-        this.conferenceHallMapper = conferenceHallMapper;
-        this.databaseConfig = databaseConfig;
+    public ConferenceHallRepository(DatabaseConnectionProvider databaseConnectionProvider) {
+        this.databaseConnectionProvider = databaseConnectionProvider;
     }
 
     /**
@@ -35,13 +32,13 @@ public class ConferenceHallRepository {
      * @return a collection of all conference halls.
      */
     public Collection<ConferenceHall> getAllConferenceHalls() {
-        try (Connection connection = databaseConfig.getConnection()) {
+        try (Connection connection = databaseConnectionProvider.getConnection()) {
 
             try (Statement statement = connection.createStatement();
                  ResultSet resultSet = statement.executeQuery(ConferenceHallQuery.GET_ALL_CONFERENCE_HALLS)) {
                 Collection<ConferenceHall> conferenceHalls = new ArrayList<>();
                 while (resultSet.next()) {
-                    conferenceHalls.add(conferenceHallMapper.resultSetToConferenceHall(resultSet));
+                    conferenceHalls.add(resultSetToConferenceHall(resultSet));
                 }
                 return conferenceHalls;
             }
@@ -56,7 +53,7 @@ public class ConferenceHallRepository {
      * @param conferenceHall the conference hall to add.
      */
     public void addConferenceHall(ConferenceHall conferenceHall) {
-        try (Connection connection = databaseConfig.getConnection()) {
+        try (Connection connection = databaseConnectionProvider.getConnection()) {
 
             try (Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery(ConferenceHallQuery.GET_ID_NEXT_CONFERENCE_HALL)) {
@@ -83,7 +80,7 @@ public class ConferenceHallRepository {
      * @param conferenceHallId the ID of the conference hall to remove.
      */
     public void removeConferenceHallById(int conferenceHallId) {
-        try (Connection connection = databaseConfig.getConnection()) {
+        try (Connection connection = databaseConnectionProvider.getConnection()) {
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(ConferenceHallQuery.DELETE_CONFERENCE_HALL)) {
                 preparedStatement.setInt(1, conferenceHallId);
@@ -101,14 +98,14 @@ public class ConferenceHallRepository {
      * @return the conference hall with the specified ID, or null if not found.
      */
     public Optional<ConferenceHall> findConferenceById(int conferenceHallId) {
-        try (Connection connection = databaseConfig.getConnection()) {
+        try (Connection connection = databaseConnectionProvider.getConnection()) {
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(ConferenceHallQuery.FIND_CONFERENCE_HALL_BY_ID)) {
                 preparedStatement.setInt(1, conferenceHallId);
 
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     if (resultSet.next()) {
-                        return Optional.of(conferenceHallMapper.resultSetToConferenceHall(resultSet));
+                        return Optional.of(resultSetToConferenceHall(resultSet));
                     }
                 }
             }
@@ -124,7 +121,7 @@ public class ConferenceHallRepository {
      * @param conferenceHall the conference hall with updated information.
      */
     public void updateConferenceHall(ConferenceHall conferenceHall) {
-        try (Connection connection = databaseConfig.getConnection()) {
+        try (Connection connection = databaseConnectionProvider.getConnection()) {
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(ConferenceHallQuery.UPDATE_CONFERENCE_HALL)) {
                 preparedStatement.setString(1, conferenceHall.getName());
@@ -144,18 +141,29 @@ public class ConferenceHallRepository {
      * @return a collection of available conference halls.
      */
     public Collection<ConferenceHall> getAvailableConferenceHalls() {
-        try (Connection connection = databaseConfig.getConnection()) {
+        try (Connection connection = databaseConnectionProvider.getConnection()) {
 
             try (Statement statement = connection.createStatement();
                  ResultSet resultSet = statement.executeQuery(ConferenceHallQuery.GET_ALL_AVAILABLE_CONFERENCE_HALLS)) {
                 Collection<ConferenceHall> conferenceHalls = new ArrayList<>();
                 while (resultSet.next()) {
-                    conferenceHalls.add(conferenceHallMapper.resultSetToConferenceHall(resultSet));
+                    conferenceHalls.add(resultSetToConferenceHall(resultSet));
                 }
                 return conferenceHalls;
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public ConferenceHall resultSetToConferenceHall(ResultSet resultSet) throws SQLException {
+        if (resultSet == null) {
+            return null;
+        }
+        ConferenceHall conferenceHall = new ConferenceHall();
+        conferenceHall.setId(resultSet.getInt("id"));
+        conferenceHall.setName(resultSet.getString("name"));
+        conferenceHall.setAvailable(resultSet.getBoolean("is_available"));
+        return conferenceHall;
     }
 }

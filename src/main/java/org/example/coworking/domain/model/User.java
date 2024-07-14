@@ -32,12 +32,6 @@ public class User {
      */
     private UserRole role;
 
-    public User(String username, String password, UserRole role) {
-        this.username = username;
-        this.password = password;
-        this.role = role;
-    }
-
     /**
      * Returns a string representation of the user.
      *

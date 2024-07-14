@@ -50,24 +50,5 @@ public class Booking {
      * Indicates whether the booking is currently available.
      */
     private boolean available;
-    /**
-     * Constructs a new Booking with the given parameters.
-     * The id is auto-generated and incremented.
-     *
-     * @param userId the id of the user who made the booking
-     * @param resourceId the id of the resource being booked
-     * @param startTime the start time of the booking
-     * @param endTime the end time of the booking
-     * @param resourceType the type of the resource being booked
-     * @param isAvailable whether the booking is currently available
-     */
-    public Booking(int userId, int resourceId, LocalDateTime startTime, LocalDateTime endTime, ResourceType resourceType, boolean isAvailable) {
-        this.userId = userId;
-        this.resourceId = resourceId;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.resourceType = resourceType;
-        this.available = isAvailable;
-    }
 }
 

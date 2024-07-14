@@ -25,9 +25,4 @@ public class Workplace {
      * The availability status of the workplace.
      */
     private boolean isAvailable;
-
-    public Workplace(String name, boolean isAvailable) {
-        this.name = name;
-        this.isAvailable = isAvailable;
-    }
 }

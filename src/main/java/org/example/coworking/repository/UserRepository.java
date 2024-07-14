@@ -1,7 +1,7 @@
 package org.example.coworking.repository;
 
-import org.example.coworking.config.DatabaseConfig;
-import org.example.coworking.mapper.UserMapper;
+import org.example.coworking.config.DatabaseConnectionProvider;
+import org.example.coworking.domain.model.enums.UserRole;
 import org.example.coworking.domain.model.User;
 import org.example.coworking.repository.query.UserQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,23 +20,21 @@ import java.util.Optional;
  */
 @Repository
 public class UserRepository {
-    private final UserMapper userMapper;
-    private final DatabaseConfig databaseConfig;
+    private final DatabaseConnectionProvider databaseConnectionProvider;
 
     @Autowired
-    public UserRepository(UserMapper userMapper, DatabaseConfig databaseConfig) {
-        this.userMapper = userMapper;
-        this.databaseConfig = databaseConfig;
+    public UserRepository(DatabaseConnectionProvider databaseConnectionProvider) {
+        this.databaseConnectionProvider = databaseConnectionProvider;
     }
 
     public Collection<User> getAllUsers() {
-        try (Connection connection =  databaseConfig.getConnection()) {
+        try (Connection connection =  databaseConnectionProvider.getConnection()) {
 
             try (Statement statement = connection.createStatement();
                  ResultSet resultSet = statement.executeQuery(UserQuery.GET_ALL_USERS)) {
                 Collection<User> users = new ArrayList<>();
                 while (resultSet.next()) {
-                    users.add(userMapper.resultSetToUser(resultSet));
+                    users.add(resultSetToUser(resultSet));
                 }
                 return users;
             }
@@ -52,7 +50,7 @@ public class UserRepository {
      * @param user The user object to register.
      */
     public void registerUser(User user) {
-        try (Connection connection = databaseConfig.getConnection()) {
+        try (Connection connection = databaseConnectionProvider.getConnection()) {
 
             try (Statement statement = connection.createStatement();
                  ResultSet resultSet = statement.executeQuery(UserQuery.GET_ID_NEXT_USER)) {
@@ -75,7 +73,7 @@ public class UserRepository {
     }
 
     public void removeUserById(int userId) {
-        try (Connection connection = databaseConfig.getConnection()) {
+        try (Connection connection = databaseConnectionProvider.getConnection()) {
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(UserQuery.DELETE_USER)) {
                 preparedStatement.setInt(1, userId);
@@ -87,7 +85,7 @@ public class UserRepository {
     }
 
     public void updateUser(User user) {
-        try (Connection connection = databaseConfig.getConnection()) {
+        try (Connection connection = databaseConnectionProvider.getConnection()) {
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(UserQuery.UPDATE_USER)) {
                 preparedStatement.setString(1, user.getUsername());
@@ -108,14 +106,14 @@ public class UserRepository {
      * @return The user object with the specified username, or null if not found.
      */
     public Optional<User> findUserByUsername(String username) {
-        try (Connection connection = databaseConfig.getConnection()) {
+        try (Connection connection = databaseConnectionProvider.getConnection()) {
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(UserQuery.FIND_USER_BY_USERNAME)) {
                 preparedStatement.setString(1, username);
 
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     if (resultSet.next()) {
-                        return Optional.of(userMapper.resultSetToUser(resultSet));
+                        return Optional.of(resultSetToUser(resultSet));
                     }
                 }
             }
@@ -132,14 +130,14 @@ public class UserRepository {
      * @return The user object with the specified username, or null if not found.
      */
     public Optional<User> findUserById(int id) {
-        try (Connection connection = databaseConfig.getConnection()) {
+        try (Connection connection = databaseConnectionProvider.getConnection()) {
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(UserQuery.FIND_USER_BY_ID)) {
                 preparedStatement.setInt(1, id);
 
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     if (resultSet.next()) {
-                        return Optional.of(userMapper.resultSetToUser(resultSet));
+                        return Optional.of(resultSetToUser(resultSet));
                     }
                 }
             }
@@ -147,5 +145,17 @@ public class UserRepository {
             throw new RuntimeException(e);
         }
         return Optional.empty();
+    }
+
+    public User resultSetToUser(ResultSet resultSet) throws SQLException {
+        if (resultSet == null) {
+            return null;
+        }
+        User user = new User();
+        user.setId(resultSet.getInt("id"));
+        user.setUsername(resultSet.getString("username"));
+        user.setPassword(resultSet.getString("password"));
+        user.setRole(UserRole.valueOf(resultSet.getString("role")));
+        return user;
     }
 }

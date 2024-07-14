@@ -41,4 +41,9 @@ public class DatabaseConfig {
     public Connection connection() throws SQLException {
         return DriverManager.getConnection(url, username, password);
     }
+
+    @Bean
+    public DatabaseConnectionProvider databaseConnectionProvider() {
+        return new DatabaseConnectionProviderImpl(url, username, password);
+    }
 }

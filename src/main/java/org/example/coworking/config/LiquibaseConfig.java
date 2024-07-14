@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import javax.annotation.PostConstruct;
@@ -20,6 +21,7 @@ import java.sql.Statement;
 
 @Configuration
 @PropertySource("classpath:application.yml")
+@EnableAspectJAutoProxy
 public class LiquibaseConfig {
 
     @Value("${liquibase.changelog}")

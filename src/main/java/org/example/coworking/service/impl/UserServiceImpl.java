@@ -24,8 +24,8 @@ public class UserServiceImpl implements UserService {
         this.userMapper = userMapper;
     }
 
-    @Auditable(action = "Регистрация пользователя")
     @Override
+    @Auditable(action = "Регистрация пользователя")
     public UserResponseDto register(UserRegisterRequestDto userRegisterRequestDto) {
         User user = userMapper.userRegisterRequestDtotoUser(userRegisterRequestDto);
         if (checkUsernameExists(user.getUsername())) {
@@ -36,8 +36,8 @@ public class UserServiceImpl implements UserService {
         return userMapper.userToUserResponseDto(user);
     }
 
-    @Auditable(action = "Авторизация пользователя")
     @Override
+    @Auditable(action = "Авторизация пользователя")
     public UserResponseDto login(UserLoginRequestDto userLoginRequestDto) {
         User user = userMapper.userLoginRequestDtotoUser(userLoginRequestDto);
         User foundUser = userRepository.findUserByUsername(user.getUsername())

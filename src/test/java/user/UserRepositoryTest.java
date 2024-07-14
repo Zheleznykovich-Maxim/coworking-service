@@ -1,3 +1,4 @@
+package user;
 
 import config.TestContainerManager;
 import org.example.coworking.config.DatabaseConnectionProviderImpl;

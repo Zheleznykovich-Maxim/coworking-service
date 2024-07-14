@@ -1,3 +1,5 @@
+package user;
+
 import org.example.coworking.domain.model.User;
 import org.example.coworking.domain.model.enums.UserRole;
 import org.junit.jupiter.api.BeforeEach;

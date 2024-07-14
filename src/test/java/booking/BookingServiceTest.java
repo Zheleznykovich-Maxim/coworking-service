@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -41,7 +40,7 @@ public class BookingServiceTest {
 
     @Test
     @DisplayName("Test adding a booking")
-    public void testAddBooking() throws SQLException {
+    public void testAddBooking() {
 
         BookingRequestDto requestDto = new BookingRequestDto(
                 1, 2, LocalDateTime.now(), LocalDateTime.now().plusHours(1),

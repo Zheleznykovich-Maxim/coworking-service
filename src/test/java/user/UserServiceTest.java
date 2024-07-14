@@ -1,3 +1,4 @@
+package user;
 
 import org.example.coworking.domain.dto.request.user.UserRegisterRequestDto;
 import org.example.coworking.domain.dto.response.UserResponseDto;

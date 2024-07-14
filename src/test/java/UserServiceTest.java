@@ -1,83 +1,135 @@
-import org.example.coworking.model.User;
-import org.example.coworking.model.enums.UserRole;
+
+import org.example.coworking.domain.dto.request.user.UserRegisterRequestDto;
+import org.example.coworking.domain.dto.response.UserResponseDto;
+import org.example.coworking.domain.model.User;
+import org.example.coworking.domain.model.enums.UserRole;
+import org.example.coworking.mapper.UserMapper;
 import org.example.coworking.repository.UserRepository;
-import org.example.coworking.service.UserService;
+import org.example.coworking.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-@DisplayName("UserService Tests")
-class UserServiceTest {
+@DisplayName("Tests for UserService")
+public class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private UserMapper userMapper;
+
     @InjectMocks
-    private UserService userService;
+    UserServiceImpl userService;
 
     @BeforeEach
-    void setUp() {
+    public void setup() {
         MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    @DisplayName("Register User Test")
-    void register() {
+    @DisplayName("Test adding a user")
+    public void testAddUser() {
 
-        User user = new User("user1", "password1", UserRole.USER);
+        UserRegisterRequestDto requestDto = new UserRegisterRequestDto(
+                "user5", "user5", UserRole.USER);
 
-        userService.register(user);
+        User user = new User();
+        UserResponseDto responseDto = new UserResponseDto(
+                1, "user5", UserRole.USER
+        );
+        when(userMapper.userRegisterRequestDtotoUser(requestDto)).thenReturn(user);
+        when(userRepository.findUserByUsername(user.getUsername())).thenReturn(Optional.empty());
+        doNothing().when(userRepository).registerUser(user);
+        when(userMapper.userToUserResponseDto(user)).thenReturn(responseDto);
 
-        verify(userRepository, times(1)).registerUser(any(User.class));
+        UserResponseDto result = userService.register(requestDto);
+
+        assertThat(result).isEqualTo(responseDto);
+        verify(userMapper, times(1)).userRegisterRequestDtotoUser(requestDto);
+        verify(userRepository, times(1)).findUserByUsername(user.getUsername());
+        verify(userRepository, times(1)).registerUser(user);
+        verify(userMapper, times(1)).userToUserResponseDto(user);
     }
 
     @Test
-    @DisplayName("Login Successful Test")
-    void loginSuccessful() {
+    @DisplayName("Test deleting a user")
+    public void testDeleteUser() {
 
-        User user = new User("user1", "password1", UserRole.USER);
+        int userId = 1;
+        User user = new User();
+        user.setId(userId);
 
-        when(userRepository.findUserByUsername("user1")).thenReturn(Optional.of(user));
+        UserResponseDto userResponseDto = new UserResponseDto(
+                1, "user1", UserRole.USER);
 
-        boolean result = userService.login(user);
+        when(userRepository.findUserById(userId)).thenReturn(Optional.of(user));
+        doNothing().when(userRepository).removeUserById(userId);
+        when(userMapper.userToUserResponseDto(user)).thenReturn(userResponseDto);
 
-        assertThat(result).isTrue();
-        verify(userRepository, times(1)).findUserByUsername("user1");
+        UserResponseDto result = userService.removeUserById(userId);
+
+        assertThat(result).isEqualTo(userResponseDto);
+        verify(userRepository, times(1)).findUserById(userId);
+        verify(userRepository, times(1)).removeUserById(userId);
+        verify(userMapper, times(1)).userToUserResponseDto(user);
     }
 
     @Test
-    @DisplayName("Login Failed Test")
-    void loginFailed() {
-        // Arrange
-        String username = "user1";
-        String password = "wrongpassword";
-        User wrongUser = new User(username, password, UserRole.USER);
-        User storedUser = new User("user1", "password1", UserRole.USER);
-        when(userRepository.findUserByUsername("user1")).thenReturn(Optional.of(storedUser));
+    @DisplayName("Test getting all users")
+    public void testGetAllUsers() {
 
-        boolean result = userService.login(wrongUser);
+        User user1 = new User(1, "user1", "user1", UserRole.USER);
+        User user2 = new User(2, "user2", "user2", UserRole.USER);
+        Collection<User> users = Arrays.asList(
+                user1,
+                user2
+        );
+        Collection<UserResponseDto> userResponseDtos = Arrays.asList(
+                userMapper.userToUserResponseDto(user1),
+                userMapper.userToUserResponseDto(user2)
+        );
 
-        assertThat(result).isFalse();
-        verify(userRepository, times(1)).findUserByUsername("user1");
+        when(userRepository.getAllUsers()).thenReturn(users);
+        when(userMapper.usersToUserResponseDtos(users)).thenReturn(userResponseDtos);
+
+        Collection<UserResponseDto> result = userService.getUsers();
+
+        assertThat(result).isEqualTo(userResponseDtos);
+        verify(userRepository, times(1)).getAllUsers();
+        verify(userMapper, times(1)).usersToUserResponseDtos(users);
     }
 
     @Test
-    @DisplayName("Find User By Name Test")
-    void findUserByName() {
+    @DisplayName("Test finding user by id")
+    public void testGetUserById() {
 
-        User user = new User("user1", "password1", UserRole.USER);
-        when(userRepository.findUserByUsername("user1")).thenReturn(Optional.of(user));
+        int userId = 1;
+        User user = new User();
+        user.setId(userId);
 
-        User foundUser = userService.findUserByName("user1");
+        UserResponseDto userResponseDto = new UserResponseDto(1, "workplace1", UserRole.USER);
 
-        assertThat(foundUser).isEqualTo(user);
-        verify(userRepository, times(1)).findUserByUsername("user1");
+        when(userRepository.findUserById(userId)).thenReturn(Optional.of(user));
+        when(userMapper.userToUserResponseDto(user)).thenReturn(userResponseDto);
+
+        UserResponseDto result = userService.findUserById(userId);
+
+        assertThat(result).isEqualTo(userResponseDto);
+        verify(userRepository, times(1)).findUserById(userId);
+        verify(userMapper, times(1)).userToUserResponseDto(user);
     }
 }
+
+

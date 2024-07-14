@@ -1,5 +1,5 @@
-import org.example.coworking.model.User;
-import org.example.coworking.model.enums.UserRole;
+import org.example.coworking.domain.model.User;
+import org.example.coworking.domain.model.enums.UserRole;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,7 +14,7 @@ public class UserTest {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        user = new User("testUser", "password123", UserRole.ADMIN);
+        user = new User(1, "testUser", "password123", UserRole.ADMIN);
     }
 
     @Test

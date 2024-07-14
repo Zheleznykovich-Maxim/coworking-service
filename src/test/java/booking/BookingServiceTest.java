@@ -1,3 +1,5 @@
+package booking;
+
 import org.example.coworking.domain.dto.request.BookingRequestDto;
 import org.example.coworking.domain.dto.response.BookingResponseDto;
 import org.example.coworking.domain.model.Booking;

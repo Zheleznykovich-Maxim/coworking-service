@@ -1,3 +1,5 @@
+package booking;
+
 import org.example.coworking.domain.model.enums.ResourceType;
 import org.example.coworking.domain.model.Booking;
 import org.example.coworking.domain.model.User;

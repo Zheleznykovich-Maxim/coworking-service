@@ -1,3 +1,5 @@
+package booking;
+
 import config.TestContainerManager;
 import org.example.coworking.config.DatabaseConnectionProviderImpl;
 import org.example.coworking.domain.model.Booking;

@@ -5,7 +5,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.example.coworking.annotations.Auditable;
 import org.example.coworking.domain.model.UserAction;
-import org.example.coworking.service.impl.UserActionService;
+import org.example.coworking.service.impl.UserActionServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
@@ -17,11 +17,11 @@ import java.time.LocalDateTime;
 @Aspect
 @Component
 public class AuditAspect {
-    private final UserActionService userActionService;
+    private final UserActionServiceImpl userActionServiceImpl;
 
     @Autowired
-    public AuditAspect(UserActionService userActionService) {
-        this.userActionService = userActionService;
+    public AuditAspect(UserActionServiceImpl userActionServiceImpl) {
+        this.userActionServiceImpl = userActionServiceImpl;
     }
 
     @Before("@annotation(auditable)")
@@ -35,6 +35,6 @@ public class AuditAspect {
         UserAction userAction = new UserAction();
         userAction.setTimestamp(LocalDateTime.now());
         userAction.setAction(message);
-        userActionService.saveAction(userAction);
+        userActionServiceImpl.saveAction(userAction);
     }
 }

@@ -10,11 +10,11 @@ import java.sql.SQLException;
  * Service class for managing user actions.
  */
 @Service
-public class UserActionService {
+public class UserActionServiceImpl {
     private final UserActionRepository userActionRepository;
 
     @Autowired
-    public UserActionService(UserActionRepository userActionRepository) {
+    public UserActionServiceImpl(UserActionRepository userActionRepository) {
         this.userActionRepository = userActionRepository;
     }
 

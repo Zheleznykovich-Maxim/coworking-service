@@ -1,3 +1,4 @@
+package workplace;
 
 import org.example.coworking.domain.dto.request.WorkplaceRequestDto;
 import org.example.coworking.domain.dto.response.WorkplaceResponseDto;

@@ -1,3 +1,4 @@
+package workplace;
 
 import config.TestContainerManager;
 import org.example.coworking.config.DatabaseConnectionProviderImpl;

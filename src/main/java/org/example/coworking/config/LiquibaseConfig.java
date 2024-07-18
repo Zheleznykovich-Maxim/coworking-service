@@ -6,45 +6,78 @@ import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
-import java.io.FileInputStream;
-import java.io.IOException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import javax.annotation.PostConstruct;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Properties;
 
-/**
- * Configures and runs Liquibase database migrations.
- */
+@Configuration
+@PropertySource("classpath:application.yml")
+@EnableAspectJAutoProxy
 public class LiquibaseConfig {
 
-    /**
-     * Runs the Liquibase migrations based on the configuration in the properties file.
-     */
-    public static void runMigrations() {
-        try {
-            Properties properties = new Properties();
-            properties.load(new FileInputStream("src/main/resources/application.properties"));
+    @Value("${liquibase.changelog}")
+    private String changeLogFile;
 
-            Connection connection = DatabaseConfig.getDatabaseConnection().getConnection();
-            Database database =
-                    DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
-            String query = "CREATE SCHEMA IF NOT EXISTS liquibase_logs;";
-            try (Statement statement = connection.createStatement()){
-                statement.execute(query);
-            }
-            database.setDefaultSchemaName("coworking");
-            database.setLiquibaseSchemaName("liquibase_logs");
-            Liquibase liquibase = new Liquibase(properties.getProperty("liquibase.changelog"), new ClassLoaderResourceAccessor(), database);
-            liquibase.update();
-            connection.close();
-            System.out.println("Liquibase migration completed successfully");
-        } catch (LiquibaseException e) {
-            System.out.println("Liquibase Exception in migration " + e.getMessage());
-        } catch (IOException e) {
-            System.out.println("IOException Exception in migration " + e.getMessage());
-        } catch (SQLException e) {
-            System.out.println("SQL Exception in migration " + e.getMessage());
+    @Value("${liquibase.default-schema}")
+    private String defaultSchema;
+
+    @Value("${liquibase.liquibase-schema}")
+    private String liquibaseSchema;
+
+    private final DatabaseConfig databaseConfig;
+
+    @Autowired
+    public LiquibaseConfig(DatabaseConfig databaseConfig) {
+        this.databaseConfig = databaseConfig;
+    }
+
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer properties() {
+        PropertySourcesPlaceholderConfigurer configurer = new PropertySourcesPlaceholderConfigurer();
+        configurer.setProperties(yamlProperties().getObject());
+        return configurer;
+    }
+
+    @Bean
+    public static YamlPropertiesFactoryBean yamlProperties() {
+        return DatabaseConfig.yamlProperties();
+    }
+
+    @Bean
+    public static Liquibase liquibase(DatabaseConfig databaseConfig,
+                                      @Value("${liquibase.changelog}") String changeLogFile,
+                                      @Value("${liquibase.default-schema}") String defaultSchema,
+                                      @Value("${liquibase.liquibase-schema}") String liquibaseSchema) throws LiquibaseException, SQLException {
+        Connection connection = databaseConfig.connection();
+        Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
+
+        String createSchemaQuery = "CREATE SCHEMA IF NOT EXISTS liquibase_logs;";
+        try (Statement statement = connection.createStatement()) {
+            statement.execute(createSchemaQuery);
+        }
+
+        database.setDefaultSchemaName(defaultSchema);
+        database.setLiquibaseSchemaName(liquibaseSchema);
+
+        Liquibase liquibase = new Liquibase(changeLogFile, new ClassLoaderResourceAccessor(), database);
+        liquibase.update();
+        return liquibase;
+    }
+
+    @PostConstruct
+    public void runLiquibase() {
+        try {
+            liquibase(databaseConfig, changeLogFile, defaultSchema, liquibaseSchema);
+        } catch (LiquibaseException | SQLException e) {
         }
     }
 }

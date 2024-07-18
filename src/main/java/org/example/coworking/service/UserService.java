@@ -1,72 +1,77 @@
 package org.example.coworking.service;
 
-import lombok.AllArgsConstructor;
-import org.example.coworking.annotations.Auditable;
-import org.example.coworking.annotations.Loggable;
-import org.example.coworking.exception.EntityNotFoundException;
-import org.example.coworking.model.User;
-import org.example.coworking.repository.UserRepository;
+import org.example.coworking.domain.dto.request.user.UserLoginRequestDto;
+import org.example.coworking.domain.dto.request.user.UserRegisterRequestDto;
+import org.example.coworking.domain.dto.response.UserResponseDto;
+
+import java.util.Collection;
 
 /**
- * Service class for managing User operations.
+ * Service interface for managing users in the coworking system.
  */
-@Loggable
-@AllArgsConstructor
-public class UserService {
-    private final UserRepository userRepository;
+public interface UserService {
 
     /**
-     * Registers a new user.
+     * Registers a new user based on the provided registration data.
      *
-     * @param user the user to register.
+     * @param userRegisterRequestDto the data for the new user registration.
+     * @return a {@link UserResponseDto} representing the registered user.
      */
-    @Auditable(action = "Регистрация пользователя")
-    public void register(User user) {
-        userRepository.registerUser(user);
-    }
+    UserResponseDto register(UserRegisterRequestDto userRegisterRequestDto);
 
     /**
-     * Logs in a user by checking if the credentials match.
+     * Authenticates a user based on the provided login data.
      *
-     * @param user the user attempting to log in.
-
-     * @return true if the credentials match, otherwise false.
+     * @param userLoginRequestDto the data for the user login.
+     * @return a {@link UserResponseDto} representing the authenticated user.
      */
-    @Auditable(action = "Авторизация пользователя")
-    public boolean login(User user) {
-        return userRepository.findUserByUsername(user.getUsername()).get().getPassword()
-                .equals(user.getPassword());
-    }
+    UserResponseDto login(UserLoginRequestDto userLoginRequestDto);
+
+    /**
+     * Retrieves all users.
+     *
+     * @return a collection of {@link UserResponseDto} representing all users.
+     */
+    Collection<UserResponseDto> getUsers();
+
+    /**
+     * Updates an existing user with the specified ID based on the provided registration data.
+     *
+     * @param id the ID of the user to be updated.
+     * @param userRegisterRequestDto the data for the user update.
+     * @return a {@link UserResponseDto} representing the updated user.
+     */
+    UserResponseDto updateUser(int id, UserRegisterRequestDto userRegisterRequestDto);
+
+    /**
+     * Removes a user by their ID.
+     *
+     * @param id the ID of the user to be removed.
+     * @return a {@link UserResponseDto} representing the removed user.
+     */
+    UserResponseDto removeUserById(int id);
 
     /**
      * Finds a user by their username.
      *
-     * @param username the username to search for.
-     * @return the user with the specified username, or null if not found.
+     * @param username the username of the user to be found.
+     * @return a {@link UserResponseDto} representing the found user.
      */
-    public User findUserByName(String username) {
-        return userRepository.findUserByUsername(username)
-                .orElseThrow(() -> new EntityNotFoundException("Пользователь с таким именем не найдено!"));
-    }
+    UserResponseDto findUserByName(String username);
 
     /**
-     * Finds a user by their id.
+     * Finds a user by their ID.
      *
-     * @param id the username to search for.
-     * @return the user with the specified username, or null if not found.
+     * @param id the ID of the user to be found.
+     * @return a {@link UserResponseDto} representing the found user.
      */
-    public User findUserById(int id) {
-        return userRepository.findUserById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Пользователь с таким именем не найдено!"));
-    }
+    UserResponseDto findUserById(int id);
 
     /**
-     * check a user for existence.
+     * Checks if a username already exists in the system.
      *
-     * @param username the username to search for.
-     * @return true if user exists, or false if not found.
+     * @param username the username to be checked.
+     * @return {@code true} if the username exists, {@code false} otherwise.
      */
-    public boolean checkUsernameExists(String username) {
-        return userRepository.findUserByUsername(username).isPresent();
-    }
+    boolean checkUsernameExists(String username);
 }

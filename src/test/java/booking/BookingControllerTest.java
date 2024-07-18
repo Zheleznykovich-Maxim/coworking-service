@@ -55,7 +55,7 @@ public class BookingControllerTest {
 
         when(bookingService.getBookings()).thenReturn(allBookings);
 
-        mockMvc.perform(get("/booking")
+        mockMvc.perform(get("/coworking/booking")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -77,7 +77,7 @@ public class BookingControllerTest {
 
         when(bookingService.findBookingById(1)).thenReturn(bookingResponseDto);
 
-        mockMvc.perform(get("/booking/1")
+        mockMvc.perform(get("/coworking/booking/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -101,7 +101,7 @@ public class BookingControllerTest {
 
         when(bookingService.filterBookingsByDate(LocalDate.of(2022, 1, 1))).thenReturn(bookings);
 
-        mockMvc.perform(get("/booking/filter/by-date")
+        mockMvc.perform(get("/coworking/booking/filter/by-date")
                         .param("date", "2022-01-01")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())

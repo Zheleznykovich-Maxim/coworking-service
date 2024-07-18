@@ -1,11 +1,11 @@
 package org.example.coworking.repository;
 
-import org.example.coworking.config.DatabaseConnectionProvider;
 import org.example.coworking.domain.model.enums.UserRole;
 import org.example.coworking.domain.model.User;
 import org.example.coworking.repository.query.UserQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,15 +20,16 @@ import java.util.Optional;
  */
 @Repository
 public class UserRepository {
-    private final DatabaseConnectionProvider databaseConnectionProvider;
+
+    private final DataSource dataSource;
 
     @Autowired
-    public UserRepository(DatabaseConnectionProvider databaseConnectionProvider) {
-        this.databaseConnectionProvider = databaseConnectionProvider;
+    public UserRepository(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     public Collection<User> getAllUsers() {
-        try (Connection connection =  databaseConnectionProvider.getConnection()) {
+        try (Connection connection =  dataSource.getConnection()) {
 
             try (Statement statement = connection.createStatement();
                  ResultSet resultSet = statement.executeQuery(UserQuery.GET_ALL_USERS)) {
@@ -50,7 +51,7 @@ public class UserRepository {
      * @param user The user object to register.
      */
     public void registerUser(User user) {
-        try (Connection connection = databaseConnectionProvider.getConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
 
             try (Statement statement = connection.createStatement();
                  ResultSet resultSet = statement.executeQuery(UserQuery.GET_ID_NEXT_USER)) {
@@ -73,7 +74,7 @@ public class UserRepository {
     }
 
     public void removeUserById(int userId) {
-        try (Connection connection = databaseConnectionProvider.getConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(UserQuery.DELETE_USER)) {
                 preparedStatement.setInt(1, userId);
@@ -85,7 +86,7 @@ public class UserRepository {
     }
 
     public void updateUser(User user) {
-        try (Connection connection = databaseConnectionProvider.getConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(UserQuery.UPDATE_USER)) {
                 preparedStatement.setString(1, user.getUsername());
@@ -106,7 +107,7 @@ public class UserRepository {
      * @return The user object with the specified username, or null if not found.
      */
     public Optional<User> findUserByUsername(String username) {
-        try (Connection connection = databaseConnectionProvider.getConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(UserQuery.FIND_USER_BY_USERNAME)) {
                 preparedStatement.setString(1, username);
@@ -130,7 +131,7 @@ public class UserRepository {
      * @return The user object with the specified username, or null if not found.
      */
     public Optional<User> findUserById(int id) {
-        try (Connection connection = databaseConnectionProvider.getConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(UserQuery.FIND_USER_BY_ID)) {
                 preparedStatement.setInt(1, id);

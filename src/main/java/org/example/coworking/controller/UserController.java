@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Collection;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/coworking/user")
 public class UserController {
     private final UserService userService;
 

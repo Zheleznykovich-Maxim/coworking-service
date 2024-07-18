@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Collection;
 
 @RestController
-@RequestMapping("/workplace")
+@RequestMapping("/coworking/workplace")
 public class WorkplaceController {
     private final WorkplaceService workplaceService;
 

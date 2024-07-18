@@ -1,11 +1,11 @@
 package org.example.coworking.repository;
 
-import org.example.coworking.config.DatabaseConnectionProvider;
 import org.example.coworking.domain.model.Booking;
 import org.example.coworking.domain.model.enums.ResourceType;
 import org.example.coworking.repository.query.BookingQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import javax.sql.DataSource;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -17,11 +17,12 @@ import java.util.Optional;
  */
 @Repository
 public class BookingRepository {
-    private final DatabaseConnectionProvider databaseConnectionProvider;
+
+    private final DataSource dataSource;
 
     @Autowired
-    public BookingRepository(DatabaseConnectionProvider databaseConnectionProvider) {
-        this.databaseConnectionProvider = databaseConnectionProvider;
+    public BookingRepository(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     /**
@@ -30,7 +31,7 @@ public class BookingRepository {
      * @return a collection of all bookings.
      */
     public Collection<Booking> getAllBookings() {
-        try (Connection connection = databaseConnectionProvider.getConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
             try (Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(BookingQuery.GET_ALL_BOOKINGS)) {
                     Collection<Booking> bookings = new ArrayList<>();
@@ -52,7 +53,7 @@ public class BookingRepository {
      * @param booking the booking to add.
      */
     public void addBooking(Booking booking) {
-        try (Connection connection = databaseConnectionProvider.getConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
 
             try (Statement statement = connection.createStatement();
                  ResultSet resultSet = statement.executeQuery(BookingQuery.GET_ID_NEXT_BOOKING)) {
@@ -85,7 +86,7 @@ public class BookingRepository {
      * @param bookingId the ID of the booking to remove.
      */
     public void removeBookingById(int bookingId) {
-        try (Connection connection = databaseConnectionProvider.getConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(BookingQuery.DELETE_BOOKING)) {
                 preparedStatement.setInt(1, bookingId);
@@ -102,7 +103,7 @@ public class BookingRepository {
      * @param booking the booking to update.
      */
     public void updateBooking(Booking booking) {
-        try (Connection connection = databaseConnectionProvider.getConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(BookingQuery.UPDATE_BOOKING)) {
                 preparedStatement.setInt(1, booking.getUserId());
@@ -127,7 +128,7 @@ public class BookingRepository {
      * @return the booking with the specified ID, or null if not found.
      */
     public Optional<Booking> findBookingById(int bookingId) {
-        try (Connection connection = databaseConnectionProvider.getConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(BookingQuery.FIND_BOOKING_BY_ID)) {
                 preparedStatement.setInt(1, bookingId);
@@ -151,7 +152,7 @@ public class BookingRepository {
      * @return a collection of bookings that start or end on the specified date.
      */
     public Collection<Booking> filterBookingsByDate(LocalDate date) {
-        try (Connection connection = databaseConnectionProvider.getConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(BookingQuery.FILTER_BOOKINGS_BY_DATE)) {
                 preparedStatement.setDate(1, Date.valueOf(date));
@@ -177,7 +178,7 @@ public class BookingRepository {
      * @return a collection of bookings with the specified resource type.
      */
     public Collection<Booking> filterBookingsByResource(ResourceType resourceType) {
-        try (Connection connection = databaseConnectionProvider.getConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(BookingQuery.FILTER_BOOKINGS_BY_RESOURCE)) {
                 preparedStatement.setString(1, resourceType.name());
@@ -202,7 +203,7 @@ public class BookingRepository {
      * @return a collection of bookings made by the specified user.
      */
     public Collection<Booking> filterBookingsByUser(int userId) {
-        try (Connection connection = databaseConnectionProvider.getConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(BookingQuery.FILTER_BOOKING_BY_USER)) {
                 preparedStatement.setInt(1, userId);

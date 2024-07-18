@@ -1,9 +1,11 @@
-db:
-  url: jdbc:postgresql://localhost:5432/postgres
-  username: postgres
-  password: maxim20
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: maxim20
 
-liquibase:
-  changelog: db/changelog/main-changelog.xml
-  default-schema: coworking
-  liquibase-schema: liquibase_logs
+  liquibase:
+    changelog: db/changelog/main-changelog.xml
+    default-schema: coworking
+    liquibase-schema: liquibase_logs

@@ -49,7 +49,7 @@ public class ConferenceHallControllerTest {
 
         when(conferenceHallService.getConferenceHalls()).thenReturn(allConferenceHalls);
 
-        mockMvc.perform(get("/conferenceHall")
+        mockMvc.perform(get("/coworking/conferenceHall")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -68,7 +68,7 @@ public class ConferenceHallControllerTest {
 
         when(conferenceHallService.findConferenceHallById(1)).thenReturn(conferenceHallResponseDto);
 
-        mockMvc.perform(get("/conferenceHall/1")
+        mockMvc.perform(get("/coworking/conferenceHall/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -91,7 +91,7 @@ public class ConferenceHallControllerTest {
 
         String requestJson = "{ \"name\": \"conferenceHall1\", \"isAvailable\": true }";
 
-        mockMvc.perform(post("/conferenceHall")
+        mockMvc.perform(post("/coworking/conferenceHall")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson))
                 .andExpect(status().isCreated())
@@ -115,7 +115,7 @@ public class ConferenceHallControllerTest {
 
         String requestJson = "{ \"name\": \"conferenceHall1\", \"isAvailable\": true }";
 
-        mockMvc.perform(put("/conferenceHall/1")
+        mockMvc.perform(put("/coworking/conferenceHall/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson))
                 .andExpect(status().isOk())
@@ -134,7 +134,7 @@ public class ConferenceHallControllerTest {
 
         when(conferenceHallService.deleteConferenceHall(1)).thenReturn(conferenceHallResponseDto);
 
-        mockMvc.perform(delete("/conferenceHall/1")
+        mockMvc.perform(delete("/coworking/conferenceHall/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))

@@ -14,8 +14,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class
-TestContainerManager implements Startable {
+public class TestContainerManager implements Startable {
 
     @Getter
     private static PostgreSQLContainer<?> postgresContainer = new PostgreSQLContainer<>("postgres:13")

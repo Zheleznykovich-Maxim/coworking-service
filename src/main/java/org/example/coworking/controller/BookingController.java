@@ -22,7 +22,7 @@ import java.time.LocalDate;
 import java.util.Collection;
 
 @RestController
-@RequestMapping("/booking")
+@RequestMapping("/coworking/booking")
 public class BookingController {
     private final BookingService bookingService;
 

@@ -49,7 +49,7 @@ public class UserControllerTest {
 
         when(userService.getUsers()).thenReturn(allUsers);
 
-        mockMvc.perform(get("/user")
+        mockMvc.perform(get("/coworking/user")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -66,7 +66,7 @@ public class UserControllerTest {
 
         when(userService.findUserById(1)).thenReturn(userResponseDto);
 
-        mockMvc.perform(get("/user/1")
+        mockMvc.perform(get("/coworking/user/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -83,7 +83,7 @@ public class UserControllerTest {
 
         when(userService.findUserByName("user1")).thenReturn(userResponseDto);
 
-        mockMvc.perform(get("/user/username")
+        mockMvc.perform(get("/coworking/user/username")
                         .param("username", "user1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -104,7 +104,7 @@ public class UserControllerTest {
 
         String requestJson = "{ \"username\": \"user1\", \"password\": \"password\", \"role\": \"USER\" }";
 
-        mockMvc.perform(post("/user/register")
+        mockMvc.perform(post("/coworking/user/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson))
                 .andExpect(status().isCreated())
@@ -125,7 +125,7 @@ public class UserControllerTest {
 
         String requestJson = "{ \"username\": \"user1\", \"password\": \"password\" }";
 
-        mockMvc.perform(post("/user/login")
+        mockMvc.perform(post("/coworking/user/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson))
                 .andExpect(status().isOk())
@@ -146,7 +146,7 @@ public class UserControllerTest {
 
         String requestJson = "{ \"username\": \"user1\", \"password\": \"password\", \"role\": \"USER\" }";
 
-        mockMvc.perform(put("/user/1")
+        mockMvc.perform(put("/coworking/user/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson))
                 .andExpect(status().isOk())
@@ -164,7 +164,7 @@ public class UserControllerTest {
 
         when(userService.removeUserById(1)).thenReturn(userResponseDto);
 
-        mockMvc.perform(delete("/user/1")
+        mockMvc.perform(delete("/coworking/user/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))

@@ -1,10 +1,9 @@
 package org.example.coworking.repository;
 
-import org.example.coworking.config.DatabaseConnectionProvider;
 import org.example.coworking.domain.model.UserAction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
+import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -13,11 +12,12 @@ import java.sql.SQLException;
  */
 @Repository
 public class UserActionRepository {
-    private final DatabaseConnectionProvider databaseConnectionProvider;
+
+    private final DataSource dataSource;
 
     @Autowired
-    public UserActionRepository(DatabaseConnectionProvider databaseConnectionProvider) {
-        this.databaseConnectionProvider = databaseConnectionProvider;
+    public UserActionRepository(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     /**
@@ -28,7 +28,7 @@ public class UserActionRepository {
      */
     public void saveUserAction(UserAction userAction) throws SQLException {
         String sql = "INSERT INTO coworking.user_actions (action, timestamp) VALUES (?, ?)";
-        try (PreparedStatement preparedStatement = databaseConnectionProvider.getConnection().prepareStatement(sql)) {
+        try (PreparedStatement preparedStatement = dataSource.getConnection().prepareStatement(sql)) {
             preparedStatement.setString(1, userAction.getAction());
             preparedStatement.setTimestamp(2, java.sql.Timestamp.valueOf(userAction.getTimestamp()));
             preparedStatement.executeUpdate();

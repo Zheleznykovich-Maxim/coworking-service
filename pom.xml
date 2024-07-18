@@ -4,6 +4,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.2.0</version>
+        <relativePath/>
+    </parent>
     <groupId>org.example</groupId>
     <artifactId>coworking</artifactId>
     <version>1.0-SNAPSHOT</version>
@@ -23,8 +29,7 @@
         <postgresql.version>42.7.3</postgresql.version>
         <liquibase.version>4.24.0</liquibase.version>
         <testcontainers.version>1.17.6</testcontainers.version>
-        <logback.version>1.2.6</logback.version>
-        <slf4j.version>1.7.32</slf4j.version>
+        <slf4j.version>2.0.9</slf4j.version>
         <servlet-api.version>6.0.0</servlet-api.version>
         <jackson-databind.version>2.15.3</jackson-databind.version>
         <aspectj.version>1.9.20.1</aspectj.version>
@@ -32,37 +37,28 @@
         <maven-compiler.version>3.11.0</maven-compiler.version>
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
         <jackson-datatype.vesion>2.13.3</jackson-datatype.vesion>
-        <spring-framework.version>6.0.13</spring-framework.version>
         <plugin.war.version>3.3.1</plugin.war.version>
         <javax.annotation.version>1.3.2</javax.annotation.version>
     </properties>
 
     <dependencies>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>javax.annotation</groupId>
             <artifactId>javax.annotation-api</artifactId>
             <version>${javax.annotation.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>${spring-framework.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-            <version>${spring-framework.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webmvc</artifactId>
-            <version>${spring-framework.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-            <version>${spring-framework.version}</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -95,11 +91,6 @@
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjtools</artifactId>
             <version>${aspectj.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-aop</artifactId>
-            <version>${spring-framework.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
@@ -147,10 +138,9 @@
             <version>${slf4j.version}</version>
         </dependency>
         <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>${logback.version}</version>
-            <scope>test</scope>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${slf4j.version}</version>
         </dependency>
         <dependency>
             <groupId>jakarta.servlet</groupId>
@@ -177,6 +167,10 @@
     <build>
         <finalName>coworking</finalName>
         <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>

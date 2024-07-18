@@ -45,7 +45,7 @@ public class WorkplaceControllerTest {
 
         when(workplaceService.getWorkplaces()).thenReturn(allWorkplaces);
 
-        mockMvc.perform(get("/workplace")
+        mockMvc.perform(get("/coworking/workplace")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -62,7 +62,7 @@ public class WorkplaceControllerTest {
 
         when(workplaceService.findWorkplaceById(1)).thenReturn(workplaceResponseDto);
 
-        mockMvc.perform(get("/workplace/1")
+        mockMvc.perform(get("/coworking/workplace/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -83,7 +83,7 @@ public class WorkplaceControllerTest {
 
         String requestJson = "{ \"name\": \"workplace1\", \"isAvailable\": true }";
 
-        mockMvc.perform(post("/workplace")
+        mockMvc.perform(post("/coworking/workplace")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson))
                 .andExpect(status().isCreated())
@@ -105,7 +105,7 @@ public class WorkplaceControllerTest {
 
         String requestJson = "{ \"name\": \"workplace1\", \"isAvailable\": true }";
 
-        mockMvc.perform(put("/workplace/1")
+        mockMvc.perform(put("/coworking/workplace/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson))
                 .andExpect(status().isOk())
@@ -123,7 +123,7 @@ public class WorkplaceControllerTest {
 
         when(workplaceService.deleteWorkplace(1)).thenReturn(workplaceResponseDto);
 
-        mockMvc.perform(delete("/workplace/1")
+        mockMvc.perform(delete("/coworking/workplace/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
